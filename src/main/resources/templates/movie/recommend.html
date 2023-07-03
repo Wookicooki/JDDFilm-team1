@@ -13,6 +13,7 @@
 
 </head>
 <body>
+<header th:replace="~{layout/header :: header-basic}"></header>
 <main class="container my-4">
 
     <h1 class="text-center">나만의 영화 추천작 목록</h1>
@@ -20,7 +21,7 @@
         <div class="col-sm-2"></div>
         <div class="col-sm">
             <div class="d-flex justify-content-end my-3">
-                <button class="btn-primary btn">추천작 등록하기</button>
+                <a href="/recommendSet" class="btn-primary btn">추천작 등록하기</a>
             </div>
             <div>
                 <div class="row row-cols-4">
@@ -40,5 +41,6 @@
     </div>
 
 </main>
+<footer th:replace="~{layout/footer :: footer-basic}"></footer>
 </body>
 </html>
