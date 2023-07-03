@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>장독대 필름</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+  <style>
+      .box {
+          width: 150px;
+          height: 150px;
+          border-radius: 70%;
+          overflow: hidden;
+      }
+
+      .profile {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+
+      /* 탭 스타일 */
+      .tab_item {
+          width: calc(100% / 10);
+          height: 50px;
+          background-color: #f8f8f8;
+          line-height: 50px;
+          font-size: 15px;
+          text-align: center;
+          color: #333333;
+          display: block;
+          float: left;
+          text-align: center;
+          font-weight: bold;
+          transition: all 0.2s ease;
+      }
+
+      .tab_item:hover {
+          opacity: 0.75;
+      }
+
+      /* 라디오 버튼 UI 삭제*/
+      input[name="tab_item"] {
+          display: none;
+      }
+
+      /* 탭 컨텐츠 스타일 */
+      .tab_content {
+          display: none;
+          padding: 40px 40px 0;
+          clear: both;
+          overflow: hidden;
+      }
+
+      /* 선택 된 탭 콘텐츠를 표시 */
+      #all:checked ~ #all_content,
+      #programming:checked ~ #programming_content,
+      #design:checked ~ #design_content {
+          display: block;
+      }
+
+
+      /*선택된 탭 스타일 */
+      .tabs input:checked + .tab_item {
+          font-weight: bold;
+          font-size: 18px;
+      }
+
+  </style>
+</head>
+<body>
+<header th:replace="~{layout/header :: header-basic}"></header>
+<main class="container">
+  <!--  사이드 바-->
+  <div class="row">
+    <div class="col-sm-2 mt-5 pt-5">
+      <div class="mt-5">
+        <div class="box mx-auto" style="background: #BDBDBD;">
+          <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
+        </div>
+        <div>
+          <h6 class="my-3 px-2 text-center"><a href="#" class="text-decoration-none text-secondary fw-bold">유저1</a></h6>
+        </div>
+
+        <ul class="nav flex-column text-center" id="tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" href="#my-page-board" data-bs-toggle="tab">내 커뮤니티 글</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#my-page-movie" data-bs-toggle="tab">나만의 영화공간</a>
+          </li>
+          <li class="nav-item">
+            <!--  모달 창 구현 - 세인이형   -->
+            <a class="nav-link" href="" data-bs-toggle="tab">정보수정</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#my-page-qna" data-bs-toggle="tab">문의하기</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!--   내 커뮤니티 글(탭바)-->
+    <div class="col-sm p-3">
+      <div class="tab-content">
+        <div id="my-page-board" class="tab-pane active">
+          <div th:replace="~{mypage/myBoard :: myBoard}"/>
+        </div>
+        <div id="my-page-movie" class="tab-pane">
+          <div th:replace="~{mypage/myMovie :: myMovie}"/>
+        </div>
+        <div id="my-page-qna" class="tab-pane">
+
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2"></div>
+  </div>
+
+  </div>
+</main>
+
+<footer th:replace="~{layout/footer :: footer-basic}"></footer>
+</body>
+</html>
