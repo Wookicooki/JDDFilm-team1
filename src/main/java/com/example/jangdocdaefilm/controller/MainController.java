@@ -11,4 +11,18 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping("/category")
+    public String category() throws Exception {
+        return "category";
+    }
+
+    @RequestMapping("/recommend")
+    public String recommend() throws Exception {
+        return "recommend";
+    }
+
+    @RequestMapping("/recommendSet")
+    public String recommendSet() throws Exception {
+        return "recommendSet";
+    }
 }
