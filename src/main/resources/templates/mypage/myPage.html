@@ -75,146 +75,50 @@
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
-<main class="container-fluid">
-  <div class="row mt-5 mb-3">
-    <div class="col-sm text-center">
-      <h2>마이페이지</h2>
-      <h6>내 커뮤니티 글</h6>
-    </div>
-  </div>
-
+<main class="container">
   <!--  사이드 바-->
   <div class="row">
-    <div class="col-sm-2 ">
-      <div>
+    <div class="col-sm-2 mt-5 pt-5">
+      <div class="mt-5">
         <div class="box mx-auto" style="background: #BDBDBD;">
           <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
         </div>
         <div>
           <h6 class="my-3 px-2 text-center"><a href="#" class="text-decoration-none text-secondary fw-bold">유저1</a></h6>
         </div>
+
+        <ul class="nav flex-column text-center" id="tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" href="#my-page-board" data-bs-toggle="tab">내 커뮤니티 글</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#my-page-movie" data-bs-toggle="tab">나만의 영화공간</a>
+          </li>
+          <li class="nav-item">
+            <!--  모달 창 구현 - 세인이형   -->
+            <a class="nav-link" href="" data-bs-toggle="tab">정보수정</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#my-page-qna" data-bs-toggle="tab">문의하기</a>
+          </li>
+        </ul>
       </div>
-      <div class="px-5 text-start">
-        <h6 class="my-4"><a href="#" class="text-decoration-none text-black fw-bold">내 커뮤니티 글</a></h6>
-        <h6 class="my-4"><a href="#" class="text-decoration-none text-black">나만의 영화공간</a></h6>
-        <h6 class="my-4"><a href="#" class="text-decoration-none text-black">정보수정</a></h6>
-        <h6 class="my-4"><a href="#" class="text-decoration-none text-black">문의하기</a></h6>
-      </div>
+
     </div>
 
     <!--   내 커뮤니티 글(탭바)-->
     <div class="col-sm p-3">
-      <div class="tabs mx-auto">
-        <input id="all" type="radio" name="tab_item" checked>
-        <label class="tab_item" for="all">내가 쓴 글</label>
-        <input id="programming" type="radio" name="tab_item">
-        <label class="tab_item" for="programming">내가 쓴 댓글</label>
-        <!--            내가 쓴 글 테이블-->
-        <div class="tab_content mx-0 px-0 py-1" id="all_content">
-          <table class="table table-hover text-center">
-            <colgroup>
-              <col style="width: 7%"/>
-              <col style="width: 59%"/>
-              <col style="width: 8%"/>
-              <col style="width: 8%"/>
-              <col style="width: 8%"/>
-            </colgroup>
-            <thead>
-            <tr class="table-secondary">
-              <th>번호</th>
-              <th class="text-start">제목</th>
-              <th>글쓴이</th>
-              <th>날짜</th>
-              <th>조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <td class="text-center">1</td>
-            <td class="text-start"><a href="#" class="text-decoration-none"></a>글 제목</td>
-            <td>닉네임</td>
-            <td>2시간 전</td>
-            <td>1342</td>
-            </tr>
-            <td colspan="5">조회된 데이터가 없습니다.</td>
-            </tr>
-            </tbody>
-          </table>
-
-          <!--     페이징-->
-          <div class="container d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-              <ul class="pagination">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
+      <div class="tab-content">
+        <div id="my-page-board" class="tab-pane active">
+          <div th:replace="~{mypage/myBoard :: myBoard}"/>
         </div>
-          <!--            내가 쓴 댓글 테이블-->
-          <div class="tab_content mx-0 px-0 py-1" id="programming_content">
-            <table class="table table-hover text-center">
-              <colgroup>
-                <col style="width: 7%"/>
-                <col style="width: 59%"/>
-                <col style="width: 8%"/>
-                <col style="width: 8%"/>
-                <col style="width: 8%"/>
-              </colgroup>
-              <thead>
-              <tr class="table-secondary">
-                <th>번호</th>
-                <th class="text-start">댓글내용</th>
-                <th>글쓴이</th>
-                <th>날짜</th>
-                <th>조회수</th>
-              </tr>
-              </thead>
-              <tbody>
-              <td class="text-center">1</td>
-              <td class="text-start"><a href="#" class="text-decoration-none"></a>댓글 내용입니다.</td>
-              <td>닉네임</td>
-              <td>2시간 전</td>
-              <td>1342</td>
-              </tr>
-              <td colspan="5">조회된 데이터가 없습니다.</td>
-              </tr>
-              </tbody>
-            </table>
+        <div id="my-page-movie" class="tab-pane">
+          <div th:replace="~{mypage/myMovie :: myMovie}"/>
+        </div>
+        <div id="my-page-qna" class="tab-pane">
 
-            <!--     페이징-->
-            <div class="container d-flex justify-content-center">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+        </div>
       </div>
-
     </div>
     <div class="col-sm-2"></div>
   </div>
