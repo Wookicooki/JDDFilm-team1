@@ -25,4 +25,9 @@ public class MainController {
     public String recommendSet() throws Exception {
         return "recommendSet";
     }
+
+    @RequestMapping("/myMovie")
+    public String myMovie() throws Exception {
+        return "myMovie";
+    }
 }
