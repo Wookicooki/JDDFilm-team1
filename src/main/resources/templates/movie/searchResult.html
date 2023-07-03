@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>통합 검색 결과</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-            crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 검색 결과</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+                crossorigin="anonymous"></script>
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
 <main class="container my-4">
-  <div class="my-4 text-center">
-    <h1>통합 검색</h1>
-    <p>..에 대한 검색 결과가 ..개 검색되었습니다.</p>
-  </div>
-  <div class="row my-4"  th:each="num : ${#numbers.sequence(1, 3)}">
-    <div class="col-sm">
-      <div class="row">
-        <div class="col-sm-3">
-          <img src="/images/img1.jpg" class=" img-fluid">
-        </div>
+    <div class="row">
+        <div class="col-sm-2"></div>
         <div class="col-sm">
-          <p class="m-0">영화제목</p>
-          <p>2023.06.30 개봉</p>
-          <p class="m-0">감독</p>
-          <p>출연진</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm">
-      <div class="row">
-        <div class="col-sm-3">
-          <img src="/images/img1.jpg" class=" img-fluid">
-        </div>
-        <div class="col-sm">
-          <p class="m-0">영화제목</p>
-          <p>2023.06.30 개봉</p>
-          <p class="m-0">감독</p>
-          <p>출연진</p>
-        </div>
-      </div>
-    </div>
-  </div>
+            <div class="my-4 text-center">
+                <h1>통합 검색</h1>
+                <p>..에 대한 검색 결과가 ..개 검색되었습니다.</p>
+            </div>
+            <div class="row my-4" th:each="num : ${#numbers.sequence(1, 3)}">
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <img src="/images/img1.jpg" class=" img-fluid">
+                        </div>
+                        <div class="col-sm">
+                            <p class="m-0">영화제목</p>
+                            <p>2023.06.30 개봉</p>
+                            <p class="m-0">감독</p>
+                            <p>출연진</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <img src="/images/img1.jpg" class=" img-fluid">
+                        </div>
+                        <div class="col-sm">
+                            <p class="m-0">영화제목</p>
+                            <p>2023.06.30 개봉</p>
+                            <p class="m-0">감독</p>
+                            <p>출연진</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <nav class="my-4">
-    <ul class="pagination justify-content-center">
-      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
-  </nav>
+            <nav class="my-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+
 </main>
 </body>
 </html>

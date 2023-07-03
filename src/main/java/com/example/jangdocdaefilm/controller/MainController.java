@@ -16,6 +16,15 @@ public class MainController {
         return "main";
     }
 
+    @RequestMapping("/login")
+    public String login() throws Exception {
+        return "login/login";
+    }
+
+    @RequestMapping("/signUp")
+    public String signUp() throws Exception {
+        return "login/signUp";
+    }
     @RequestMapping("/category")
     public String category() throws Exception {
         return "movie/category";
@@ -34,6 +43,16 @@ public class MainController {
     @RequestMapping("/myMovie")
     public String myMovie() throws Exception {
         return "mypage/myMovie";
+    }
+
+    @RequestMapping("/myPage")
+    public String myPage() throws Exception {
+        return "mypage/myPage";
+    }
+
+    @RequestMapping("/myRoom")
+    public String myRoom() throws Exception {
+        return "mypage/myRoom";
     }
 
     @RequestMapping("/movieDetail")
