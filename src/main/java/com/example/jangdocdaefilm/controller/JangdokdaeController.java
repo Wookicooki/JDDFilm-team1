@@ -1,4 +1,4 @@
-package com.bitc.views.controller;
+package com.example.jangdocdaefilm.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
