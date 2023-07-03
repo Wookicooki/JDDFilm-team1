@@ -10,7 +10,7 @@ public class MainController {
     public String index() throws Exception {
         return "index";
     }
-
+    
     @RequestMapping("/category")
     public String category() throws Exception {
         return "category";
