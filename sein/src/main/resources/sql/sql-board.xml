@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bitc.SpringBoard_sein.mapper.BoardMapper">
+  <select id="selectBoardList" resultType="com.bitc.SpringBoard_sein.dto.BoardDto">
+    SELECT
+      board_idx, title, contents, create_id, create_dt, update_id, update_dt, hit_cnt
+    FROM
+    spring_db.spring_board_sein
+    WHERE
+      deleted_yn = 'N'
+    ORDER BY
+      board_idx DESC
+  </select>
+
+  <!--  상세보기 쿼리문-->
+  <select id="selectBoardDetail" resultType="com.bitc.SpringBoard_sein.dto.BoardDto" parameterType="int">
+    SELECT
+      board_idx, title, contents, create_id, create_dt, update_id, update_dt, hit_cnt
+    FROM
+      spring_db.spring_board_sein
+    WHERE
+      board_idx = #{boardIdx}
+    AND
+      deleted_yn = 'N'
+  </select>
+
+  <!--  글쓰기 쿼리문-->
+  <insert id="insertBoard" parameterType="com.bitc.SpringBoard_sein.dto.BoardDto" useGeneratedKeys="true" keyProperty="boardIdx">
+    INSERT INTO
+      spring_db.spring_board_sein (title, contents, create_id, create_dt)
+    VALUES
+      (#{title}, #{contents}, #{createId}, NOW())
+  </insert>
+
+  <!--  수정 쿼리문-->
+  <update id="updateBoard" parameterType="com.bitc.SpringBoard_sein.dto.BoardDto">
+    UPDATE
+      spring_db.spring_board_sein
+    SET
+      title = #{title}, contents = #{contents}, update_id = #{updateId}, update_dt = NOW()
+    WHERE
+      board_idx = #{boardIdx}
+  </update>
+
+  <!--  삭제 쿼리문-->
+  <delete id="deleteBoard" parameterType="int">
+    UPDATE
+      spring_db.spring_board_sein
+    SET
+      deleted_yn = 'Y'
+    WHERE
+      board_idx = #{idx}
+  </delete>
+
+  <!--  조회수 쿼리문-->
+  <update id="updateHitCount" parameterType="int">
+    UPDATE
+      spring_db.spring_board_sein
+    SET
+      hit_cnt = hit_cnt + 1
+    WHERE
+      board_idx = #{boardIdx}
+  </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
