@@ -18,65 +18,7 @@
     <h1>통합 검색</h1>
     <p>..에 대한 검색 결과가 ..개 검색되었습니다.</p>
   </div>
-  <div class="row my-4">
-    <div class="col-sm">
-      <div class="row">
-        <div class="col-sm-3">
-          <img src="/img/img1.jpg" class=" img-fluid">
-        </div>
-        <div class="col-sm">
-          <p class="m-0">영화제목</p>
-          <p>2023.06.30 개봉</p>
-          <p class="m-0">감독</p>
-          <p>출연진</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm">
-      <div class="row">
-        <div class="col-sm-3">
-          <img src="/img/img1.jpg" class=" img-fluid">
-        </div>
-        <div class="col-sm">
-          <p class="m-0">영화제목</p>
-          <p>2023.06.30 개봉</p>
-          <p class="m-0">감독</p>
-          <p>출연진</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row my-4">
-    <div class="col-sm">
-      <div class="row">
-        <div class="col-sm-3">
-          <img src="/img/img1.jpg" class=" img-fluid">
-        </div>
-        <div class="col-sm">
-          <p class="m-0">영화제목</p>
-          <p>2023.06.30 개봉</p>
-          <p class="m-0">감독</p>
-          <p>출연진</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm">
-      <div class="row">
-        <div class="col-sm-3">
-          <img src="/img/img1.jpg" class=" img-fluid">
-        </div>
-        <div class="col-sm">
-          <p class="m-0">영화제목</p>
-          <p>2023.06.30 개봉</p>
-          <p class="m-0">감독</p>
-          <p>출연진</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row my-4">
+  <div class="row my-4" th:each="num: ${#numbers.sequence(1, 3) }">
     <div class="col-sm">
       <div class="row">
         <div class="col-sm-3">

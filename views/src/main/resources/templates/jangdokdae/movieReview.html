@@ -16,6 +16,37 @@
       $("#btnBack").on("click", function () {
         history.back();
       });
+
+      let index = 0;
+      $(window).scroll(function () {
+        let window = $(this);
+        let scrollTop = window.scrollTop();
+        let windowHeight = window.height();
+        let docHeight = $(document).height();
+
+        function loadReviews() {
+          $.ajax({
+            success: function () {
+              $(".other-reviews").append(
+                  `<div class="card my-4">
+                    <div class="card-body">
+                      <p class="card-text">영화 리뷰 내용</p>
+                      <div class="text-end">
+                        <span>👍</span>
+                        <span class="me-2">32</span>
+                      </div>
+                    </div>
+                  </div>`
+              )
+            },
+          })
+        }
+        if (scrollTop + windowHeight + 1 >= docHeight) {
+          index++;
+          loadReviews();
+        }
+
+      });
     });
   </script>
 
@@ -34,6 +65,7 @@
         <span>👍</span>
         <span class="me-2">12</span>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewEditModal">수정</button>
+        <!-- 수정 모달창-->
         <div class="modal fade" id="reviewEditModal">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -52,59 +84,13 @@
             </div>
           </div>
         </div>
-
         <button type="button" class="btn btn-danger">삭제</button>
       </div>
     </div>
   </div>
 
   <div class="other-reviews my-4">
-    <div class="card my-4">
-      <div class="card-body">
-        <p class="card-text">영화 리뷰 내용</p>
-        <div class="text-end">
-          <span>👍</span>
-          <span class="me-2">32</span>
-        </div>
-      </div>
-    </div>
-    <div class="card my-4">
-      <div class="card-body">
-        <p class="card-text">영화 리뷰 내용</p>
-        <div class="text-end">
-          <span>👍</span>
-          <span class="me-2">32</span>
-        </div>
-      </div>
-    </div>
-    <div class="card my-4">
-      <div class="card-body">
-        <p class="card-text">영화 리뷰 내용</p>
-        <div class="text-end">
-          <span>👍</span>
-          <span class="me-2">32</span>
-        </div>
-      </div>
-    </div>
-    <div class="card my-4">
-      <div class="card-body">
-        <p class="card-text">영화 리뷰 내용</p>
-        <div class="text-end">
-          <span>👍</span>
-          <span class="me-2">32</span>
-        </div>
-      </div>
-    </div>
-    <div class="card my-4">
-      <div class="card-body">
-        <p class="card-text">영화 리뷰 내용</p>
-        <div class="text-end">
-          <span>👍</span>
-          <span class="me-2">32</span>
-        </div>
-      </div>
-    </div>
-    <div class="card my-4">
+    <div class="card my-4" th:each="num: ${#numbers.sequence(1, 10)}">
       <div class="card-body">
         <p class="card-text">영화 리뷰 내용</p>
         <div class="text-end">
