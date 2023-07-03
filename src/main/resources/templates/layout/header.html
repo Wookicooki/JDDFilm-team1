@@ -23,9 +23,13 @@
         <a href="#" class="nav-link me-3">할인 정보</a>
         <a href="/category" class="nav-link me-3">카테고리별</a>
       </div>
-      <form class="d-flex ms-auto me-2" method="get" action="/search">
-        <input class="form-control me-2" type="search" placeholder="Search">
-        <button class="btn btn-light" type="submit">search</button>
+      <form class="d-flex ms-auto me-2" method="get" action="/searchResult">
+        <div class="input-group">
+          <input type="search" class="form-control" placeholder="검색어를 입력해주세요.">
+          <div class="input-group-append">
+            <button class="input-group-text"><i class="bi bi-search"></i></button>
+          </div>
+        </div>
       </form>
       <button class="btn btn-dark me-2" type="button">로그인</button>
       <button class="btn btn-secondary me-2" type="button">회원가입</button>
