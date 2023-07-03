@@ -15,80 +15,84 @@
 <main class="container my-4">
 
     <h1 class="text-center">나만의 영화 추천작 작성</h1>
-    <div class="my-3 row">
-        <div class="col-sm-10">
-            <input type="text" name="content" class="form-control" placeholder="영화 추천작 모음 소개글">
-        </div>
-        <div class="col-sm d-grid gap-3">
-            <button type="button" class="btn-primary btn btn-block">등록</button>
-        </div>
-    </div>
-    <div class="my-3 row">
-        <div class="col-sm row">
-            <div class="col-sm">
-                <select id="year" class="form-control me-3">
-                    <option value="" selected="selected">년도선택</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                    <option value="2018">2018</option>
-                </select>
-            </div>
-
-            <div class="col-sm">
-                <select id="genre" class="form-control me-3">
-                    <option value="" selected="selected">장르선택</option>
-                    <option value="코미디">코미디</option>
-                    <option value="공포">공포</option>
-                    <option value="액션">액션</option>
-                    <option value="sf">sf</option>
-                </select>
-            </div>
-        </div>
+    <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="검색어를 입력해주세요.">
-                <div class="input-group-append">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <div class="my-3 row">
+                <div class="col-sm-10">
+                    <input type="text" name="content" class="form-control" placeholder="영화 추천작 모음 소개글">
+                </div>
+                <div class="col-sm d-grid gap-3">
+                    <button type="button" class="btn-primary btn btn-block">등록</button>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="my-3">
-        <div class="row row-cols-5">
-            <div th:each=" num: ${#numbers.sequence(1,20)}" class="d-flex justify-content-center my-3">
-                <div style="width: 180px;">
-                    <img src="/images/poster.jpeg" alt="" class="w-100">
-                    <div class="my-2">
-                        <input type="checkbox" class="control-input">
-                        <label class="input-label" th:text="${num}">영화 제목</label>
+            <div class="my-3 row">
+                <div class="col-sm row">
+                    <div class="col-sm">
+                        <select id="year" class="form-control me-3">
+                            <option value="" selected="selected">년도선택</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm">
+                        <select id="genre" class="form-control me-3">
+                            <option value="" selected="selected">장르선택</option>
+                            <option value="코미디">코미디</option>
+                            <option value="공포">공포</option>
+                            <option value="액션">액션</option>
+                            <option value="sf">sf</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="검색어를 입력해주세요.">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="my-3">
+                <div class="row row-cols-5">
+                    <div th:each=" num: ${#numbers.sequence(1,20)}" class="d-flex justify-content-center my-3">
+                        <div style="width: 180px;">
+                            <img src="/images/poster.jpeg" alt="" class="w-100">
+                            <div class="my-2">
+                                <input type="checkbox" class="control-input">
+                                <label class="input-label" th:text="${num}">영화 제목</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
+        <div class="col-sm-2"></div>
     </div>
-    <div class="d-flex justify-content-center">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-
 </main>
 </body>
 </html>
