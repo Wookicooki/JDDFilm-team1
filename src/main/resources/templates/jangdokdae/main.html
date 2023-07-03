@@ -14,15 +14,41 @@
   <script>
     $(document).ready(function () {
       $(".accordion-header").parent('.accordion-item').hover(
-        function () {
-          $(this).children('.collapse').collapse('show');
-        }, function () {
-          $(this).children('.collapse').collapse('hide');
-        }
+          function () {
+            $(this).children('.collapse').collapse('show');
+          }, function () {
+            $(this).children('.collapse').collapse('hide');
+          }
       );
       $(".accordion-button > a").on("click", function () {
         location.href = "/movieDetail"
       });
+
+      $("#btnHome").on("click", function () {
+        function getToday() {
+          const date = new Date();
+          const year = date.getFullYear();
+          const month = ("0" + (1 + date.getMonth())).slice(-2);
+          const day = ("0" + date.getDate()).slice(-2);
+          return year + month + day;
+        }
+        const date = getToday() - 1
+
+        // $.ajax({
+        //   url: "/parse/kobis/dailyBoxOffice",
+        //   type: "GET",
+        //   data: {targetDt: date},
+        //   success: function (data) {
+        //     alert("통신성공");
+        //   },
+        //   error: function () {
+        //     alert("서버와 통신 중 오류가 발생했습니다.");
+        //   }
+        // })
+
+      });
+
+
     });
   </script>
 </head>
@@ -42,10 +68,21 @@
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionDailyBO">
           <div class="accordion-body">
-            영화내용
+            <div class="row">
+              <div class="col-sm-3">
+                <img src="/img/img1.jpg" class="img-fluid"/>
+              </div>
+              <div class="col-sm">
+                <p>영화 제목</p>
+                <span>개봉일 2023.07.01</span>
+                <p>감독</p>
+                <p>줄거리</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
