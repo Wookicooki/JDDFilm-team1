@@ -56,6 +56,18 @@ public class BoardController {
 
     return mv;
   }
+
+//  나만의 영화공간 페이지로 이동
+  @RequestMapping("/myRoom.do")
+  public ModelAndView myRoom() throws Exception {
+    ModelAndView mv = new ModelAndView("board/myRoom");
+
+    List<BoardDto> myRoom = boardService.selectBoardList();
+
+    mv.addObject("myRoom", myRoom);
+
+    return mv;
+  }
 }
 
 

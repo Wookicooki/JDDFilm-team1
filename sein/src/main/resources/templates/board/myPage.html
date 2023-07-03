@@ -22,12 +22,58 @@
           height: 100%;
           object-fit: cover;
       }
+
+      /* 탭 스타일 */
+      .tab_item {
+          width: calc(100% / 10);
+          height: 50px;
+          background-color: #f8f8f8;
+          line-height: 50px;
+          font-size: 15px;
+          text-align: center;
+          color: #333333;
+          display: block;
+          float: left;
+          text-align: center;
+          font-weight: bold;
+          transition: all 0.2s ease;
+      }
+
+      .tab_item:hover {
+          opacity: 0.75;
+      }
+
+      /* 라디오 버튼 UI 삭제*/
+      input[name="tab_item"] {
+          display: none;
+      }
+
+      /* 탭 컨텐츠 스타일 */
+      .tab_content {
+          display: none;
+          padding: 40px 40px 0;
+          clear: both;
+          overflow: hidden;
+      }
+
+      /* 선택 된 탭 콘텐츠를 표시 */
+      #all:checked ~ #all_content,
+      #programming:checked ~ #programming_content,
+      #design:checked ~ #design_content {
+          display: block;
+      }
+
+
+      /*선택된 탭 스타일 */
+      .tabs input:checked + .tab_item {
+          font-weight: bold;
+          font-size: 18px;
+      }
+
   </style>
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
-
-
 <main class="container-fluid">
   <div class="row mt-5 mb-3">
     <div class="col-sm text-center">
@@ -36,7 +82,7 @@
     </div>
   </div>
 
-<!--  사이드 바-->
+  <!--  사이드 바-->
   <div class="row">
     <div class="col-2">
       <div class="px-5">
@@ -55,66 +101,122 @@
       </div>
     </div>
 
-<!--    내 커뮤니티 글 목록-->
+    <!--   내 커뮤니티 글(탭바)-->
     <div class="col-8 p-3">
-      <div>
-        <table class="table table-hover text-center">
-          <colgroup>
-            <col style="width: 5%"/>
-            <col style="width: 65%"/>
-            <col style="width: 7%"/>
-            <col style="width: 10%"/>
-            <col style="width: 8%"/>
-            <col style="width: 5%"/>
-          </colgroup>
-          <thead>
-          <tr class="table-secondary">
-            <th>번호</th>
-            <th class="text-start">제목</th>
-            <th>글쓴이</th>
-            <th>날짜</th>
-            <th>조회수</th>
-            <th>삭제</th>
-          </tr>
-          </thead>
-          <tbody>
-          <td class="text-center">1</td>
-          <td class="text-start"><a href="#" class="text-decoration-none"></a>글 제목</td>
-          <td>닉네임</td>
-          <td>2시간 전</td>
-          <td>1342</td>
-          <td>
-            <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault">
-          </td>
-          </tr>
-          <td colspan="6">조회된 데이터가 없습니다.</td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="tabs mx-auto">
+        <input id="all" type="radio" name="tab_item" checked>
+        <label class="tab_item" for="all">내가 쓴 글</label>
+        <input id="programming" type="radio" name="tab_item">
+        <label class="tab_item" for="programming">내가 쓴 댓글</label>
+        <!--            내가 쓴 글 테이블-->
+        <div class="tab_content mx-0 px-0 py-1" id="all_content">
+          <table class="table table-hover text-center">
+            <colgroup>
+              <col style="width: 7%"/>
+              <col style="width: 59%"/>
+              <col style="width: 8%"/>
+              <col style="width: 8%"/>
+              <col style="width: 8%"/>
+            </colgroup>
+            <thead>
+            <tr class="table-secondary">
+              <th>번호</th>
+              <th class="text-start">제목</th>
+              <th>글쓴이</th>
+              <th>날짜</th>
+              <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <td class="text-center">1</td>
+            <td class="text-start"><a href="#" class="text-decoration-none"></a>글 제목</td>
+            <td>닉네임</td>
+            <td>2시간 전</td>
+            <td>1342</td>
+            </tr>
+            <td colspan="5">조회된 데이터가 없습니다.</td>
+            </tr>
+            </tbody>
+          </table>
+
+          <!--     페이징-->
+          <div class="container d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+          <!--            내가 쓴 댓글 테이블-->
+          <div class="tab_content mx-0 px-0 py-1" id="programming_content">
+            <table class="table table-hover text-center">
+              <colgroup>
+                <col style="width: 7%"/>
+                <col style="width: 59%"/>
+                <col style="width: 8%"/>
+                <col style="width: 8%"/>
+                <col style="width: 8%"/>
+              </colgroup>
+              <thead>
+              <tr class="table-secondary">
+                <th>번호</th>
+                <th class="text-start">댓글내용</th>
+                <th>글쓴이</th>
+                <th>날짜</th>
+                <th>조회수</th>
+              </tr>
+              </thead>
+              <tbody>
+              <td class="text-center">1</td>
+              <td class="text-start"><a href="#" class="text-decoration-none"></a>댓글 내용입니다.</td>
+              <td>닉네임</td>
+              <td>2시간 전</td>
+              <td>1342</td>
+              </tr>
+              <td colspan="5">조회된 데이터가 없습니다.</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <!--     페이징-->
+            <div class="container d-flex justify-content-center">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
       </div>
 
-<!--      -->
-      <div class="container d-flex justify-content-center">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
     </div>
   </div>
+
   </div>
 </main>
 
