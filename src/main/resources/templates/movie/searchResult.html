@@ -11,6 +11,18 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
                 crossorigin="anonymous"></script>
+    <script src="/js/header.js"></script>
+
+    <style>
+        .text-overflow {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+    </style>
+
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
@@ -20,36 +32,25 @@
         <div class="col-sm">
             <div class="my-4 text-center">
                 <h1>통합 검색</h1>
-                <p>..에 대한 검색 결과가 ..개 검색되었습니다.</p>
+                <p>..에 대한 검색 결과가 <span th:text="${totalResults}">..</span>개 검색되었습니다.</p>
             </div>
-            <div class="row my-4" th:each="num : ${#numbers.sequence(1, 3)}">
-                <div class="col-sm">
+
+            <div class="row row-cols-2">
+                <div class="my-2" th:each="num : ${movieList}">
                     <div class="row">
-                        <div class="col-sm-3">
-                            <img src="/images/img1.jpg" class=" img-fluid">
+                        <div class="col-sm-4">
+                            <img th:src="@{https://image.tmdb.org/t/p/original} + ${num.poster_path}"
+                                 src="/images/img1.jpg" class="img-fluid">
                         </div>
                         <div class="col-sm">
-                            <p class="m-0">영화제목</p>
-                            <p>2023.06.30 개봉</p>
-                            <p class="m-0">감독</p>
-                            <p>출연진</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <img src="/images/img1.jpg" class=" img-fluid">
-                        </div>
-                        <div class="col-sm">
-                            <p class="m-0">영화제목</p>
-                            <p>2023.06.30 개봉</p>
-                            <p class="m-0">감독</p>
-                            <p>출연진</p>
+                            <p class="m-0" th:text="${num.title}">영화제목</p>
+                            <p th:text="${num.release_date}">2023.06.30 개봉</p>
+                            <span class="text-overflow m-0" style="width: 150px;" th:text="${num.overview}">줄거리</span>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <nav class="my-4">
                 <ul class="pagination justify-content-center">
