@@ -62,6 +62,11 @@ public class MainController {
         return "movie/recommend";
     }
 
+    @RequestMapping("/recommendDetail")
+    public String recommendDetail() throws Exception {
+        return "movie/recommendDetail";
+    }
+
     @RequestMapping("/recommendSet")
     public String recommendSet() throws Exception {
         return "movie/recommendSet";
