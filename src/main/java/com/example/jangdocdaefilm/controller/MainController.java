@@ -33,7 +33,7 @@ public class MainController {
 
     @ResponseBody
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public ModelAndView getDailyBoxOfficeProcess() throws Exception{
+    public ModelAndView getDailyBoxOfficeProcess() throws Exception {
 
         // 어제 날짜 계산
         Calendar cal = Calendar.getInstance();
@@ -57,6 +57,7 @@ public class MainController {
     public String signUp() throws Exception {
         return "login/signUp";
     }
+
     @RequestMapping("/category")
     public String category() throws Exception {
         return "movie/category";
@@ -92,7 +93,6 @@ public class MainController {
         return "movie/searchResult";
     }
 
-    // discount controll
     @RequestMapping(value = "/disList", method = RequestMethod.GET)
     public ModelAndView disList() throws Exception {
         ModelAndView mv = new ModelAndView("board/dis/disList");
@@ -107,31 +107,11 @@ public class MainController {
         return mv;
     }
 
-    // 게시물 등록(사용자 입력 페이지)
     @RequestMapping(value = "/disWrite", method = RequestMethod.GET)
-    public String disInsertView() throws Exception{
+    public String disInsertView() throws Exception {
         return "board/dis/disWrite";
     }
 
-    // 게시물 등록(내부 프로세스)
-    @RequestMapping(value = "/disWrite", method = RequestMethod.POST)
-    public String disInsertProcess() throws Exception{
-        return "redirect:/disList";
-    }
-
-    // 게시물 수정
-    @RequestMapping(value = "/disWrite", method = RequestMethod.PUT)
-    public String disUpdate() throws Exception{
-        return "redirect:/disList";
-    }
-
-    // 게시물 삭제
-    @RequestMapping(value = "/disDetail", method = RequestMethod.DELETE)
-    public String disDelete() throws Exception{
-        return "redirect:/disList";
-    }
-
-    // freeBoard controll
     @RequestMapping(value = "/freeList", method = RequestMethod.GET)
     public ModelAndView freeList() throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeList");
@@ -146,31 +126,11 @@ public class MainController {
         return mv;
     }
 
-    // 게시물 등록(사용자 입력 페이지)
     @RequestMapping(value = "/freeWrite", method = RequestMethod.GET)
-    public String freeInsertView() throws Exception{
+    public String freeInsertView() throws Exception {
         return "board/free/freeWrite";
     }
 
-    // 게시물 등록(내부 프로세스)
-    @RequestMapping(value = "/freeWrite", method = RequestMethod.POST)
-    public String freeInsertProcess() throws Exception{
-        return "redirect:/freeList";
-    }
-
-    // 게시물 수정
-    @RequestMapping(value = "/freeWrite", method = RequestMethod.PUT)
-    public String freeUpdate() throws Exception{
-        return "redirect:/freeList";
-    }
-
-    // 게시물 삭제
-    @RequestMapping(value = "/freeDetail", method = RequestMethod.DELETE)
-    public String freeDelete() throws Exception{
-        return "redirect:/freeList";
-    }
-
-    // nowMovie controll
     @RequestMapping(value = "/nowList", method = RequestMethod.GET)
     public ModelAndView nowList() throws Exception {
         ModelAndView mv = new ModelAndView("board/now/nowList");
@@ -185,31 +145,11 @@ public class MainController {
         return mv;
     }
 
-    // 게시물 등록(사용자 입력 페이지)
     @RequestMapping(value = "/nowWrite", method = RequestMethod.GET)
-    public String nowInsertView() throws Exception{
+    public String nowInsertView() throws Exception {
         return "board/now/nowWrite";
     }
 
-    // 게시물 등록(내부 프로세스)
-    @RequestMapping(value = "/nowWrite", method = RequestMethod.POST)
-    public String nowInsertProcess() throws Exception{
-        return "redirect:/nowList";
-    }
-
-    // 게시물 수정
-    @RequestMapping(value = "/nowWrite", method = RequestMethod.PUT)
-    public String nowUpdate() throws Exception{
-        return "redirect:/nowList";
-    }
-
-    // 게시물 삭제
-    @RequestMapping(value = "/nowDetail", method = RequestMethod.DELETE)
-    public String nowDelete() throws Exception{
-        return "redirect:/nowList";
-    }
-
-    // QnA controll
     @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
     public ModelAndView qnaList() throws Exception {
         ModelAndView mv = new ModelAndView("board/qna/qnaList");
@@ -224,27 +164,8 @@ public class MainController {
         return mv;
     }
 
-    // 게시물 등록(사용자 입력 페이지)
     @RequestMapping(value = "/qnaWrite", method = RequestMethod.GET)
-    public String qnaInsertView() throws Exception{
+    public String qnaInsertView() throws Exception {
         return "board/qna/qnaWrite";
-    }
-
-    // 게시물 등록(내부 프로세스)
-    @RequestMapping(value = "/qnaWrite", method = RequestMethod.POST)
-    public String qnaInsertProcess() throws Exception{
-        return "redirect:/qnaList";
-    }
-
-    // 게시물 수정
-    @RequestMapping(value = "/qnaWrite", method = RequestMethod.PUT)
-    public String qnaUpdate() throws Exception{
-        return "redirect:/qnaList";
-    }
-
-    // 게시물 삭제
-    @RequestMapping(value = "/qnaDetail", method = RequestMethod.DELETE)
-    public String qnaDelete() throws Exception{
-        return "redirect:/qnaList";
     }
 }
