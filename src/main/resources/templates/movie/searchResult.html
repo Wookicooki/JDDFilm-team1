@@ -39,8 +39,9 @@
                 <div class="my-2" th:each="num : ${movieList}">
                     <div class="row">
                         <div class="col-sm-4">
+                            <a th:href="@{/movieDetail/} + ${num.id}">
                             <img th:src="@{https://image.tmdb.org/t/p/original} + ${num.poster_path}"
-                                 src="/images/img1.jpg" class="img-fluid">
+                                 src="/images/img1.jpg" class="img-fluid"></a>
                         </div>
                         <div class="col-sm">
                             <p class="m-0" th:text="${num.title}">영화제목</p>
