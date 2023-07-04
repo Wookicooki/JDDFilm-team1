@@ -20,18 +20,19 @@
 
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
+
 <main class="container my-4 p-0"><br><br>
   <div class="row my-5">
     <div class="col-sm-4 mx-auto">
       <h1 class="text-center">로그인</h1>
-      <form action="#" method="post">
+      <form action="/loginProcess" method="post">
 
         <div class="col-sm form-floating my-4">
           <div class="input-group">
             <span class="input-group-text fw-bold">ID</span>
           </div>
           <div class="col-sm form-floating">
-            <input type="text" class="form-control" id="user-id" name="userId" placeholder="ID">
+            <input type="text" class="form-control" id="user-id" name="id" placeholder="ID">
             <label for="user-id">아이디를 입력하세요</label>
           </div>
         </div>
@@ -41,7 +42,7 @@
             <span class="input-group-text fw-bold">PW</span>
           </div>
           <div class="col-sm form-floating">
-            <input type="text" class="form-control" id="user-pw" name="userPw" placeholder="비밀번호">
+            <input type="text" class="form-control" id="user-pw" name="pw" placeholder="비밀번호">
             <label for="user-pw">비밀번호를 입력하세요</label>
           </div>
         </div>

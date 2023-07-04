@@ -1,14 +1,15 @@
 package com.example.jangdocdaefilm.controller;
 
 import com.example.jangdocdaefilm.dto.DailyBoxOfficeDTO;
+import com.example.jangdocdaefilm.dto.MemberDto;
+import com.example.jangdocdaefilm.service.MemberService;
 import com.example.jangdocdaefilm.service.ParseService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
@@ -32,7 +33,7 @@ public class MainController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    @RequestMapping(value = "/main/", method = RequestMethod.GET)
     public ModelAndView getDailyBoxOfficeProcess() throws Exception {
 
         // 어제 날짜 계산
@@ -48,9 +49,70 @@ public class MainController {
         return mv;
     }
 
+//    로그인 구현
+    @Autowired
+    private MemberService memberService;
+
     @RequestMapping("/login")
     public String login() throws Exception {
         return "login/login";
+    }
+
+    @RequestMapping("/loginProcess")
+    public String doLoginProcess(@RequestParam("id") String id, @RequestParam("pw") String pw, HttpServletRequest req) throws Exception {
+        int result = memberService.isMemberInfo(id, pw);
+
+//    정보가 있으면 세션 생성 후 데이터를 세션에 저장
+        if (result == 1) {
+//      현 사용자의 사용자 정보를 DB에서 가져옴
+            MemberDto memberInfo = memberService.getMemberInfo(id);
+
+//      세션 생성
+            HttpSession session = req.getSession();
+//      세션에 현 사용자의 정보를 저장
+            session.setAttribute("id", memberInfo.getId());
+            session.setAttribute("userName", memberInfo.getUserName());
+            session.setAttribute("grade", memberInfo.getGrade());
+//            session.setMaxInactiveInterval(60); // 세션 삭제 시간 설정
+
+            return "redirect:/loginOK";
+        }
+        else { // 정보가 없으면 loginFail.do 페이지로 리다이렉트
+            System.out.println("아이디 혹은 비밀번호가 다릅니다.");
+            return "redirect:/login/login";
+        }
+    }
+
+    @GetMapping("/loginOK")
+    public ModelAndView doLoginOK(HttpServletRequest req) throws Exception {
+
+        ModelAndView mv = new ModelAndView("main");
+
+        HttpSession session = req.getSession();
+
+        MemberDto member = new MemberDto();
+        member.setId((String)session.getAttribute("id"));
+        member.setUserName((String)session.getAttribute("userName"));
+        member.setGrade((String)session.getAttribute("grade"));
+
+        mv.addObject("member", member);
+
+        return mv;
+    }
+
+    //  로그 아웃 프로세스 및 페이지
+    @GetMapping("/logout")
+    public String doLogout(HttpServletRequest req) throws Exception {
+
+        HttpSession session = req.getSession();
+
+        session.removeAttribute("id");
+        session.removeAttribute("userName");
+        session.removeAttribute("grade");
+
+        session.invalidate(); // 세션의 모든 정보 삭제
+
+        return "main";
     }
 
     @RequestMapping("/signUp")

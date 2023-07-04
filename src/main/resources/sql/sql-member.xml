@@ -6,7 +6,7 @@
 <mapper namespace="com.example.jangdocdaefilm.mapper.MemberMapper">
   <select id="isMemberInfo" resultType="int" parameterType="map">
     SELECT
-      count(user_id) AS cnt
+      count(id) AS cnt
     FROM
       member
     WHERE
