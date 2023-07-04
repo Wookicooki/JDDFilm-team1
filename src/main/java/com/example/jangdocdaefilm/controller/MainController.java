@@ -156,6 +156,11 @@ public class MainController {
         return "mypage/myPage";
     }
 
+    @RequestMapping("/myMovie")
+    public String myMovie() throws Exception {
+        return "mypage/myMovie";
+    }
+
     @RequestMapping("/movieDetail")
     public String movieDetail() throws Exception {
         return "movie/movieDetail";
