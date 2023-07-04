@@ -23,4 +23,11 @@
     WHERE
       id = #{id}
   </select>
+
+  <insert id="signUpMember" parameterType="com.example.jangdocdaefilm.dto.MemberDto">
+    INSERT INTO
+    member (id, password, user_name)
+    VALUES
+    (#{id}, #{pw} , #{userName})
+  </insert>
 </mapper>

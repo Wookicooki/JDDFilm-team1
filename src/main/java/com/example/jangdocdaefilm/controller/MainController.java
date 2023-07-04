@@ -32,22 +32,22 @@ public class MainController {
         return "index";
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/main/", method = RequestMethod.GET)
-    public ModelAndView getDailyBoxOfficeProcess() throws Exception {
-
-        // 어제 날짜 계산
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-        cal.add(cal.DATE, -1);
-        String targetDt = simpleDateFormat.format(cal.getTime());
-
-        ModelAndView mv = new ModelAndView("/main");
-        String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
-        List<DailyBoxOfficeDTO> dailyBoxOfficeDTOList = parseService.getDailyBoxOfficeList(url);
-        mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeDTOList);
-        return mv;
-    }
+//    @ResponseBody
+//    @RequestMapping(value = "/main", method = RequestMethod.GET)
+//    public ModelAndView getDailyBoxOfficeProcess() throws Exception {
+//
+//        // 어제 날짜 계산
+//        Calendar cal = Calendar.getInstance();
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+//        cal.add(cal.DATE, -1);
+//        String targetDt = simpleDateFormat.format(cal.getTime());
+//
+//        ModelAndView mv = new ModelAndView("/main");
+//        String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
+//        List<DailyBoxOfficeDTO> dailyBoxOfficeDTOList = parseService.getDailyBoxOfficeList(url);
+//        mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeDTOList);
+//        return mv;
+//    }
 
 //    로그인 구현
     @Autowired
@@ -75,7 +75,7 @@ public class MainController {
             session.setAttribute("grade", memberInfo.getGrade());
 //            session.setMaxInactiveInterval(60); // 세션 삭제 시간 설정
 
-            return "redirect:/loginOK";
+            return "redirect:/main";
         }
         else { // 정보가 없으면 loginFail.do 페이지로 리다이렉트
             System.out.println("아이디 혹은 비밀번호가 다릅니다.");
@@ -83,10 +83,20 @@ public class MainController {
         }
     }
 
-    @GetMapping("/loginOK")
+    @ResponseBody
+    @GetMapping("/main")
     public ModelAndView doLoginOK(HttpServletRequest req) throws Exception {
 
-        ModelAndView mv = new ModelAndView("main");
+        // 어제 날짜 계산
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        cal.add(cal.DATE, -1);
+        String targetDt = simpleDateFormat.format(cal.getTime());
+
+        ModelAndView mv = new ModelAndView("/main");
+        String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
+        List<DailyBoxOfficeDTO> dailyBoxOfficeDTOList = parseService.getDailyBoxOfficeList(url);
+        mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeDTOList);
 
         HttpSession session = req.getSession();
 
@@ -112,12 +122,18 @@ public class MainController {
 
         session.invalidate(); // 세션의 모든 정보 삭제
 
-        return "main";
+        return "redirect:/main";
     }
 
-    @RequestMapping("/signUp")
+    @RequestMapping(value = "/signUp", method = RequestMethod.GET)
     public String signUp() throws Exception {
         return "login/signUp";
+    }
+    // 게시물 등록(내부 프로세스)
+    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
+    public String memberSignUpProcess(MemberDto member) throws Exception{
+        memberService.signUpMember(member);
+        return "redirect:/main";
     }
 
     @RequestMapping("/category")

@@ -24,21 +24,21 @@
         <a href="/category" class="nav-link me-3">카테고리별</a>
       </div>
       <form class="d-flex ms-auto me-2" method="get" action="/searchResult">
-        <div class="input-group">
+        <div class="input-group mx-4">
           <input type="search" class="form-control" placeholder="검색어를 입력해주세요.">
           <div class="input-group-append">
             <button class="input-group-text"><i class="bi bi-search"></i></button>
           </div>
         </div>
       </form>
-      <div>
+      <div th:if="${session.id == null}">
         <a class="btn btn-outline-dark me-2" href="/login">로그인</a>
         <a class="btn btn-outline-secondary" href="/signUp">회원가입</a>
       </div>
-      <div>
-        <a class="nav-link" href="/myPage">
-          <span></span> 님</a>
-        <a class="nav-link btn btn-outline-danger" href="/logout">로그아웃</a>
+      <div th:unless="${session.id == null}">
+        <a class="text-decoration-none mx-3" href="/myPage">
+          <span th:text="${session.userName}"></span> 님</a>
+        <a class="btn btn-outline-danger" href="/logout">로그아웃</a>
       </div>
     </div>
   </nav>

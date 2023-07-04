@@ -21,4 +21,9 @@ public class MemberServiceImpl implements MemberService {
   public MemberDto getMemberInfo(String userId) throws Exception {
     return memberMapper.getMemberInfo(userId);
   }
+
+  @Override
+  public void signUpMember(MemberDto member) throws Exception {
+    memberMapper.signUpMember(member);
+  }
 }

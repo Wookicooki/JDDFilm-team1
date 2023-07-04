@@ -9,4 +9,6 @@ public interface MemberService {
 
 //  사용자 정보 가져오기
   public MemberDto getMemberInfo(String id) throws Exception;
+
+  void signUpMember(MemberDto member) throws Exception;
 }
