@@ -1,0 +1,12 @@
+package com.example.jangdocdaefilm.service;
+
+import com.example.jangdocdaefilm.dto.MemberDto;
+
+public interface MemberService {
+
+//  사용자 정보가 있는지 없는지 확인
+  public int isMemberInfo(String id, String pw) throws Exception;
+
+//  사용자 정보 가져오기
+  public MemberDto getMemberInfo(String id) throws Exception;
+}

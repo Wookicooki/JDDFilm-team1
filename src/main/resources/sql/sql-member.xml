@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.jangdocdaefilm.mapper.MemberMapper">
+  <select id="isMemberInfo" resultType="int" parameterType="map">
+    SELECT
+      count(user_id) AS cnt
+    FROM
+      member
+    WHERE
+      id = #{id}
+    AND
+      password = #{pw}
+  </select>
+
+  <select id="getMemberInfo" resultType="com.example.jangdocdaefilm.dto.MemberDto" parameterType="String">
+    SELECT
+      id, user_name, grade
+    FROM
+      member
+    WHERE
+      id = #{id}
+  </select>
+</mapper>
