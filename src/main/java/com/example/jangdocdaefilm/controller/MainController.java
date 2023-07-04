@@ -4,7 +4,6 @@ import com.example.jangdocdaefilm.dto.DailyBoxOfficeDTO;
 import com.example.jangdocdaefilm.dto.MovieDto;
 import com.example.jangdocdaefilm.dto.MoviesDto;
 import com.example.jangdocdaefilm.service.MovieService;
-import com.example.jangdocdaefilm.service.ParseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -30,9 +29,6 @@ public class MainController {
   private String tmdbServiceUrl;
 
   @Autowired
-  private ParseService parseService;
-
-  @Autowired
   private MovieService movieService;
 
   @RequestMapping("/")
@@ -43,6 +39,7 @@ public class MainController {
   @ResponseBody
   @RequestMapping(value = "/main", method = RequestMethod.GET)
   public ModelAndView getDailyBoxOfficeProcess() throws Exception {
+    /***** 일일 박스오피스 *****/
     // 어제 날짜 계산
     Calendar cal = Calendar.getInstance();
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -51,10 +48,12 @@ public class MainController {
 
     ModelAndView mv = new ModelAndView("/main");
     String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
-    List<DailyBoxOfficeDTO> dailyBoxOfficeDTOList = parseService.getDailyBoxOfficeList(url);
+    List<DailyBoxOfficeDTO> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
+    /**************************/
 
-    // 영화 상세정보
-    List<String> keywords = dailyBoxOfficeDTOList.stream()
+    /***** 일일 박스 오피스의 영화 상세 정보 *****/
+    // dailyBoxOfficeList에서 10편의 영화 제목만 가져와 리스트로 저장
+    List<String> keywords = dailyBoxOfficeList.stream()
         .map(MapData -> MapData.getMovieNm())
         .toList();
 
@@ -76,11 +75,10 @@ public class MainController {
       } else {
         movieList.add(movieLists.get(0));
       }
-
-
     }
+    /*******************************/
 
-    mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeDTOList);
+    mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeList);
     mv.addObject("movieList", movieList);
     return mv;
   }
@@ -115,11 +113,12 @@ public class MainController {
     return "mypage/myPage";
   }
 
+  // 영화 상세 정보 페이지
   @RequestMapping(value = "/movieDetail/{movieId}", method = RequestMethod.GET)
   public ModelAndView movieDetail(@PathVariable("movieId") String movieId) throws Exception {
     ModelAndView mv = new ModelAndView("movie/movieDetail");
-    MovieDto movie = movieService.getMovieInfo(tmdbServiceUrl + "movie/" + movieId + "&language=ko");
-    mv.addObject("movieInfos", movie);
+    MovieDto movie = movieService.getMovieInfo(tmdbServiceUrl + "movie/" + movieId + "?language=ko");
+    mv.addObject("movieInfo", movie);
 
     return mv;
   }

@@ -22,6 +22,10 @@
             $(this).children('.collapse').collapse('hide');
           }
       );
+      $(".accordion-button > a").on("click", () => {
+        let movieId = $(".hidden-id").val();
+        location.href = "/movieDetail/" + movieId;
+      });
     });
   </script>
 
@@ -42,13 +46,14 @@
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne" th:attr="data-target='#collapse'+${item.rank}">
                   <span th:text="${item.rank}" class="me-2"></span>
-                  <a th:href="@{/movieDetail/} + ${info.id}" class="text-decoration-none" th:text="${item.movieNm}">1. 일일 박스 오피스 1위 영화 제목</a>
+                  <a class="text-decoration-none" th:text="${item.movieNm}">1. 일일 박스 오피스 1위 영화 제목</a>
+                  <input type="hidden" class="hidden-id" th:value="${info.id}">
                   <span th:text="${info.vote_average}" class="ms-2">★★★★★</span>
                 </button>
               </h2>
               <div id="collapseOne" th:id="'collapse'+${item.rank}" class="accordion-collapse collapse"
                    data-bs-parent="#accordionDailyBO">
-                <div class="accordion-body pt-0">
+                <div class="accordion-body">
                   <div class="row">
                     <div class="col-sm-3">
                       <img th:src="@{https://image.tmdb.org/t/p/original} + ${info.poster_path}" src="/images/img1.jpg"
