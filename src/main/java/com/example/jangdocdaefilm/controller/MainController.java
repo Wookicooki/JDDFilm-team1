@@ -1,94 +1,136 @@
 package com.example.jangdocdaefilm.controller;
 
 import com.example.jangdocdaefilm.dto.DailyBoxOfficeDTO;
+import com.example.jangdocdaefilm.dto.MovieDto;
+import com.example.jangdocdaefilm.dto.MoviesDto;
+import com.example.jangdocdaefilm.service.MovieService;
 import com.example.jangdocdaefilm.service.ParseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
 public class MainController {
-    // 영화 진흥원 일일 박스 오피스 api주소, 키(application.properties에서 가져옴)
-    @Value("${jang.kobis.json.DailyBoxOfficeResultUrl}")
-    private String serviceUrl;
-    @Value("${jang.kobis.json.key}")
-    private String serviceKey;
+  // 영화 진흥원 일일 박스 오피스 api주소, 키(application.properties에서 가져옴)
+  @Value("${jang.kobis.json.DailyBoxOfficeResultUrl}")
+  private String serviceUrl;
+  @Value("${jang.kobis.json.key}")
+  private String serviceKey;
 
-    @Autowired
-    private ParseService parseService;
+  @Value("${jangDocDae.tmdb.json.Url}")
+  private String tmdbServiceUrl;
 
-    @RequestMapping("/")
-    public String index() throws Exception {
-        return "index";
+  @Autowired
+  private ParseService parseService;
+
+  @Autowired
+  private MovieService movieService;
+
+  @RequestMapping("/")
+  public String index() throws Exception {
+    return "index";
+  }
+
+  @ResponseBody
+  @RequestMapping(value = "/main", method = RequestMethod.GET)
+  public ModelAndView getDailyBoxOfficeProcess() throws Exception {
+    // 어제 날짜 계산
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+    cal.add(cal.DATE, -1);
+    String targetDt = simpleDateFormat.format(cal.getTime());
+
+    ModelAndView mv = new ModelAndView("/main");
+    String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
+    List<DailyBoxOfficeDTO> dailyBoxOfficeDTOList = parseService.getDailyBoxOfficeList(url);
+
+    // 영화 상세정보
+    List<String> keywords = dailyBoxOfficeDTOList.stream()
+        .map(MapData -> MapData.getMovieNm())
+        .toList();
+
+    Iterator<String> it = keywords.iterator();
+    List<MovieDto> movieList = new ArrayList<>();
+    while (it.hasNext()) {
+      String query = it.next();
+      String queryEncode = URLEncoder.encode(query, "UTF-8");
+      MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1");
+
+      List<MovieDto> movieLists = movies.getResults();
+      int total = Integer.parseInt(movies.getTotal_results());
+      if (total != 1) {
+        for (int i = 0; i < movieLists.size(); i++) {
+          if (movieLists.get(i).getTitle().equals(query)){
+            movieList.add(movieLists.get(i));
+          }
+        }
+      } else {
+        movieList.add(movieLists.get(0));
+      }
+
+
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public ModelAndView getDailyBoxOfficeProcess() throws Exception {
+    mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeDTOList);
+    mv.addObject("movieList", movieList);
+    return mv;
+  }
 
-        // 어제 날짜 계산
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-        cal.add(cal.DATE, -1);
-        String targetDt = simpleDateFormat.format(cal.getTime());
+  @RequestMapping("/login")
+  public String login() throws Exception {
+    return "login/login";
+  }
 
-        ModelAndView mv = new ModelAndView("/main");
-        String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
-        List<DailyBoxOfficeDTO> dailyBoxOfficeDTOList = parseService.getDailyBoxOfficeList(url);
-        mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeDTOList);
-        return mv;
-    }
+  @RequestMapping("/signUp")
+  public String signUp() throws Exception {
+    return "login/signUp";
+  }
 
-    @RequestMapping("/login")
-    public String login() throws Exception {
-        return "login/login";
-    }
+  @RequestMapping("/category")
+  public String category() throws Exception {
+    return "movie/category";
+  }
 
-    @RequestMapping("/signUp")
-    public String signUp() throws Exception {
-        return "login/signUp";
-    }
+  @RequestMapping("/recommend")
+  public String recommend() throws Exception {
+    return "movie/recommend";
+  }
 
-    @RequestMapping("/category")
-    public String category() throws Exception {
-        return "movie/category";
-    }
+  @RequestMapping("/recommendSet")
+  public String recommendSet() throws Exception {
+    return "movie/recommendSet";
+  }
 
-    @RequestMapping("/recommend")
-    public String recommend() throws Exception {
-        return "movie/recommend";
-    }
+  @RequestMapping("/myPage")
+  public String myPage() throws Exception {
+    return "mypage/myPage";
+  }
 
-    @RequestMapping("/recommendSet")
-    public String recommendSet() throws Exception {
-        return "movie/recommendSet";
-    }
+  @RequestMapping(value = "/movieDetail/{movieId}", method = RequestMethod.GET)
+  public ModelAndView movieDetail(@PathVariable("movieId") String movieId) throws Exception {
+    ModelAndView mv = new ModelAndView("movie/movieDetail");
+    MovieDto movie = movieService.getMovieInfo(tmdbServiceUrl + "movie/" + movieId + "&language=ko");
+    mv.addObject("movieInfos", movie);
 
-    @RequestMapping("/myPage")
-    public String myPage() throws Exception {
-        return "mypage/myPage";
-    }
+    return mv;
+  }
 
-    @RequestMapping("/movieDetail")
-    public String movieDetail() throws Exception {
-        return "movie/movieDetail";
-    }
+  @RequestMapping("/movieReview")
+  public String movieReview() throws Exception {
+    return "movie/movieReview";
+  }
 
-    @RequestMapping("/movieReview")
-    public String movieReview() throws Exception {
-        return "movie/movieReview";
-    }
-
-    @RequestMapping("searchResult")
-    public String searchResult() throws Exception {
-        return "movie/searchResult";
-    }
+  @RequestMapping("searchResult")
+  public String searchResult() throws Exception {
+    return "movie/searchResult";
+  }
 }

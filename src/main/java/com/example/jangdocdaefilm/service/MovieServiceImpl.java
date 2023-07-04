@@ -14,7 +14,6 @@ import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService{
-
     @Value("${jangDocDae.tmdb.json.Authorization}")
     private String serviceAuthor;
 
@@ -33,5 +32,20 @@ public class MovieServiceImpl implements MovieService{
 
 
         return movies;
+    }
+
+    @Override
+    public MovieDto getMovieInfo(String url) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("accept", "application/json")
+            .header("Authorization", serviceAuthor)
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        Gson gson = new Gson();
+        MovieDto movie = gson.fromJson(response.body(), MovieDto.class);
+        return movie;
     }
 }
