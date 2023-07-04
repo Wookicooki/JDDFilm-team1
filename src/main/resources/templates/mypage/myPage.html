@@ -11,6 +11,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 
   <style>
+    /* 프로필 이미지 스타일 */
       .box {
           width: 150px;
           height: 150px;
@@ -80,22 +81,26 @@
   <div class="row">
     <div class="col-sm-2 mt-5 pt-5">
       <div class="mt-5">
+        <!--프로필 이미지-->
         <div class="box mx-auto" style="background: #BDBDBD;">
           <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
         </div>
         <div>
-          <h6 class="my-3 px-2 text-center"><a href="#" class="text-decoration-none text-secondary fw-bold" th:text="${session.userName}"></a></h6>
+          <h6 class="my-3 px-2 text-center text-secondary fw-bold" th:text="${session.userName}"></a></h6>
         </div>
 
+        <!--       내가 쓴 글/댓글 탭 바-->
         <ul class="nav flex-column text-center" id="tabs" role="tablist">
           <li class="nav-item">
             <a class="nav-link active" href="#my-page-board" data-bs-toggle="tab">내 커뮤니티 글</a>
           </li>
+
+          <!--       나만의 영화공간 탭 바-->
           <li class="nav-item">
             <a class="nav-link" href="#my-page-movie" data-bs-toggle="tab">나만의 영화공간</a>
           </li>
           <li class="nav-item">
-            <!--  모달 창 구현 - 완료   -->
+            <!--  정보수정 모달 창  -->
             <button type="button" class="btn btn-light text-primary"
                     data-bs-toggle="modal" data-bs-target="#reviewModal"
                     style="background: none; outline:none; box-shadow:none;">내 정보 수정</button>
@@ -109,6 +114,12 @@
                 <div class="modal-body">
                   <form method="post">
                       <div class="col-sm form-floating">
+                        <div class="box mx-auto" style="background: #BDBDBD;">
+                          <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
+                        </div>
+                        <div>
+                          <h6 class="my-3 px-2 text-center text-secondary fw-bold">유저1</h6>
+                        </div>
                         <div class="input-group">
                           <span class="input-group-text fw-bold">PW 변경</span>
                         </div>
@@ -145,7 +156,7 @@
               </div>
             </div>
           </div>
-<!--          문의하기 탭 바 구현 - 완료-->
+<!--          문의하기 탭 바-->
           <li class="nav-item">
             <a class="nav-link" href="#my-page-qna" data-bs-toggle="tab">문의하기</a>
           </li>
