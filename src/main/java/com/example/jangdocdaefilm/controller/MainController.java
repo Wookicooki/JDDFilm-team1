@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import static java.lang.System.out;
+
 @Controller
 public class MainController {
     // 영화 진흥원 일일 박스 오피스 api주소, 키(application.properties에서 가져옴)
@@ -78,8 +80,8 @@ public class MainController {
             return "redirect:/main";
         }
         else { // 정보가 없으면 loginFail.do 페이지로 리다이렉트
-            System.out.println("아이디 혹은 비밀번호가 다릅니다.");
-            return "redirect:/login/login";
+            out.println("<script>alert('아이디 혹은 비밀번호가 다릅니다.'); return;</script>");
+            return "redirect:/login";
         }
     }
 

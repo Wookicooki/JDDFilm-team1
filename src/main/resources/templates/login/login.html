@@ -14,6 +14,39 @@
   </style>
 
   <script>
+    $(document).ready(function () {
+      $("#login").on("click", function () {
+        let idCheck = false;
+        let pwCheck = false;
+
+        const id = $("#user-id").val();
+        const pw = $("#user-pw").val();
+
+        if (id == null || id == "") {
+          alert("아이디를 입력하세요");
+          return;
+        }
+        else {
+          idCheck = true;
+        }
+
+        if (pw == null || pw == "") {
+          alert("비밀번호를 입력하세요");
+          return;
+        }
+        else {
+          pwCheck = true;
+        }
+
+        if (idCheck && pwCheck) {
+          const form = $("#form")[0];
+          form.submit();
+        }
+        else {
+          alert("회원가입 시 오류가 있습니다.");
+        }
+      })
+    })
 
   </script>
 </head>
@@ -25,7 +58,7 @@
   <div class="row my-5">
     <div class="col-sm-4 mx-auto">
       <h1 class="text-center">로그인</h1>
-      <form action="/loginProcess" method="post">
+      <form action="/loginProcess" method="post" id="form">
 
         <div class="col-sm form-floating my-4">
           <div class="input-group">
@@ -48,8 +81,8 @@
         </div>
 
         <div class="my-4 d-grid gap-3">
-          <button type="submit" class=" fw-bold btn p-2 text-white " style="background-color: #131313;">로그인</button>
-          <button type="button" class=" fw-bold btn p-2 d-grid gap-3 text-white" style="background-color: #838886">회원가입하기</button>
+          <button type="button" class="fw-bold btn p-2 btn-outline-dark" id="login">로그인</button>
+          <a href="/signUp" class="fw-bold btn p-2 d-grid gap-3 btn-outline-secondary">회원가입하기</a>
         </div>
       </form>
     </div>
