@@ -5,6 +5,7 @@ import com.example.jangdocdaefilm.service.ParseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -90,5 +91,81 @@ public class MainController {
     @RequestMapping("searchResult")
     public String searchResult() throws Exception {
         return "movie/searchResult";
+    }
+
+    @RequestMapping(value = "/disList", method = RequestMethod.GET)
+    public ModelAndView disList() throws Exception {
+        ModelAndView mv = new ModelAndView("board/dis/disList");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/disDetail", method = RequestMethod.GET)
+    public ModelAndView disDetail() throws Exception {
+        ModelAndView mv = new ModelAndView("board/dis/disDetail");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/disWrite", method = RequestMethod.GET)
+    public String disInsertView() throws Exception {
+        return "board/dis/disWrite";
+    }
+
+    @RequestMapping(value = "/freeList", method = RequestMethod.GET)
+    public ModelAndView freeList() throws Exception {
+        ModelAndView mv = new ModelAndView("board/free/freeList");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/freeDetail", method = RequestMethod.GET)
+    public ModelAndView freeDetail() throws Exception {
+        ModelAndView mv = new ModelAndView("board/free/freeDetail");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/freeWrite", method = RequestMethod.GET)
+    public String freeInsertView() throws Exception {
+        return "board/free/freeWrite";
+    }
+
+    @RequestMapping(value = "/nowList", method = RequestMethod.GET)
+    public ModelAndView nowList() throws Exception {
+        ModelAndView mv = new ModelAndView("board/now/nowList");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/nowDetail", method = RequestMethod.GET)
+    public ModelAndView nowDetail() throws Exception {
+        ModelAndView mv = new ModelAndView("board/now/nowDetail");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/nowWrite", method = RequestMethod.GET)
+    public String nowInsertView() throws Exception {
+        return "board/now/nowWrite";
+    }
+
+    @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
+    public ModelAndView qnaList() throws Exception {
+        ModelAndView mv = new ModelAndView("board/qna/qnaList");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/qnaDetail", method = RequestMethod.GET)
+    public ModelAndView qnaDetail() throws Exception {
+        ModelAndView mv = new ModelAndView("board/qna/qnaDetail");
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/qnaWrite", method = RequestMethod.GET)
+    public String qnaInsertView() throws Exception {
+        return "board/qna/qnaWrite";
     }
 }
