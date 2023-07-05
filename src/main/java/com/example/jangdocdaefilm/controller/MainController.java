@@ -78,7 +78,7 @@ public class MainController {
     }
     /*******************************/
 
-    mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeList);
+    mv.addObject("dailyBoxOfficeList", dailyBoxOfficeList);
     mv.addObject("movieList", movieList);
     return mv;
   }
