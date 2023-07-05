@@ -1,12 +1,9 @@
 package com.example.jangdocdaefilm.controller;
 
-import com.example.jangdocdaefilm.dto.DailyBoxOfficeDTO;
+import com.example.jangdocdaefilm.dto.*;
 
-import com.example.jangdocdaefilm.dto.MovieDto;
-import com.example.jangdocdaefilm.dto.MoviesDto;
 import com.example.jangdocdaefilm.service.MovieService;
 
-import com.example.jangdocdaefilm.dto.MemberDto;
 import com.example.jangdocdaefilm.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -14,10 +11,12 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.net.URLEncoder;
+import java.net.http.HttpRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +56,7 @@ public class MainController {
 
     ModelAndView mv = new ModelAndView("/main");
     String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
-    List<DailyBoxOfficeDTO> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
+    List<DailyBoxOfficeDto> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
     /**************************/
 
     /***** 일일 박스 오피스의 영화 상세 정보 *****/
@@ -85,7 +84,7 @@ public class MainController {
         movieList.add(movieLists.get(0));
       }
     }
-    mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeList);
+    mv.addObject("dailyBoxOfficeList", dailyBoxOfficeList);
     mv.addObject("movieList", movieList);
 
     HttpSession session = req.getSession();
@@ -139,7 +138,7 @@ public class MainController {
     return "movie/recommend";
   }
 
-  //  로그 아웃 프로세스 및 페이지
+  //  로그아웃 프로세스 및 페이지
   @GetMapping("/logout")
   public String doLogout(HttpServletRequest req) throws Exception {
 
@@ -191,9 +190,48 @@ public class MainController {
   // 영화 상세 정보 페이지
   @RequestMapping(value = "/movieDetail/{movieId}", method = RequestMethod.GET)
   public ModelAndView movieDetail(@PathVariable("movieId") String movieId) throws Exception {
+    // 영화 정보 가져오기
     ModelAndView mv = new ModelAndView("movie/movieDetail");
-    MovieDto movie = movieService.getMovieInfo(tmdbServiceUrl + "movie/" + movieId + "?language=ko");
+    String appendUrl = "?append_to_response=credits&language=ko";
+    MovieDetailDto movie = movieService.getMovieDetail(tmdbServiceUrl + "movie/" + movieId + appendUrl);
+    List<GenreDto> genre = movie.getGenres();
+
     mv.addObject("movieInfo", movie);
+    mv.addObject("genre", genre);
+
+    // 리뷰 조회
+    List<ReviewDto> reviewList = memberService.getMovieReviewList(movieId);
+    mv.addObject("reviewList", reviewList);
+    return mv;
+  }
+
+  // 영화 리뷰 작성 // 좋아요 미구현
+  @RequestMapping(value = "/insertMovieReview", method = RequestMethod.POST)
+  public String insertMovieReview(ReviewDto review) throws Exception {
+    memberService.insertMovieReview(review);
+    String movieId = review.getMovieId();
+    return "redirect:/movieDetail/" + movieId;
+  }
+
+  // 해당 영화 모든 리뷰 조회
+  @RequestMapping(value = "/movieReview/{movieId}", method = RequestMethod.GET)
+  public ModelAndView movieReview(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
+    ModelAndView mv = new ModelAndView("/movie/movieReview");
+    List<ReviewDto> reviewList = memberService.getMovieReviewList(movieId);
+    mv.addObject("reviewList", reviewList);
+
+    // 내가 쓴 영화 리뷰 조회
+    HttpSession session = req.getSession();
+    // String userId = session.getAttribute("id").toString();
+
+    String userId = null;
+    Object storedUserId = session.getAttribute("id");
+    if (storedUserId instanceof String) {
+      userId = (String) storedUserId;
+    }
+
+    ReviewDto myReview = memberService.getMyMovieReview(movieId, userId);
+    mv.addObject("myReview", myReview);
 
     return mv;
   }
@@ -202,16 +240,6 @@ public class MainController {
   @RequestMapping("/myMovie")
   public String myMovie() throws Exception {
     return "mypage/myMovie";
-  }
-
-  @RequestMapping("/movieDetail")
-  public String movieDetail() throws Exception {
-    return "movie/movieDetail";
-  }
-
-  @RequestMapping("/movieReview")
-  public String movieReview() throws Exception {
-    return "movie/movieReview";
   }
 
   @RequestMapping("searchResult")

@@ -1,7 +1,9 @@
 package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.dto.MemberDto;
-import org.apache.ibatis.annotations.Param;
+import com.example.jangdocdaefilm.dto.ReviewDto;
+
+import java.util.List;
 
 public interface MemberService {
 
@@ -14,4 +16,13 @@ public interface MemberService {
   void signUpMember(MemberDto member) throws Exception;
 
   public int confirmId(String id) throws Exception;
+
+  // 리뷰 등록
+  void insertMovieReview(ReviewDto review) throws Exception;
+
+  // 리뷰 조회
+  List<ReviewDto> getMovieReviewList(String movieId) throws Exception;
+
+  // 내가 쓴 리뷰 조회
+  ReviewDto getMyMovieReview(String movieId, String userId) throws Exception;
 }

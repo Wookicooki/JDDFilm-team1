@@ -2,9 +2,12 @@ package com.example.jangdocdaefilm.service;
 
 
 import com.example.jangdocdaefilm.dto.MemberDto;
+import com.example.jangdocdaefilm.dto.ReviewDto;
 import com.example.jangdocdaefilm.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -30,6 +33,22 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public int confirmId(String id) throws Exception {
     return memberMapper.confirmId(id);
+  }
+
+  // 리뷰 등록
+  @Override
+  public void insertMovieReview(ReviewDto review) throws Exception {
+    memberMapper.insertMovieReview(review);
+  }
+
+  @Override
+  public List<ReviewDto> getMovieReviewList(String movieId) throws Exception {
+    return memberMapper.getMovieReviewList(movieId);
+  }
+
+  @Override
+  public ReviewDto getMyMovieReview(String movieId, String userId) throws Exception {
+    return memberMapper.getMyMovieReview(movieId, userId);
   }
 
 }

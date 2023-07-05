@@ -4,8 +4,8 @@ import lombok.Data;
 
 import java.util.List;
 @Data
-public class BoxOfficeResultDTO {
+public class BoxOfficeResultDto {
   private String boxOfficeType;
   private String showRange;
-  private List<DailyBoxOfficeDTO> dailyBoxOfficeList;
+  private List<DailyBoxOfficeDto> dailyBoxOfficeList;
 }

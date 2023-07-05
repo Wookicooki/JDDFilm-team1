@@ -34,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public MovieDto getMovieInfo(String url) throws Exception {
+    public MovieDetailDto getMovieDetail(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("accept", "application/json")
@@ -44,12 +44,13 @@ public class MovieServiceImpl implements MovieService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         Gson gson = new Gson();
-        MovieDto movie = gson.fromJson(response.body(), MovieDto.class);
-        return movie;
+        MovieDetailDto movieDetail = gson.fromJson(response.body(), MovieDetailDto.class);
+
+        return movieDetail;
     }
 
     @Override
-    public List<DailyBoxOfficeDTO> getDailyBoxOfficeList(String url) throws Exception {
+    public List<DailyBoxOfficeDto> getDailyBoxOfficeList(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
@@ -58,8 +59,8 @@ public class MovieServiceImpl implements MovieService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         Gson gson = new Gson();
-        BoxOfficeDTO boxOffice = gson.fromJson(response.body(), BoxOfficeDTO.class);
-        List<DailyBoxOfficeDTO> boxOfficeList = boxOffice.getBoxOfficeResult().getDailyBoxOfficeList();
+        BoxOfficeDto boxOffice = gson.fromJson(response.body(), BoxOfficeDto.class);
+        List<DailyBoxOfficeDto> boxOfficeList = boxOffice.getBoxOfficeResult().getDailyBoxOfficeList();
 
         return boxOfficeList;
     }

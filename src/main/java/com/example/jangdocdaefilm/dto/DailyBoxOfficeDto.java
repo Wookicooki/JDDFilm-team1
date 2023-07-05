@@ -2,7 +2,7 @@ package com.example.jangdocdaefilm.dto;
 
 import lombok.Data;
 @Data
-public class DailyBoxOfficeDTO {
+public class DailyBoxOfficeDto {
   private String rnum;
   private String rank;
   private String rankInten;
