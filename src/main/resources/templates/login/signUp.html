@@ -1,80 +1,152 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>장독대 필름 회원가입</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-  <script src="/js/header.js"></script>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>장독대 필름 회원가입</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="/js/header.js"></script>
+    <style>
 
-  </style>
+    </style>
 
-  <script>
+    <script>
+        $(document).ready(function () {
+            let confirmId = false;
+            $("#confirm").on("click", function () {
 
-  </script>
+                const id = $("#user-id").val();
+                $.ajax({
+                    type: "get",
+                    url: "/confirm",
+                    data: {id: id},
+                    success: function (data) {
+                        if (data === 1) {
+                            $("#idCheckMessage").text("이미 사용중인 ID 입니다.");
+                        } else {
+                            $("#idCheckMessage").text("사용 가능한 ID 입니다.");
+                            $("#confirm").attr("type", "submit");
+                            confirmId = true;
+                        }
+                    },
+                  error: function () {
+                    alert("통신 실패");
+                  }
+                })
+            })
+
+            $("#signUp").on("click", function () {
+                let idCheck = false;
+                let pwCheck = false;
+                let nameCheck = false;
+                let same = false;
+
+                const id = $("#user-id").val();
+                const pw = $("#user-pw").val();
+                const pwck = $("#user-pw-check").val();
+                const userName = $("#user-name").val();
+
+                if (id == null || id == "") {
+                    alert("아이디를 입력하세요");
+                    return;
+                } else {
+                    idCheck = true;
+                }
+
+                if (pw == null || pw == "") {
+                    alert("비밀번호를 입력하세요");
+                    return;
+                } else {
+                    pwCheck = true;
+                }
+
+                if (userName == null || userName == "") {
+                    alert("닉네임을 입력하세요");
+                    return;
+                } else {
+                    nameCheck = true;
+                }
+
+                if (pw != pwck) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                } else {
+                    same = true;
+                }
+
+                if (idCheck && pwCheck && nameCheck && same && confirmId) {
+                    const form = $("#form")[0];
+                    form.submit();
+                } else {
+                    alert("회원가입 시 오류가 있습니다.");
+                }
+            })
+        })
+    </script>
 </head>
 
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
 
 <main class="container my-4 p-0"><br><br>
-  <div class="row">
-    <div class="col-sm-4 mx-auto">
-      <div class="text-center">
-        <h1>회원가입</h1>
-        <h6>아래의 내용을 입력해주세요.</h6>
-      </div>
-      <form action="#" method="post">
-        <div class="col-sm form-floating my-4">
-          <div class="input-group">
-            <span class="input-group-text fw-bold">ID</span>
-          </div>
-          <div class="col-sm form-floating">
-            <input type="text" class="form-control" id="user-id" name="userId" placeholder="ID">
-            <label for="user-id">가입할 새 ID를 입력</label>
-          </div>
-        </div>
-
-        <div class="col-sm form-floating">
-          <div class="input-group">
-            <span class="input-group-text fw-bold">PW</span>
-          </div>
-          <div class="col-sm form-floating">
-            <input type="text" class="form-control" id="user-pw" name="userPw" placeholder="비밀번호">
-            <label for="user-pw">비밀번호를 입력(8~16자리의 영문,숫자)</label>
-          </div>
-        </div>
-        <div class="form-floating">
-          <input type="text" class="form-control" id="user-pw-check" name="userPw" placeholder="비밀번호 확인">
-          <label for="user-pw-check">비밀번호를 한번 더 입력</label>
-        </div>
-
-        <div class="col-sm form-floating  my-4">
-          <div class="input-group">
-            <span class="input-group-text fw-bold">닉네임</span>
-          </div>
-          <div class="col-sm form-floating">
-            <div class="form-floating">
-              <input type="text" class="form-control" id="user-name" name="userPw" placeholder="닉네임">
-              <label for="user-name">사용할 닉네임을 입력</label>
+    <div class="row">
+        <div class="col-sm-4 mx-auto">
+            <div class="text-center">
+                <h1>회원가입</h1>
+                <h6>아래의 내용을 입력해주세요.</h6>
             </div>
-          </div>
-        </div>
+            <form action="/signUp" method="post" id="form">
+                <div class="col-sm form-floating my-4">
+                    <div class="input-group">
+                        <span class="input-group-text fw-bold">ID</span>
+                    </div>
+                    <div class="col-sm form-floating">
+                        <input type="text" class="form-control" id="user-id" name="id" placeholder="ID">
+                        <label for="user-id">가입할 새 ID를 입력</label>
+                        <button type="button" class="btn btn-outline-success mt-2" id="confirm">중복확인</button>
+                        <span id="idCheckMessage"></span>
+                    </div>
+                </div>
 
-        <div class="d-grid gap-3">
-          <button type="button" class=" fw-bold btn p-2 d-grid gap-3 text-white" style="background-color: #838886">
-            회원가입하기
-          </button>
+                <div class="col-sm form-floating">
+                    <div class="input-group">
+                        <span class="input-group-text fw-bold">PW</span>
+                    </div>
+                    <div class="col-sm form-floating">
+                        <input type="text" class="form-control" id="user-pw" name="pw" placeholder="비밀번호">
+                        <label for="user-pw">비밀번호 입력(8~16자리의 영문,숫자)</label>
+                    </div>
+                </div>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="user-pw-check" name="pw-check" placeholder="비밀번호 확인">
+                    <label for="user-pw-check">비밀번호 확인</label>
+                </div>
+
+                <div class="col-sm form-floating  my-4">
+                    <div class="input-group">
+                        <span class="input-group-text fw-bold">닉네임</span>
+                    </div>
+                    <div class="col-sm form-floating">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="user-name" name="userName" placeholder="닉네임">
+                            <label for="user-name">사용할 닉네임을 입력</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <button type="button" id="signUp" class=" fw-bold btn p-2 d-grid gap-3 btn-outline-secondary">
+                        회원가입하기
+                    </button>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
-  </div>
+    </div>
 </main>
 <footer th:replace="~{layout/footer :: footer-basic}"></footer>
 </body>
