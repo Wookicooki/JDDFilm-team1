@@ -1,12 +1,10 @@
 package com.example.jangdocdaefilm.controller;
 
-import com.example.jangdocdaefilm.dto.DailyBoxOfficeDTO;
+import com.example.jangdocdaefilm.dto.*;
 
-import com.example.jangdocdaefilm.dto.MovieDto;
-import com.example.jangdocdaefilm.dto.MoviesDto;
+import com.example.jangdocdaefilm.service.FreeService;
 import com.example.jangdocdaefilm.service.MovieService;
 
-import com.example.jangdocdaefilm.dto.MemberDto;
 import com.example.jangdocdaefilm.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -219,6 +217,7 @@ public class MainController {
         return "movie/searchResult";
     }
 
+//    할인정보 게시판
     @RequestMapping(value = "/disList", method = RequestMethod.GET)
     public ModelAndView disList() throws Exception {
         ModelAndView mv = new ModelAndView("board/dis/disList");
@@ -238,25 +237,62 @@ public class MainController {
         return "board/dis/disWrite";
     }
 
+//    자유게시판
+    @Autowired
+    private FreeService freeService;
+
     @RequestMapping(value = "/freeList", method = RequestMethod.GET)
     public ModelAndView freeList() throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeList");
 
+        List<FreeDto> freeList = freeService.selectFreeList();
+        mv.addObject("freeList", freeList);
         return mv;
     }
 
-    @RequestMapping(value = "/freeDetail", method = RequestMethod.GET)
-    public ModelAndView freeDetail() throws Exception {
+    @RequestMapping(value = "/free/{idx}", method = RequestMethod.GET)
+    public ModelAndView freeDetail(@PathVariable("idx") int idx) throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeDetail");
+
+        FreeDto free = freeService.selectFreeDetail(idx);
+        mv.addObject("free", free);
 
         return mv;
     }
 
     @RequestMapping(value = "/freeWrite", method = RequestMethod.GET)
-    public String freeInsertView() throws Exception {
+    public String freeWriteView() throws Exception {
         return "board/free/freeWrite";
     }
 
+    @RequestMapping(value = "/freeWrite", method = RequestMethod.POST)
+    public String freeWriteProcess(FreeDto free) throws Exception{
+        freeService.writeFree(free);
+        return "redirect:/freeList";
+    }
+
+    @RequestMapping(value = "/freeWrite", method = RequestMethod.PUT)
+    public String freeUpdate(FreeDto free) throws Exception{
+        freeService.updateFree(free);
+        return "redirect:/freeList";
+    }
+
+    // 게시물 삭제
+    @RequestMapping(value = "/free/{idx}", method = RequestMethod.DELETE)
+    public String freeDelete(@PathVariable("idx") int idx) throws Exception{
+        freeService.deleteFree(idx);
+        return "redirect:/freeList";
+    }
+
+    // 게시물 일괄 삭제
+    @ResponseBody
+    @RequestMapping(value = "/freeList", method = RequestMethod.POST)
+    public String freeMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
+        freeService.freeMultiDelete(idx);
+        return "redirect:/freeList";
+    }
+
+    //    현재상영작 수다
     @RequestMapping(value = "/nowList", method = RequestMethod.GET)
     public ModelAndView nowList() throws Exception {
         ModelAndView mv = new ModelAndView("board/now/nowList");
@@ -276,6 +312,7 @@ public class MainController {
         return "board/now/nowWrite";
     }
 
+//    문의글 게시판
     @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
     public ModelAndView qnaList() throws Exception {
         ModelAndView mv = new ModelAndView("board/qna/qnaList");

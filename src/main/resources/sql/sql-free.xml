@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  자유게시판-->
+<mapper namespace="com.example.jangdocdaefilm.mapper.FreeMapper">
+  <select id="selectFreeList" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+    SELECT
+    idx, title, id, create_dt, hit_cnt
+    FROM
+    free
+    WHERE
+    delete_yn = 'N'
+    ORDER BY
+    idx DESC;
+  </select>
+
+  <select id="selectFreeDetail" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
+    SELECT
+    idx, title, content, image, create_dt, update_dt, id, hit_cnt, delete_yn
+    FROM
+    free
+    WHERE
+    idx = #{idx}
+    AND
+    delete_yn = 'N'
+  </select>
+
+  <insert id="insertFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto">
+    INSERT INTO
+    free (title, content, id, create_dt)
+    VALUES
+    (#{title}, #{content} , #{createId} ,now())
+  </insert>
+
+  <update id="updateFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto">
+    UPDATE
+    free
+    SET
+    title= #{title} , content= #{content}, id= #{Id}, update_dt= now()
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <update id="deleteFree" parameterType="int">
+    UPDATE
+    free
+    SET
+    delete_yn = 'Y'
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <update id="updateFreeHitCount" parameterType="int">
+    UPDATE
+    free
+    SET
+    hit_cnt = hit_cnt + 1
+    WHERE
+    idx = #{idx}
+  </update>
+</mapper>
