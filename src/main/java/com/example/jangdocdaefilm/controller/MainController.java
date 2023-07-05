@@ -134,16 +134,10 @@ public class MainController {
         }
     }
 
-    @RequestMapping("/category")
-    public String category() throws Exception {
-        return "movie/category";
-    }
-
     @RequestMapping("/recommend")
     public String recommend() throws Exception {
         return "movie/recommend";
     }
-
 
     //  로그 아웃 프로세스 및 페이지
     @GetMapping("/logout")
@@ -177,6 +171,10 @@ public class MainController {
     public String memberSignUpProcess(MemberDto member) throws Exception {
         memberService.signUpMember(member);
         return "redirect:/main";
+    }
+    @RequestMapping("/recommendDetail")
+    public String recommendDetail() throws Exception {
+        return "movie/recommendDetail";
     }
 
     @RequestMapping("/recommendSet")

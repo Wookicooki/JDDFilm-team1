@@ -11,6 +11,41 @@
             integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
             crossorigin="anonymous"></script>
     <script src="/js/header.js"></script>
+
+    <script>
+        $(document).ready(() => {
+            $('#btn-cate').on('click', () => {
+                const year = $('#input-year').val() != "" ? $('#input-year').val() : null;
+                const genre = $('#genre option:selected').val() != "" ? $('#genre option:selected').val() : null;
+
+                const data = {year: year, genre: genre};
+                $.ajax({
+                    url: "/movie/category/search",
+                    type: "GET",
+                    data: data,
+                    dataType: "json",
+                    success: (data) => {
+                        const div = $('#div-result');
+                        div.empty();
+
+                        let movies = "";
+                        for (let i = 0; i < data.length; i++) {
+                            movies += "<div class='d-flex justify-content-center'>";
+                            movies += "<div style='width: 180px;'>";
+                            movies += "<img src='https://image.tmdb.org/t/p/original" + data[i].poster_path + "' class='w-100'>";
+                            movies += "<div><h4 class='mt-1 mb-0'>" + data[i].title + "</h4></div> </div></div>";
+                        }
+
+                        div.append(movies);
+                    },
+                    error: (err) => {
+                        alert("검색 중 오류가 발생했습니다.");
+                    }
+                })
+            });
+        });
+    </script>
+
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
@@ -22,43 +57,41 @@
                 <div class="col-sm"><h1>카테고리별 검색</h1></div>
                 <div class="col-sm row">
                     <div class="col-sm">
-                        <select id="year" class="form-control me-3">
-                            <option value="" selected="selected">년도선택</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                        </select>
+                        <input type="text" class="form-control" placeholder="년도를 입력하세요." id="input-year">
                     </div>
                     <div class="col-sm">
                         <select id="genre" class="form-control me-3">
                             <option value="" selected="selected">장르선택</option>
-                            <option value="코미디">코미디</option>
-                            <option value="공포">공포</option>
-                            <option value="액션">액션</option>
-                            <option value="sf">sf</option>
+                            <option value="35">코미디</option>
+                            <option value="27">공포</option>
+                            <option value="28">액션</option>
+                            <option value="16">애니메이션</option>
+                            <option value="12">모험</option>
+                            <option value="80">범죄</option>
+                            <option value="99">다큐멘터리</option>
+                            <option value="18">드라마</option>
+                            <option value="10751">가족</option>
+                            <option value="14">판타지</option>
+                            <option value="36">역사</option>
+                            <option value="10402">음악</option>
+                            <option value="9648">미스터리</option>
+                            <option value="10749">로맨스</option>
+                            <option value="878">SF</option>
+                            <option value="10770">TV 영화</option>
+                            <option value="53">스릴러</option>
+                            <option value="10752">전쟁</option>
+                            <option value="37">서부</option>
                         </select>
                     </div>
                 </div>
+                <button type="button" class="btn btn-primary" id="btn-cate">검색</button>
             </div>
+
             <div class="my-5">
-                <div class="row row-cols-5">
-                    <div th:each="num: ${#numbers.sequence(1, 18)}" class="d-flex justify-content-center">
-                        <div style="width: 180px;">
-                            <img th:src="@{/images/poster.jpeg}" src="" alt="" class="w-100">
-                            <div>
-                                <h4 class="mt-1 mb-0">
-                                    영화 제목
-                                </h4>
-                                <p class="mb-2">감독</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row row-cols-5" id="div-result">
+
                 </div>
 
-                <!--        페이징-->
                 <div class="d-flex justify-content-center">
                     <ul class="pagination">
                         <li class="page-item">
@@ -77,6 +110,7 @@
                     </ul>
                 </div>
             </div>
+
         </div>
         <div class="col-sm-2"></div>
     </div>
