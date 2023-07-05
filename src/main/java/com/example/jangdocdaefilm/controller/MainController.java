@@ -11,12 +11,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.net.URLEncoder;
-import java.net.http.HttpRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -189,7 +187,7 @@ public class MainController {
 
   // 영화 상세 정보 페이지
   @RequestMapping(value = "/movieDetail/{movieId}", method = RequestMethod.GET)
-  public ModelAndView movieDetail(@PathVariable("movieId") String movieId) throws Exception {
+  public ModelAndView movieDetail(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
     // 영화 정보 가져오기
     ModelAndView mv = new ModelAndView("movie/movieDetail");
     String appendUrl = "?append_to_response=credits&language=ko";
@@ -200,8 +198,23 @@ public class MainController {
     mv.addObject("genre", genre);
 
     // 리뷰 조회
-    List<ReviewDto> reviewList = memberService.getMovieReviewList(movieId);
+    HttpSession session = req.getSession();
+    List<ReviewDto> reviewList;
+    ReviewDto myReview = null;
+    String userId;
+    Object storedUserId = session.getAttribute("id");
+
+    if (storedUserId == null) {
+      reviewList = memberService.getMovieReviewList(movieId);
+    } else {
+      reviewList = memberService.getMovieReviewList(movieId);
+      userId = (String) storedUserId;
+      myReview = memberService.getMyMovieReview(movieId, userId);
+    }
+
+    mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
+
     return mv;
   }
 
@@ -215,23 +228,27 @@ public class MainController {
 
   // 해당 영화 모든 리뷰 조회
   @RequestMapping(value = "/movieReview/{movieId}", method = RequestMethod.GET)
-  public ModelAndView movieReview(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
+  public ModelAndView movieReview(@PathVariable("movieId") String movieId, @RequestParam("movieTitle") String movieTitle, HttpServletRequest req) throws Exception {
     ModelAndView mv = new ModelAndView("/movie/movieReview");
-    List<ReviewDto> reviewList = memberService.getMovieReviewList(movieId);
-    mv.addObject("reviewList", reviewList);
-
     // 내가 쓴 영화 리뷰 조회
+    // 로그인 확인 후 로그인 되어있을 경우에만 나의 리뷰 조회
     HttpSession session = req.getSession();
-    // String userId = session.getAttribute("id").toString();
-
-    String userId = null;
+    List<ReviewDto> reviewList;
+    ReviewDto myReview = null;
+    String userId;
     Object storedUserId = session.getAttribute("id");
-    if (storedUserId instanceof String) {
+
+    if (storedUserId == null) {
+      reviewList = memberService.getMovieReviewList(movieId);
+    } else {
+      reviewList = memberService.getMovieReviewList(movieId);
       userId = (String) storedUserId;
+      myReview = memberService.getMyMovieReview(movieId, userId);
     }
 
-    ReviewDto myReview = memberService.getMyMovieReview(movieId, userId);
+    mv.addObject("movieTitle", movieTitle);
     mv.addObject("myReview", myReview);
+    mv.addObject("reviewList", reviewList);
 
     return mv;
   }

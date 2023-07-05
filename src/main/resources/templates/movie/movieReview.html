@@ -61,10 +61,10 @@
     <div class="col-sm-2"></div>
     <div class="col-sm">
       <div class="d-flex justify-content-between my-4">
-        <h1 th:text="|${myReview.movieTitle} 영화 리뷰|">xxx 영화 리뷰</h1>
+        <h1 th:text="|${movieTitle} 영화 리뷰|">xxx 영화 리뷰</h1>
         <a class="btn btn-secondary align-self-center" id="btnBack">이전 페이지로</a>
       </div>
-      <div class="my-review card text-bg-light my-3">
+      <div class="my-review card text-bg-light my-3" th:if="${myReview} != null">
         <div class="card-body">
           <p class="card-text" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
           <div class="text-end">

@@ -13,6 +13,18 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script src="/js/header.js"></script>
 
+  <script>
+      $(document).ready(() => {
+          $("#go-to-login").on("click", () => {
+              alert("로그인 후 이용해주세요");
+              location.href = "/login";
+          });
+
+          $("#review-exist").on("click", () => {
+              alert("등록된 리뷰가 있습니다.");
+          });
+      });
+  </script>
 
 </head>
 <body>
@@ -38,10 +50,27 @@
               <p class="mb-0">장독대 평점</p>
               <span>★★★★★</span>
             </div>
-            <div class="ms-auto align-self-center">
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                      data-bs-target="#reviewModal" th:if="${session.id} != null">리뷰 작성
-              </button>
+            <div th:if="${myReview != null}" class="ms-auto align-self-center">
+              <div th:if="${session.id} != null and ${session.id} != ${myReview.memberId}">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#reviewModal">리뷰 작성
+                </button>
+              </div>
+              <div th:if="${session.id} == ${myReview.memberId}">
+                <button type="button" class="btn btn-secondary" id="review-exist">리뷰 작성
+                </button>
+              </div>
+            </div>
+            <div th:unless="${myReview != null}" class="ms-auto align-self-center">
+              <div th:if="${session.id} != null">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#reviewModal">리뷰 작성
+                </button>
+              </div>
+              <div th:unless="${session.id} != null">
+                <button type="button" class="btn btn-secondary" id="go-to-login">리뷰 작성
+                </button>
+              </div>
             </div>
             <div class="modal fade" id="reviewModal">
               <div class="modal-dialog modal-dialog-centered">
@@ -88,16 +117,17 @@
       </div>
 
       <div th:if="${reviewList.size()} != 0">
-        <a th:href="@{/movieReview/} + ${movieInfo.id}" class="text-decoration-none text-end fw-bold">+ 더보기</a>
+        <a th:href="@{/movieReview/} + ${movieInfo.id} + @{?movieTitle=} + ${movieInfo.title}"
+           class="text-decoration-none text-end fw-bold">+ 더보기</a>
         <div class="row row-cols-3 my-2">
           <div th:each="item :${reviewList}">
             <div class="col-sm">
               <div class="card">
                 <div class="card-body">
                   <p class="card-text" th:text="${item.userName}">작성자 이름</p>
-                  <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
+                  <span class="card-text" th:text="|평점 : ${item.userScore}|">유저 평점</span>
                   <br>
-                  <span class="card-text" th:text="${item.userScore}">유저 평점</span>
+                  <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
                   <div class="text-end">
                     <span>👍</span>
                     <span class="me-2" th:text="${item.goodCnt}">32</span>
