@@ -13,23 +13,24 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script src="/js/header.js"></script>
 
-  <script>
-    $(document).ready(function () {
-      $("#btnBack").on("click", function () {
-        history.back();
-      });
-      let index = 0;
-      $(window).scroll(function () {
-        let window = $(this);
-        let scrollTop = window.scrollTop();
-        let windowHeight = window.height();
-        let docHeight = $(document).height();
+  <script th:inline="javascript">
+      $(document).ready(function () {
+          $("#btnBack").on("click", function () {
+              history.back();
+          });
 
-        function loadReviews() {
-          $.ajax({
-            success: function () {
-              $(".other-reviews").append(
-                  `<div class="card my-4">
+          let index = 0;
+          $(window).scroll(function () {
+              let window = $(this);
+              let scrollTop = window.scrollTop();
+              let windowHeight = window.height();
+              let docHeight = $(document).height();
+
+              function loadReviews() {
+                  $.ajax({
+                      success: function () {
+                          $(".other-reviews").append(
+                              `<div class="card my-4">
                     <div class="card-body">
                       <p class="card-text">영화 리뷰 내용</p>
                       <div class="text-end">
@@ -38,18 +39,29 @@
                       </div>
                     </div>
                   </div>`
-              )
-            },
-          })
-        }
+                          )
+                      },
+                  })
+              }
 
-        if (scrollTop + windowHeight + 100 >= docHeight) {
-          index++;
-          loadReviews();
-        }
+              if (scrollTop + windowHeight + 100 >= docHeight) {
+                  index++;
+                  loadReviews();
+              }
+          });
 
+          $(".good-click").on("click", () => {
+              let idx = $('input[id^="review-idx6"]').val();
+              alert(`해당리뷰번호:${idx}`);
+          });
+
+          $("#btn-update").on("click", () => {
+              $("#method").val("PUT")
+              const frm = $("#frm")[0]
+              frm.action="/updateMovieReview";
+              frm.submit()
+          });
       });
-    });
   </script>
 
 </head>
@@ -68,8 +80,9 @@
         <div class="card-body">
           <p class="card-text" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
           <div class="text-end">
-            <span>👍</span>
+            <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
             <span class="me-2" th:text="${myReview.goodCnt}">12</span>
+            <!-- 내가 쓴 리뷰 수정 -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#reviewEditModal">수정
             </button>
@@ -80,15 +93,21 @@
                     <h1 class="modal-title" th:text="${myReview.movieTitle}">영화이름</h1>
                   </div>
                   <div class="modal-body">
-                    <form method="post">
-                      <textarea class="form-control" rows="10" th:text="${myReview.content}"
-                                placeholder="영화 리뷰를 작성해주세요"></textarea>
+                    <form id="frm" method="post">
+                      <textarea class="form-control" rows="10" name="content" th:text="${myReview.content}" placeholder="영화 리뷰를 작성해주세요"></textarea>
                       <input type="range" class="form-range mt-2" step="1" min="1" max="10"
-                             value="1">
+                             th:value="${myReview.userScore}" name="userScore">
+                      <input type="hidden" name="idx" th:value="${myReview.idx}">
+                      <input type="hidden" name="movieId" th:value="${myReview.movieId}">
+                      <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
+                      <input type="hidden" name="createDt" th:value="${myReview.createDt}">
+                      <input type="hidden" name="memberId" th:value="${session.id}">
+                      <input type="hidden" name="userName" th:value="${session.userName}">
+                      <div class="text-end">
+                        <button type="button" class="btn btn-primary" id="btn-update">등록</button>
+                      </div>
+                      <input type="hidden" id="method" name="_method">
                     </form>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">등록</button>
                   </div>
                 </div>
               </div>
@@ -99,15 +118,22 @@
         </div>
       </div>
 
-      <div class="other-reviews my-4">
+      <div class="my-4" id="other-reviews">
         <div class="card my-4" th:each="item : ${reviewList}">
           <div class="card-body">
             <p class="card-text" th:text="${item.userName}">작성자 이름</p>
             <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
             <br>
             <span class="card-text" th:text="${item.userScore}">유저 평점</span>
-            <div class="text-end">
-              <span>👍</span>
+            <div class="d-flex justify-content-end">
+              <div th:if="${session.id} != null">
+                <input type="text" class="review-idx" th:id="|review-idx${item.idx}|" th:value="${item.idx}">
+                <a class="me-2 good-click" id="good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+              </div>
+              <div th:unless="${session.id} != null">
+                <!-- 빈하트 -->
+                <span class="me-2"><i class="bi bi-hand-thumbs-up"></i></span>
+              </div>
               <span class="me-2" th:text="${item.goodCnt}">32</span>
             </div>
           </div>

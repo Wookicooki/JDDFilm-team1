@@ -41,14 +41,22 @@ public class MemberServiceImpl implements MemberService {
     memberMapper.insertMovieReview(review);
   }
 
+  // 해당 영화 모든 리뷰
   @Override
   public List<ReviewDto> getMovieReviewList(String movieId) throws Exception {
     return memberMapper.getMovieReviewList(movieId);
   }
 
+  // 해당 영화 내가 쓴 리뷰
   @Override
   public ReviewDto getMyMovieReview(String movieId, String userId) throws Exception {
     return memberMapper.getMyMovieReview(movieId, userId);
+  }
+
+  // 리뷰 수정
+  @Override
+  public void updateMovieReview(ReviewDto review) throws Exception {
+    memberMapper.updateMovieReview(review);
   }
 
 }

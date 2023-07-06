@@ -226,9 +226,19 @@ public class MainController {
     return "redirect:/movieDetail/" + movieId;
   }
 
+  // 영화 리뷰 수정
+  @RequestMapping(value = "/updateMovieReview", method = RequestMethod.PUT)
+  public String updateMovieReview(ReviewDto review) throws Exception{
+    memberService.updateMovieReview(review);
+    String movieId = review.getMovieId();
+    // String movieTitle = review.getMovieTitle();
+    String redirect = "redirect:/movieReview/" + movieId;
+    return redirect;
+  }
+
   // 해당 영화 모든 리뷰 조회
   @RequestMapping(value = "/movieReview/{movieId}", method = RequestMethod.GET)
-  public ModelAndView movieReview(@PathVariable("movieId") String movieId, @RequestParam("movieTitle") String movieTitle, HttpServletRequest req) throws Exception {
+  public ModelAndView movieReview(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
     ModelAndView mv = new ModelAndView("/movie/movieReview");
     // 내가 쓴 영화 리뷰 조회
     // 로그인 확인 후 로그인 되어있을 경우에만 나의 리뷰 조회
@@ -246,12 +256,17 @@ public class MainController {
       myReview = memberService.getMyMovieReview(movieId, userId);
     }
 
-    mv.addObject("movieTitle", movieTitle);
+//    mv.addObject("movieTitle", movieTitle);
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
 
     return mv;
   }
+
+  // 리뷰 좋아요
+
+
+  // 리뷰 좋아요 취소
 
 
   @RequestMapping("/myMovie")

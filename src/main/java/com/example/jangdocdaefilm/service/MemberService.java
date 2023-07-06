@@ -25,4 +25,7 @@ public interface MemberService {
 
   // 내가 쓴 리뷰 조회
   ReviewDto getMyMovieReview(String movieId, String userId) throws Exception;
+
+  // 리뷰 수정
+    void updateMovieReview(ReviewDto review) throws Exception;
 }
