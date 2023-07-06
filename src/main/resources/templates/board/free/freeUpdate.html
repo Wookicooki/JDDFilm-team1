@@ -30,7 +30,7 @@
     <div class="col-sm-8">
       <h2>할인 정보 작성</h2>
       <div class="row">
-        <form action="/freeUpdate" id="frm" method="post">
+        <form action="/freeUpdate" id="frm" method="post" enctype="multipart/form-data">
           <div class="my-3 row">
             <div class="col-sm">
               <input type="hidden" id="idx" name="idx" th:value="${free.idx}">
@@ -42,8 +42,9 @@
           </div>
           <div class="row input-group">
             <div class="my-3 col-sm d-flex justify-content-start gap-3">
-              <div class="input-group">
-                <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+              <div class="my-3">
+                <label for="files" class="form-label">첨부파일 : </label>
+                <input type="file" class="form-control" id="files" name="files" multiple>
               </div>
             </div>
             <div class="my-3 col-sm d-flex justify-content-end gap-3 mx-0 px-0">

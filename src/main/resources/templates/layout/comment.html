@@ -1,38 +1,36 @@
 
 <body>
 <!--      댓글 구현 부분-->
-<!--<div th:fragment="comment">-->
-<!--    <form method="post" th:if="${session.idx} == ${commentList.freeIdx}" th:each="comment : ${commentList}">-->
-<!--        <div class="row my-3">-->
-<!--            <div class="col-sm-2 d-flex justify-content-start">-->
-<!--                <p class="text-body-secondary text-opacity-25 fw-bolder fs-6 mx-0 my-2">댓글</p>-->
-<!--            </div>-->
-<!--            <div class="col-sm d-flex justify-content-end py-2">-->
-<!--                <a class="btn m-0 p-0" href="#comment" aria-label="pensil">-->
-<!--                    &lt;!&ndash;          icon&ndash;&gt;-->
-<!--                    <i class="bi bi-pencil-fill"></i>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="row my-3 bg-secondary bg-opacity-25 rounded-1">-->
-<!--            <div class="justify-content-start my-2 row">-->
-<!--                <div class="col-sm-3 my-2">-->
-<!--                    <span>댓글 id</span>-->
-<!--                    <input type="text" class="form-control-plaintext bg-white rounded-1">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="justify-content-end my-2 row">-->
-<!--                <div class="col-sm-3 my-2">-->
-<!--                    <span class="text-end">나</span>-->
-<!--                    <input type="text" class="form-control-plaintext bg-white rounded-1" >-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="input-group mb-3" id="comment">-->
-<!--                <input type="text" class="form-control border-secondary" placeholder="Input Comment" aria-label="Recipient's username" aria-describedby="button-addon2">-->
-<!--                <button class="btn btn-outline-secondary bg-white" type="button" id="button-addon2">input</button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </form>-->
+<div th:fragment="comment(comment, idx)">
+    <div th:if="${session.idx} == ${idx}" th:each="comment : ${comment}">
+        <div class="row">
+            <form action="/freeCommentDelete" method="post" name="comment">
+                <div class="justify-content-start my-2 row" th:unless="${comment.id} == ${session.id}">
+                    <div class="col-sm-6 mt-2">
+                        <p class="m-0 p-0" th:text="${comment.userName}">댓글 id</p>
+                        <input type="hidden" th:value="${comment.idx}" name="idx">
+                        <input type="hidden" th:value="${idx}" name="freeIdx">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-plaintext bg-white rounded-1" th:value="${comment.content}" readonly>
+                            <button type="submit" th:if="${session.grade} == 1" class="btn"><i class="bi bi-x-circle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form action="/freeCommentDelete" method="post" name="comment">
+                <div class="justify-content-end my-2 row" th:if="${comment.id} == ${session.id}">
+                    <div class="col-sm-6 mt-2">
+                        <input type="hidden" th:value="${comment.idx}" name="idx">
+                        <input type="hidden" th:value="${idx}" name="freeIdx">
+                        <div class="input-group">
+                            <button type="submit" class="btn"><i class="bi bi-x-circle"></i></button>
+                            <input type="text" class="form-control form-control-plaintext bg-white rounded-1" th:value="${comment.content}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

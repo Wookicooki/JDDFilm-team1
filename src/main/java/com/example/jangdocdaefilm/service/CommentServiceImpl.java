@@ -14,17 +14,19 @@ public class CommentServiceImpl implements CommentService {
   private CommentMapper commentMapper;
 
   @Override
-  public List<CommentDto> freeCommentList() throws Exception {
-    return commentMapper.freeCommentList();
+  public List<CommentDto> freeCommentList(int idx) throws Exception {
+    return commentMapper.freeCommentList(idx);
   }
 
   @Override
-  public void writeComment(CommentDto comment) throws Exception {
-    commentMapper.writeComment(comment);
+  public void freeWriteComment(CommentDto comment) throws Exception {
+    commentMapper.freeWriteComment(comment);
   }
 
   @Override
-  public void deleteComment(int idx) throws Exception {
-    commentMapper.deleteComment(idx);
+  public void freeCommentDelete(int idx) throws Exception {
+    commentMapper.freeCommentDelete(idx);
   }
+
+
 }

@@ -218,6 +218,10 @@ public class MainController {
         return "movie/searchResult";
     }
 
+    //    댓글
+    @Autowired
+    private CommentService commentService;
+
 //    할인정보 게시판
     @RequestMapping(value = "/disList", method = RequestMethod.GET)
     public ModelAndView disList() throws Exception {
@@ -252,14 +256,41 @@ public class MainController {
     }
 
     @RequestMapping(value = "/free/{idx}", method = RequestMethod.GET)
-    public ModelAndView freeDetail(@PathVariable("idx") int idx) throws Exception {
+    public ModelAndView freeDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeDetail");
 
+        HttpSession session = req.getSession();
+        session.setAttribute("idx", idx);
+
         FreeDto free = freeService.selectFreeDetail(idx);
+        List<CommentDto> commentList = commentService.freeCommentList(idx);
 
         mv.addObject("free", free);
+        mv.addObject("comment", commentList);
 
         return mv;
+    }
+
+    @RequestMapping(value = "/freeCommentWrite", method = RequestMethod.POST)
+    public String freeCommentWrite(CommentDto comment) throws Exception{
+        commentService.freeWriteComment(comment);
+        int idx = comment.getFreeIdx();
+        return "redirect:/free/" + idx;
+    }
+
+//    @RequestMapping(value = "/freeCommentDelete", method = RequestMethod.POST)
+//    public String freeCommentDelete(@PathVariable("idx") int idx) throws Exception{
+//        commentService.freeCommentDelete(idx);
+//        return "redirect:/free/";
+//    }
+
+    @RequestMapping(value = "/freeCommentDelete", method = RequestMethod.POST)
+    public String freeCommentDelete(CommentDto comment) throws Exception{
+        int idx = comment.getIdx();
+        int freeIdx = comment.getFreeIdx();
+        commentService.freeCommentDelete(idx);
+
+        return "redirect:/free/" + freeIdx;
     }
 
     @RequestMapping(value = "/freeUpdate/{idx}", method = RequestMethod.PUT)
@@ -300,9 +331,9 @@ public class MainController {
     // 게시물 일괄 삭제
     @ResponseBody
     @RequestMapping(value = "/freeList", method = RequestMethod.POST)
-    public String freeMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
+    public Object freeMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
         freeService.freeMultiDelete(idx);
-        return "redirect:/freeList";
+        return "success";
     }
 
 
@@ -346,17 +377,4 @@ public class MainController {
     public String qnaInsertView() throws Exception {
         return "board/qna/qnaWrite";
     }
-
-    //    댓글
-    @Autowired
-    private CommentService commentService;
-
-//    @RequestMapping(value = "/freeDetail", method = RequestMethod.POST)
-//    public ModelAndView freeCommentList() throws Exception {
-//        ModelAndView mv = new ModelAndView("board/free/freeDetail");
-//
-//        List<CommentDto> commentList = commentService.freeCommentList();
-//        mv.addObject("commentList", commentList);
-//        return mv;
-//    }
 }

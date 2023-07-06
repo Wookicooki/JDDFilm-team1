@@ -35,6 +35,8 @@
         frm.action = "/freeUpdate/" + $("#idx").val();
         frm.submit();
       });
+
+
     })
   </script>
 </head>
@@ -45,44 +47,69 @@
   <div class="row">
     <div class="col-sm-2"></div>
     <div class="col-sm-8">
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-center my-3 mb-5">
         <h2>자유게시판 상세 게시글</h2>
       </div>
-      <form id="frm" method="post">
-        <div class="row my-3 py-2 bg-secondary bg-opacity-25 rounded-1">
-          <div class="col-sm">
-            <input type="hidden" th:value="${free.idx}" name="idx" id="idx">
-            <input type="text" class="form-control-plaintext fs-5 fw-bold" name="title" th:value="${free.title}" readonly>
-          </div>
-          <div class="col-sm d-flex justify-content-end" th:if="${session.id} == ${free.id}">
-            <button type="button" class="btn btn-warning me-2" id="btn-update">수정</button>
-            <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
-          </div>
-        </div>
-        <div class="row my-3">
-          <div class="col-sm-4 d-flex justify-content-start">
-            <input type="text" class="form-control-plaintext fs-5 fw-semibold mx-0" th:value="${free.userName}" readonly>
-            <input type="text" class="form-control-plaintext fw-light text-body-secondary w-auto" th:value="${free.createDt}" readonly>
-          </div>
-          <div class="col-sm d-flex justify-content-end py-2">
-            <div class="mx-2">
-              <p class="text-end mb-0 pb-0">조회수</p>
-              <input type="text" class="form-control-plaintext fw-light text-body-secondary text-end mt-0 pt-0" th:value="${free.hitCnt}" readonly>
+      <div class="bg-secondary bg-opacity-25 rounded-1 p-2">
+        <form id="frm" method="post">
+          <div class="row my-3 py-2">
+            <div class="col-sm">
+              <input type="hidden" th:value="${free.idx}" name="idx" id="idx">
+              <input type="text" class="form-control-plaintext fs-5 fw-bold" name="title" th:value="${free.title}" readonly>
+            </div>
+            <div class="col-sm d-flex justify-content-end" th:if="${session.id} == ${free.id}">
+              <button type="button" class="btn btn-warning me-2" id="btn-update">수정</button>
+              <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
             </div>
           </div>
-        </div>
-        <div class="row my-3 bg-secondary bg-opacity-25 rounded-1">
-          <div class="col-sm">
-            <img src="/images/" th:attrappend="src=${free.image}" width="100%">
-            <textarea class="form-control-plaintext" rows="15" id="contents" name="contents" th:text="${free.content}" readonly></textarea>
+          <div class="row my-3 bg-white">
+            <div class="col-sm-4 d-flex justify-content-start">
+              <input type="text" class="form-control-plaintext fs-5 fw-semibold mx-0" th:value="${free.userName}" readonly>
+              <input type="text" class="form-control-plaintext fw-light text-body-secondary w-auto" th:value="${free.createDt}" readonly>
+            </div>
+            <div class="col-sm d-flex justify-content-end py-2">
+              <div class="mx-2">
+                <p class="text-end mb-0 pb-0">조회수</p>
+                <input type="text" class="form-control-plaintext fw-light text-body-secondary text-end mt-0 pt-0" th:value="${free.hitCnt}" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="row my-3">
+            <div class="col-sm">
+              <img src="/images/" th:attrappend="src=${free.image}" width="100%">
+              <textarea class="form-control-plaintext" rows="15" id="contents" name="contents" th:text="${free.content}" readonly></textarea>
+            </div>
+          </div>
+          <!--    REST 방식 사용 시 form태그의 데이터 전송 방식을 변경하기 위한 태그-->
+          <input type="hidden" id="method" name="_method">
+        </form>
+
+        <div class="row my-3 bg-white">
+          <div class="col-sm-2 d-flex justify-content-start">
+            <p class="text-body-secondary text-opacity-25 fw-bolder fs-6 mx-0 my-2">댓글</p>
+          </div>
+          <div class="col-sm d-flex justify-content-end py-2">
+            <a class="btn m-0 p-0" href="#comment" aria-label="pensil">
+              <!--          icon-->
+              <i class="bi bi-pencil-fill"></i>
+            </a>
           </div>
         </div>
-        <!--    REST 방식 사용 시 form태그의 데이터 전송 방식을 변경하기 위한 태그-->
-        <input type="hidden" id="method" name="_method">
-      </form>
+        <div class="my-3">
+          <!--comment 레이아웃 불러오기-->
+          <div th:replace="~{layout/comment :: comment(${comment}, ${idx})}"></div>
 
-<!--      <div th:replace="~{layout/comment :: comment}"></div>-->
-
+          <form action="/freeCommentWrite" method="post" id="comment">
+            <div class="input-group mb-3" th:unless="${session.id} == null">
+              <input type="hidden" name="freeIdx" th:value="${free.idx}">
+              <input type="hidden" name="id" th:value="${session.id}">
+              <input type="hidden" name="userName" th:value="${session.userName}">
+              <input type="text" class="form-control border-secondary p-1" name="content" placeholder="Input Comment" aria-label="Recipient's username" aria-describedby="button-addon2" width="60%">
+              <button class="btn btn-outline-secondary" type="submit" id="btn-content">input</button>
+            </div>
+          </form>
+        </div>
+      </div>
       <div class="row my-3">
         <div class="col-sm d-flex justify-content-end">
           <button type="button" class="btn btn-secondary" id="btn-list">목록</button>

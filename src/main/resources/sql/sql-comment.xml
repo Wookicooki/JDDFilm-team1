@@ -5,59 +5,27 @@
 
 <!--  자유게시판-->
 <mapper namespace="com.example.jangdocdaefilm.mapper.CommentMapper">
-  <select id="freeCommentList" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+  <select id="freeCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
     SELECT
-    content, create_dt, id, user_name, free_idx
+    idx, content, create_dt, id, user_name, free_idx
     FROM
     comment
     WHERE
-    delete_yn = 'N'
+    free_idx = #{idx}
     ORDER BY
     idx ASC;
   </select>
 
-  <insert id="writeFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto">
+  <insert id="freeWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
     INSERT INTO
-    free (title, content, id, user_name, image, create_dt)
+    comment (content, create_dt, id, user_name, free_idx)
     VALUES
-    (#{title}, #{content} , #{id}, #{userName}, now(), now())
+    (#{content}, now(), #{id}, #{userName}, #{freeIdx})
   </insert>
 
-  <select id="updateFreeView" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
-    SELECT
-    idx, title, content, image, create_dt, user_name, id, hit_cnt, delete_yn
-    FROM
-    free
-    WHERE
-    idx = #{idx}
-    AND
-    delete_yn = 'N'
+  <select id="freeCommentDelete" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
+    DELETE FROM comment
+    WHERE idx = #{idx};
   </select>
 
-  <update id="updateFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto">
-    UPDATE
-    free
-    SET
-    title = #{title} , content = #{content}, image = now()
-    WHERE
-    idx = #{idx}
-  </update>
-
-  <update id="deleteFree" parameterType="int">
-    UPDATE
-    free
-    SET
-    delete_yn = 'Y'
-    WHERE
-    idx = #{idx}
-  </update>
-
-  <update id="updateFreeHitCount" parameterType="int">
-    UPDATE
-    free
-    SET
-    hit_cnt = hit_cnt + 1
-    WHERE
-    idx = #{idx}
-  </update>
 </mapper>
