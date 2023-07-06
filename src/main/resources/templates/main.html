@@ -15,19 +15,20 @@
 
   <script>
 
-    $(document).ready(function () {
-      $(".accordion-header").parent(".accordion-item").hover(
-          function () {
-            $(this).children('.collapse').collapse('show');
-          }, function () {
-            $(this).children('.collapse').collapse('hide');
-          }
-      );
-      $(".accordion-button > a").on("click", () => {
-        let movieId = $(".hidden-id").val();
-        location.href = "/movieDetail/" + movieId;
+      $(document).ready(function () {
+          $(".accordion-header").parent(".accordion-item").hover(
+              function () {
+                  $(this).children('.collapse').collapse('show');
+              }, function () {
+                  $(this).children('.collapse').collapse('hide');
+              }
+          );
+          $(".box-office-title").on("click", function () {
+              const titleClick = $(this);
+              let movieId = titleClick.prev().val();
+              location.href = "/movieDetail/" + movieId;
+          });
       });
-    });
   </script>
 
 </head>
@@ -47,8 +48,8 @@
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne" th:attr="data-target='#collapse'+${item.rank}">
                   <span th:text="${item.rank}" class="me-2"></span>
-                  <a class="text-decoration-none" th:text="${item.movieNm}">1. 일일 박스 오피스 1위 영화 제목</a>
-                  <input type="hidden" class="hidden-id" th:value="${info.id}">
+                  <input type="hidden" class="hidden-movie-id" th:value="${info.id}">
+                  <a class="text-decoration-none box-office-title" th:text="${item.movieNm}">1. 일일 박스 오피스 1위 영화 제목</a>
                   <span th:text="${info.vote_average}" class="ms-2">★★★★★</span>
                 </button>
               </h2>
@@ -65,7 +66,7 @@
                       <br>
                       <span class="text-end" th:text="|개봉일 : ${info.release_date}|">2023.07.01</span>
                       <br>
-                      <span class="text-end"  th:text="|관람객 : ${item.audiAcc}명|"></span>
+                      <span class="text-end" th:text="|관람객 : ${item.audiAcc}명|"></span>
                       <p th:text="${info.overview}" class="mt-3">줄거리</p>
                     </div>
                   </div>

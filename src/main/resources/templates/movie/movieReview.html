@@ -50,12 +50,13 @@
               }
           });
 
-          $(".good-click").on("click", () => {
-              let idx = $('input[id^="review-idx6"]').val();
+          $(".good-click").on("click", function() {
+              const tagBtn = $(this);
+              let idx = tagBtn.prev().val();
               alert(`해당리뷰번호:${idx}`);
           });
 
-          $("#btn-update").on("click", () => {
+          $("#btn-update").on("click", function () {
               $("#method").val("PUT")
               const frm = $("#frm")[0]
               frm.action="/updateMovieReview";
@@ -127,9 +128,14 @@
             <span class="card-text" th:text="${item.userScore}">유저 평점</span>
             <div class="d-flex justify-content-end">
               <div th:if="${session.id} != null">
-                <input type="text" class="review-idx" th:id="|review-idx${item.idx}|" th:value="${item.idx}">
+                <input type="text" class="review-idx" th:value="${item.idx}">
                 <a class="me-2 good-click" id="good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>
               </div>
+
+
+
+
+
               <div th:unless="${session.id} != null">
                 <!-- 빈하트 -->
                 <span class="me-2"><i class="bi bi-hand-thumbs-up"></i></span>
