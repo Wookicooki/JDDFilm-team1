@@ -30,6 +30,11 @@ public class FreeServiceImpl implements FreeService {
   }
 
   @Override
+  public FreeDto updateFreeView(int idx) throws Exception {
+    return freeMapper.updateFreeView(idx);
+  }
+
+  @Override
   public void updateFree(FreeDto free) throws Exception {
     freeMapper.updateFree(free);
   }

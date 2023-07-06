@@ -16,6 +16,9 @@ public interface FreeMapper {
   //  게시물 등록
   void writeFree(FreeDto free) throws Exception;
 
+  //  게시물 내용 수정페이지로 이동
+  FreeDto updateFreeView(int idx) throws Exception;
+
   //  게시물 수정
   void updateFree(FreeDto free) throws Exception;
 

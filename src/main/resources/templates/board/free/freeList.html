@@ -24,10 +24,10 @@
           checkArr.push($(this).val());     // 체크된 것만 값을 뽑아서 배열에 push
         })
         $.ajax({
-          url: 'freeList'
-          , type: 'post'
-          , dataType: 'int'
-          , data: {
+          url: 'freeList',
+          type: 'post',
+          dataType: 'int',
+          data: {
             valueArrTest: checkArr
           }
         });
@@ -64,7 +64,7 @@
               <col style="width: 8%"/>
               <col style="width: 10%"/>
               <col style="width: 8%"/>
-              <col style="width: 7%"/>
+              <col th:if="${session.grade == '1'}" style="width: 7%"/>
             </colgroup>
             <thead>
             <tr class="table-secondary">
@@ -73,7 +73,7 @@
               <th>글쓴이</th>
               <th>날짜</th>
               <th>조회수</th>
-              <th>삭제</th>
+              <th th:if="${session.grade == '1'}">삭제</th>
             </tr>
             </thead>
             <tbody>
@@ -82,21 +82,21 @@
               <td class="text-start">
                 <a href="/free/" th:attrappend="href=${free.idx}" th:text="${free.title}" class="text-decoration-none">됬으면 좋겠다</a>
               </td>
-              <td th:text="${free.id}">글쓴이</td>
+              <td th:text="${free.userName}">글쓴이</td>
               <td th:text="${free.createDt}">날짜~~</td>
               <td th:text="${free.hitCnt}">10</td>
-              <td>
+              <td th:if="${session.grade == '1'}">
                 <input class="form-check-input" type="checkbox" th:value="${free.idx}" name="deleteCheck">
               </td>
             </tr>
             <tr th:unless="${#lists.size(freeList)} > 0">
-              <td colspan="5">조회된 데이터가 없습니다.</td>
+              <td colspan="6">조회된 데이터가 없습니다.</td>
             </tr>
             </tbody>
           </table>
           <div class="d-flex justify-content-end my-3">
             <a href="/freeWrite" class="btn btn-outline-primary mx-3" th:unless="${session.id == null}">글쓰기</a>
-            <button type="button" class="btn btn-outline-danger" id="delete" th:if="${session.grade.equals('1')}">삭제</button>
+            <button type="button" class="btn btn-outline-danger" id="delete" th:if="${session.grade == '1'}">삭제</button>
           </div>
         </div>
 <!--        <input type="hidden" id="method" name="_method">-->

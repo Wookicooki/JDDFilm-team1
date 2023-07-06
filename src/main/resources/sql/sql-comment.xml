@@ -4,27 +4,16 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!--  자유게시판-->
-<mapper namespace="com.example.jangdocdaefilm.mapper.FreeMapper">
-  <select id="selectFreeList" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+<mapper namespace="com.example.jangdocdaefilm.mapper.CommentMapper">
+  <select id="freeCommentList" resultType="com.example.jangdocdaefilm.dto.CommentDto">
     SELECT
-    idx, title, user_name, id, create_dt, hit_cnt
+    content, create_dt, id, user_name, free_idx
     FROM
-    free
+    comment
     WHERE
     delete_yn = 'N'
     ORDER BY
     idx ASC;
-  </select>
-
-  <select id="selectFreeDetail" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
-    SELECT
-    idx, title, content, image, create_dt, user_name, id, hit_cnt, delete_yn
-    FROM
-    free
-    WHERE
-    idx = #{idx}
-    AND
-    delete_yn = 'N'
   </select>
 
   <insert id="writeFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto">

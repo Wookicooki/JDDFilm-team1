@@ -2,6 +2,7 @@ package com.example.jangdocdaefilm.controller;
 
 import com.example.jangdocdaefilm.dto.*;
 
+import com.example.jangdocdaefilm.service.CommentService;
 import com.example.jangdocdaefilm.service.FreeService;
 import com.example.jangdocdaefilm.service.MovieService;
 
@@ -255,6 +256,18 @@ public class MainController {
         ModelAndView mv = new ModelAndView("board/free/freeDetail");
 
         FreeDto free = freeService.selectFreeDetail(idx);
+
+        mv.addObject("free", free);
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/freeUpdate/{idx}", method = RequestMethod.PUT)
+    public ModelAndView freeUpdateView(@PathVariable("idx") int idx) throws Exception {
+        ModelAndView mv = new ModelAndView("board/free/freeUpdate");
+
+        FreeDto free = freeService.updateFreeView(idx);
+
         mv.addObject("free", free);
 
         return mv;
@@ -271,8 +284,8 @@ public class MainController {
         return "redirect:/freeList";
     }
 
-    @RequestMapping(value = "/freeWrite", method = RequestMethod.PUT)
-    public String freeUpdate(FreeDto free) throws Exception{
+    @RequestMapping(value = "/freeUpdate", method = RequestMethod.POST)
+    public String freeUpdateProcess(FreeDto free) throws Exception{
         freeService.updateFree(free);
         return "redirect:/freeList";
     }
@@ -291,6 +304,8 @@ public class MainController {
         freeService.freeMultiDelete(idx);
         return "redirect:/freeList";
     }
+
+
 
     //    현재상영작 수다
     @RequestMapping(value = "/nowList", method = RequestMethod.GET)
@@ -331,4 +346,17 @@ public class MainController {
     public String qnaInsertView() throws Exception {
         return "board/qna/qnaWrite";
     }
+
+    //    댓글
+    @Autowired
+    private CommentService commentService;
+
+//    @RequestMapping(value = "/freeDetail", method = RequestMethod.POST)
+//    public ModelAndView freeCommentList() throws Exception {
+//        ModelAndView mv = new ModelAndView("board/free/freeDetail");
+//
+//        List<CommentDto> commentList = commentService.freeCommentList();
+//        mv.addObject("commentList", commentList);
+//        return mv;
+//    }
 }
