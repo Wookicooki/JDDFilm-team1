@@ -5,7 +5,18 @@
 
 <!--  자유게시판-->
 <mapper namespace="com.example.jangdocdaefilm.mapper.FreeMapper">
-  <select id="selectFreeList" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+<!--  <select id="selectFreeList" resultType="com.example.jangdocdaefilm.dto.FreeDto">-->
+<!--    SELECT-->
+<!--    idx, title, user_name, id, create_dt, hit_cnt-->
+<!--    FROM-->
+<!--    free-->
+<!--    WHERE-->
+<!--    delete_yn = 'N'-->
+<!--    ORDER BY-->
+<!--    idx ASC;-->
+<!--  </select>-->
+
+  <select id="selectFreeListNewest" resultType="com.example.jangdocdaefilm.dto.FreeDto">
     SELECT
     idx, title, user_name, id, create_dt, hit_cnt
     FROM
@@ -13,12 +24,23 @@
     WHERE
     delete_yn = 'N'
     ORDER BY
-    idx ASC;
+    idx DESC;
+  </select>
+
+  <select id="selectFreeListViewed" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+    SELECT
+    idx, title, user_name, id, create_dt, hit_cnt
+    FROM
+    free
+    WHERE
+    delete_yn = 'N'
+    ORDER BY
+    hit_cnt DESC;
   </select>
 
   <select id="selectFreeDetail" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
     SELECT
-    idx, title, content, image, create_dt, user_name, id, hit_cnt, delete_yn
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
     FROM
     free
     WHERE
@@ -27,16 +49,16 @@
     delete_yn = 'N'
   </select>
 
-  <insert id="writeFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto">
+  <insert id="writeFree" parameterType="com.example.jangdocdaefilm.dto.FreeDto" useGeneratedKeys="true" keyProperty="idx">
     INSERT INTO
-    free (title, content, id, user_name, image, create_dt)
+    free (title, content, id, user_name, create_dt)
     VALUES
-    (#{title}, #{content} , #{id}, #{userName}, now(), now())
+    (#{title}, #{content} , #{id}, #{userName}, now())
   </insert>
 
   <select id="updateFreeView" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
     SELECT
-    idx, title, content, image, create_dt, user_name, id, hit_cnt, delete_yn
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
     FROM
     free
     WHERE
@@ -49,7 +71,7 @@
     UPDATE
     free
     SET
-    title = #{title} , content = #{content}, image = now()
+    title = #{title} , content = #{content}
     WHERE
     idx = #{idx}
   </update>
@@ -71,4 +93,20 @@
     WHERE
     idx = #{idx}
   </update>
+
+  <!--  첨부파일 정보 추가-->
+  <insert id="insertFreeFileList" parameterType="com.example.jangdocdaefilm.dto.FreeFileDto">
+    INSERT INTO
+    free_img (free_idx, original_file_name, stored_file_name, file_size, create_id, create_dt)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.freeIdx}, #{item.originalFileName}, #{item.storedFileName}, #{item.fileSize}, #{item.createId}, NOW())
+    </foreach>
+  </insert>
+
+  <select id="selectFreeFile" parameterType="int" resultType="com.example.jangdocdaefilm.dto.FreeFileDto">
+    select idx, free_idx, stored_file_name, file_size, create_id, create_dt from free_img
+    where free_idx=#{idx}
+  </select>
+
 </mapper>

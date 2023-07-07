@@ -76,7 +76,9 @@
           </div>
           <div class="row my-3">
             <div class="col-sm">
-              <img src="/images/" th:attrappend="src=${free.image}" width="100%">
+              <div th:each="img : ${freeFiles}" th:if="${freeFiles}" class="my-3">
+                <img th:src="${img.storedFileName}" width="100%">
+              </div>
               <textarea class="form-control-plaintext" rows="15" id="contents" name="contents" th:text="${free.content}" readonly></textarea>
             </div>
           </div>

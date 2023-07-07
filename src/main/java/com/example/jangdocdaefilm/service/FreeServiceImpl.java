@@ -1,9 +1,13 @@
 package com.example.jangdocdaefilm.service;
 
+import com.example.jangdocdaefilm.common.FreeFileUtils;
 import com.example.jangdocdaefilm.dto.FreeDto;
+import com.example.jangdocdaefilm.dto.FreeFileDto;
 import com.example.jangdocdaefilm.mapper.FreeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -12,10 +16,22 @@ public class FreeServiceImpl implements FreeService {
 
   @Autowired
   private FreeMapper freeMapper;
+  // common패키지의 FreeFileUtils 내려받기
+  @Autowired
+  private FreeFileUtils freeFileUtils;
+
+//  @Override
+//  public List<FreeDto> selectFreeList() throws Exception {
+//    return freeMapper.selectFreeList();
+//  }
 
   @Override
-  public List<FreeDto> selectFreeList() throws Exception {
-    return freeMapper.selectFreeList();
+  public List<FreeDto> selectFreeListNewest() throws Exception {
+    return freeMapper.selectFreeListNewest();
+  }
+  @Override
+  public List<FreeDto> selectFreeListViewed() throws Exception {
+    return freeMapper.selectFreeListViewed();
   }
 
   @Override
@@ -25,8 +41,19 @@ public class FreeServiceImpl implements FreeService {
   }
 
   @Override
-  public void writeFree(FreeDto free) throws Exception {
+  public void writeFree(FreeDto free, MultipartHttpServletRequest uploadFiles) throws Exception {
     freeMapper.writeFree(free);
+    // 파일 업로드 구현
+    List<FreeFileDto> fileList = freeFileUtils.parseFreeFileInfo(free.getIdx(), free.getId(), uploadFiles);
+    if (!CollectionUtils.isEmpty(fileList)) {
+      freeMapper.insertFreeFileList(fileList);
+    }
+  }
+
+  // 파일 출력
+  @Override
+  public List<FreeFileDto> selectFreeFile(int idx) throws Exception {
+    return freeMapper.selectFreeFile(idx);
   }
 
   @Override

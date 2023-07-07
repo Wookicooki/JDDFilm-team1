@@ -16,8 +16,56 @@
   <style>
   
   </style>
-  <script>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const test = [[${session.grade}]]
+    /*]]>*/
+    console.log(test);
     $(document).ready(function () {
+
+      $("input[name='radio']").change( function () {
+        const checked = $("input[name='radio']:checked").val();
+        $.ajax({
+          url: 'freeList',
+          type: 'POST',
+          data: {
+            checked: checked
+          },
+          success: function (data) {
+            const tbody = $("#tbody");
+            tbody.empty();
+
+            if (data != null) {
+              for (let i = 0; i < data.length; i++) {
+                let tag = "<tr>";
+                tag += "<td>" + data[i].idx + "</td>";
+                tag += '<td class="text-start">';
+                tag += '<a href="/free/"' + data[i].idx + ' class="text-decoration-none">' + data[i].title + '</a>';
+                tag += '</td>';
+                tag += '<td>' + data[i].userName + '</td>'
+                tag += '<td>' + data[i].createDt + '</td>'
+                tag += '<td>' + data[i].hitCnt + '</td>'
+                if (test == '1') {
+                  tag += '<td>'
+                  tag += '<input className="form-check-input" type="checkbox" value="' + data[i].idx + '" name="deleteCheck">'
+                  tag += '</td>'
+                }
+                tag += "</tr>";
+                tbody.append(tag);
+              }
+            }
+            else {
+              let tag = '<td colspan="6">조회된 데이터가 없습니다.</td>';
+              tbody.append(tag);
+            }
+          },
+          error: function () {
+            alert("변경 실패")
+          }
+        });
+      })
+
+      // 일괄 삭제
       $("#delete").on("click", function () {
         var checkArr = [];     // 배열 초기화
         $("input[name='deleteCheck']:checked").each(function(i) {
@@ -25,7 +73,7 @@
         })
         $.ajax({
           url: 'freeList',
-          type: 'post',
+          type: 'DELETE',
           data: {
             valueArrTest: checkArr
           },
@@ -52,25 +100,27 @@
     <div class="col-sm-8">
       <div class="row mt-5 mb-3">
         <div class="col-sm"><h2>자유게시판</h2></div>
-        <div class="col-sm btn-group d-flex justify-content-end">
-          <div class="form-check mx-3 form-check-inline">
-            <input class="form-check-input" type="radio" name="radio" id="newest" value="newest" checked>
-            <label class="form-check-label" for="newest">최신순</label>
+        <form action="/freeList" method="post" id="listCheck" name="listCheck">
+          <div class="col-sm btn-group d-flex justify-content-end">
+            <div class="form-check mx-3 form-check-inline">
+              <input class="form-check-input" type="radio" name="radio" id="newest" value="newest" checked>
+              <label class="form-check-label" for="newest">최신순</label>
+            </div>
+            <div class="form-check mx-3 form-check-inline">
+              <input class="form-check-input" type="radio" name="radio" id="viewed" value="viewed">
+              <label class="form-check-label" for="viewed">조회순</label>
+            </div>
           </div>
-          <div class="form-check mx-3 form-check-inline">
-            <input class="form-check-input" type="radio" name="radio" id="viewed" value="viewed">
-            <label class="form-check-label" for="viewed">조회순</label>
-          </div>
-        </div>
+        </form>
       </div>
-      <form action="/freeList" method="delete" id="form">
+      <form action="/freeList" method="post" id="form">
         <div>
-          <table class="table table-hover text-center">
+          <table class="table table-hover text-center" >
             <colgroup>
               <col style="width: 7%"/>
-              <col style="width: 60%"/>
+              <col style="width: 58%"/>
               <col style="width: 8%"/>
-              <col style="width: 10%"/>
+              <col style="width: 12%"/>
               <col style="width: 8%"/>
               <col th:if="${session.grade == '1'}" style="width: 7%"/>
             </colgroup>
@@ -84,7 +134,7 @@
               <th th:if="${session.grade == '1'}">삭제</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody">
             <tr th:if="${#lists.size(freeList)} > 0" th:each="free : ${freeList}">
               <td th:text="${free.idx}">100</td>
               <td class="text-start">

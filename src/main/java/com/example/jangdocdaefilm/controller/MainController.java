@@ -2,11 +2,8 @@ package com.example.jangdocdaefilm.controller;
 
 import com.example.jangdocdaefilm.dto.*;
 
-import com.example.jangdocdaefilm.service.CommentService;
-import com.example.jangdocdaefilm.service.FreeService;
-import com.example.jangdocdaefilm.service.MovieService;
+import com.example.jangdocdaefilm.service.*;
 
-import com.example.jangdocdaefilm.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -14,14 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.net.URLEncoder;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.System.out;
 
@@ -87,6 +83,7 @@ public class MainController {
         mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeList);
         mv.addObject("movieList", movieList);
 
+//        *******로그인 시 member에 id, userName, grade 저장 및 main페이지로 전송
         HttpSession session = req.getSession();
 
         MemberDto member = new MemberDto();
@@ -104,11 +101,13 @@ public class MainController {
     @Autowired
     private MemberService memberService;
 
+    // 로그인페이지로 이동
     @RequestMapping("/login")
     public String login() throws Exception {
         return "login/login";
     }
 
+    // 로그인 시 session값 저장
     @RequestMapping("/loginProcess")
     public String doLoginProcess(@RequestParam("id") String id, @RequestParam("pw") String pw, HttpServletRequest req) throws Exception {
         int result = memberService.isMemberInfo(id, pw);
@@ -127,7 +126,7 @@ public class MainController {
 //            session.setMaxInactiveInterval(60); // 세션 삭제 시간 설정
 
             return "redirect:/main";
-        } else { // 정보가 없으면 loginFail.do 페이지로 리다이렉트
+        } else { // 정보가 없으면 login페이지로 이동
             out.println("<script>alert('아이디 혹은 비밀번호가 다릅니다.'); return;</script>");
             return "redirect:/login";
         }
@@ -153,11 +152,13 @@ public class MainController {
         return "redirect:/main";
     }
 
+    // 회원가입 페이지 이동
     @RequestMapping(value = "/signUp", method = RequestMethod.GET)
     public String signUp() throws Exception {
         return "login/signUp";
     }
 
+    // 회원가입시 아이디 중복 확인
     @ResponseBody
     @GetMapping("/confirm")
     public int confirmId(@RequestParam("id") String id) throws Exception {
@@ -165,12 +166,13 @@ public class MainController {
         return result;
     }
 
-    // 게시물 등록(내부 프로세스)
+    // 회원가입 등록(내부 프로세스)
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public String memberSignUpProcess(MemberDto member) throws Exception {
         memberService.signUpMember(member);
         return "redirect:/main";
     }
+
     @RequestMapping("/recommendDetail")
     public String recommendDetail() throws Exception {
         return "movie/recommendDetail";
@@ -181,6 +183,7 @@ public class MainController {
         return "movie/recommendSet";
     }
 
+    // 마이페이지로 이동
     @RequestMapping("/myPage")
     public String myPage() throws Exception {
         return "mypage/myPage";
@@ -250,27 +253,49 @@ public class MainController {
     public ModelAndView freeList() throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeList");
 
-        List<FreeDto> freeList = freeService.selectFreeList();
+        List<FreeDto> freeList = freeService.selectFreeListNewest();
         mv.addObject("freeList", freeList);
+
         return mv;
     }
 
+    // 게시물 순서 변경
+    @ResponseBody
+    @RequestMapping(value = "/freeList", method = RequestMethod.POST)
+    public Object freeList(@RequestParam(value = "checked") String checked) throws Exception{
+        List<FreeDto> freeList = null;
+        if (checked.equals("newest")) {
+            freeList = freeService.selectFreeListNewest();
+        } else if (checked.equals("viewed")) {
+            freeList = freeService.selectFreeListViewed();
+        }
+        return freeList;
+    }
+
+    // 자유게시판 상세 페이지
     @RequestMapping(value = "/free/{idx}", method = RequestMethod.GET)
     public ModelAndView freeDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeDetail");
 
+        // 세션에서 idx값 불러오기
         HttpSession session = req.getSession();
         session.setAttribute("idx", idx);
 
+        // db의 free테이블에서 idx값 가져와 Comment테이블의 free_idx값과 일치하는 정보 가져오기
         FreeDto free = freeService.selectFreeDetail(idx);
-        List<CommentDto> commentList = commentService.freeCommentList(idx);
-
         mv.addObject("free", free);
+
+        // 자유게시판 상세정보 및 해당 게시판의 comment정보를 상세보기 페이지로 전송
+        List<CommentDto> commentList = commentService.freeCommentList(idx);
         mv.addObject("comment", commentList);
+
+        List<FreeFileDto> freeFiles = freeService.selectFreeFile(idx);
+        mv.addObject("freeFiles", freeFiles);
 
         return mv;
     }
 
+    // 댓글 달기 구현(db에 저장 후 상세페이지로 다시 이동)
     @RequestMapping(value = "/freeCommentWrite", method = RequestMethod.POST)
     public String freeCommentWrite(CommentDto comment) throws Exception{
         commentService.freeWriteComment(comment);
@@ -278,12 +303,7 @@ public class MainController {
         return "redirect:/free/" + idx;
     }
 
-//    @RequestMapping(value = "/freeCommentDelete", method = RequestMethod.POST)
-//    public String freeCommentDelete(@PathVariable("idx") int idx) throws Exception{
-//        commentService.freeCommentDelete(idx);
-//        return "redirect:/free/";
-//    }
-
+    // 댓글 삭제 구현
     @RequestMapping(value = "/freeCommentDelete", method = RequestMethod.POST)
     public String freeCommentDelete(CommentDto comment) throws Exception{
         int idx = comment.getIdx();
@@ -293,6 +313,7 @@ public class MainController {
         return "redirect:/free/" + freeIdx;
     }
 
+    // 자유게시판 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
     @RequestMapping(value = "/freeUpdate/{idx}", method = RequestMethod.PUT)
     public ModelAndView freeUpdateView(@PathVariable("idx") int idx) throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeUpdate");
@@ -304,20 +325,23 @@ public class MainController {
         return mv;
     }
 
+    // 자유게시판 수정 구현(freeList 이동)
+    @RequestMapping(value = "/freeUpdate", method = RequestMethod.POST)
+    public String freeUpdateProcess(FreeDto free) throws Exception{
+        freeService.updateFree(free);
+        return "redirect:/freeList";
+    }
+
+    // 자유게시판 글 등록페이지로 이동
     @RequestMapping(value = "/freeWrite", method = RequestMethod.GET)
     public String freeWriteView() throws Exception {
         return "board/free/freeWrite";
     }
 
+    // 자유게시판 글 쓰기(파일업로드 수정)
     @RequestMapping(value = "/freeWrite", method = RequestMethod.POST)
-    public String freeWriteProcess(FreeDto free) throws Exception{
-        freeService.writeFree(free);
-        return "redirect:/freeList";
-    }
-
-    @RequestMapping(value = "/freeUpdate", method = RequestMethod.POST)
-    public String freeUpdateProcess(FreeDto free) throws Exception{
-        freeService.updateFree(free);
+    public String freeWriteProcess(FreeDto free, MultipartHttpServletRequest multipart) throws Exception{
+        freeService.writeFree(free, multipart);
         return "redirect:/freeList";
     }
 
@@ -330,12 +354,11 @@ public class MainController {
 
     // 게시물 일괄 삭제
     @ResponseBody
-    @RequestMapping(value = "/freeList", method = RequestMethod.POST)
+    @RequestMapping(value = "/freeList", method = RequestMethod.DELETE)
     public Object freeMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
         freeService.freeMultiDelete(idx);
         return "success";
     }
-
 
 
     //    현재상영작 수다

@@ -1,6 +1,7 @@
 package com.example.jangdocdaefilm.mapper;
 
 import com.example.jangdocdaefilm.dto.FreeDto;
+import com.example.jangdocdaefilm.dto.FreeFileDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.List;
 @Mapper
 public interface FreeMapper {
   //  게시물 전체 목록 출력
-  List<FreeDto> selectFreeList() throws Exception;
+//  List<FreeDto> selectFreeList() throws Exception;
+  List<FreeDto> selectFreeListNewest() throws Exception;
+  List<FreeDto> selectFreeListViewed() throws Exception;
 
   //  게시물 상세 내용 출력
   FreeDto selectFreeDetail(int idx) throws Exception;
@@ -28,4 +31,8 @@ public interface FreeMapper {
   //  게시물 조회수 카운트
   void updateFreeHitCount(int idx) throws Exception;
 
+  // 파일 업로드 수정
+  void insertFreeFileList(List<FreeFileDto> fileList) throws Exception;
+
+  List<FreeFileDto> selectFreeFile(int idx) throws Exception;
 }
