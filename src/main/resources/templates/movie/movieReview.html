@@ -50,17 +50,57 @@
               }
           });
 
-          $(".good-click").on("click", function() {
-              const tagBtn = $(this);
-              let idx = tagBtn.prev().val();
-              alert(`해당리뷰번호:${idx}`);
+          $(".like-click").on("click", function () {
+              const likeIcon = $(this);
+              // hidden input value 값 = 해당 리뷰 글번호
+              let reviewIdx = likeIcon.prev().val();
+
+              if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up') {
+                  $.ajax({
+                      url: '/saveLike',
+                      type: 'GET',
+                      data: {reviewIdx: reviewIdx},
+                      success: function (data) {
+                          let likeCnt = data.likeCnt;
+                          $("#like" + reviewIdx).text(likeCnt);
+                      },
+                      error: function () {
+                          alert("통신 실패");
+                      }
+                  })
+                  // ajax 통신 후 꽉 찬 아이콘으로 변경
+                  likeIcon.html("<i class='bi bi-hand-thumbs-up-fill'></i>");
+              } else if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up-fill') {
+                  $.ajax({
+                      url: '/removeLike',
+                      type: 'GET',
+                      data: {reviewIdx: reviewIdx},
+                      success: function (data) {
+                          let likeCnt = data.likeCnt;
+                          $("#like" + reviewIdx).text(likeCnt);
+                      },
+                      error: function () {
+                          alert("통신 실패");
+                      }
+                  })
+                  // ajax 통신 후 빈 아이콘으로 변경
+                  likeIcon.html("<i class='bi bi-hand-thumbs-up'></i>");
+              }
           });
 
           $("#btn-update").on("click", function () {
               $("#method").val("PUT")
               const frm = $("#frm")[0]
-              frm.action="/updateMovieReview";
+              frm.action = "/updateMovieReview";
               frm.submit()
+          });
+
+          $("#btn-delete").on("click", function () {
+              alert("정말 삭제하시겠습니까?")
+              $("#method").val("DELETE");
+              const frm = $("#frm-delete")[0];
+              frm.action = "/deleteMovieReview/" + $("#idx").val();
+              frm.submit();
           });
       });
   </script>
@@ -78,47 +118,51 @@
         <a class="btn btn-secondary align-self-center" id="btnBack">이전 페이지로</a>
       </div>
       <div class="my-review card text-bg-light my-3" th:if="${myReview} != null">
-        <div class="card-body">
-          <p class="card-text" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
-          <div class="text-end">
-            <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
-            <span class="me-2" th:text="${myReview.goodCnt}">12</span>
-            <!-- 내가 쓴 리뷰 수정 -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#reviewEditModal">수정
-            </button>
-            <div class="modal fade" id="reviewEditModal">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title" th:text="${myReview.movieTitle}">영화이름</h1>
-                  </div>
-                  <div class="modal-body">
-                    <form id="frm" method="post">
-                      <textarea class="form-control" rows="10" name="content" th:text="${myReview.content}" placeholder="영화 리뷰를 작성해주세요"></textarea>
-                      <input type="range" class="form-range mt-2" step="1" min="1" max="10"
-                             th:value="${myReview.userScore}" name="userScore">
-                      <input type="hidden" name="idx" th:value="${myReview.idx}">
-                      <input type="hidden" name="movieId" th:value="${myReview.movieId}">
-                      <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
-                      <input type="hidden" name="createDt" th:value="${myReview.createDt}">
-                      <input type="hidden" name="memberId" th:value="${session.id}">
-                      <input type="hidden" name="userName" th:value="${session.userName}">
-                      <div class="text-end">
-                        <button type="button" class="btn btn-primary" id="btn-update">등록</button>
-                      </div>
-                      <input type="hidden" id="method" name="_method">
-                    </form>
+        <form id="frm-delete" method="post">
+          <div class="card-body">
+            <p class="card-text" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
+            <div class="text-end">
+              <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
+              <span class="me-2" th:text="${myReview.getLikeCnt}">12</span>
+              <!-- 내가 쓴 리뷰 수정 -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#reviewEditModal">수정
+              </button>
+              <div class="modal fade" id="reviewEditModal">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title" th:text="${myReview.movieTitle}">영화이름</h1>
+                    </div>
+                    <div class="modal-body">
+                      <form id="frm" method="post">
+                        <textarea class="form-control" rows="10" name="content" th:text="${myReview.content}"
+                                  placeholder="영화 리뷰를 작성해주세요"></textarea>
+                        <input type="range" class="form-range mt-2" step="1" min="1" max="10"
+                               th:value="${myReview.userScore}" name="userScore">
+                        <input type="hidden" name="idx" th:value="${myReview.idx}">
+                        <input type="hidden" name="movieId" th:value="${myReview.movieId}">
+                        <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
+                        <input type="hidden" name="createDt" th:value="${myReview.createDt}">
+                        <input type="hidden" name="memberId" th:value="${session.id}">
+                        <input type="hidden" name="userName" th:value="${session.userName}">
+                        <div class="text-end">
+                          <button type="button" class="btn btn-primary" id="btn-update">등록</button>
+                        </div>
+                        <input type="hidden" id="method" name="_method">
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
+              <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
             </div>
-
-            <button type="button" class="btn btn-danger">삭제</button>
           </div>
-        </div>
+          <input type="hidden" name="movieId" th:value="${myReview.movieId}">
+          <input type="hidden" id="idx" name="idx" th:value="${myReview.idx}">
+          <input type="hidden" name="_method">
+        </form>
       </div>
-
       <div class="my-4" id="other-reviews">
         <div class="card my-4" th:each="item : ${reviewList}">
           <div class="card-body">
@@ -127,20 +171,26 @@
             <br>
             <span class="card-text" th:text="${item.userScore}">유저 평점</span>
             <div class="d-flex justify-content-end">
+              <!-- 로그인 상태 -->
               <div th:if="${session.id} != null">
-                <input type="text" class="review-idx" th:value="${item.idx}">
-                <a class="me-2 good-click" id="good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+                <!--                테스트 용-->
+                <input type="hidden" th:value="${item.idx}">
+                <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>
+
+                <!--                <div th:if="${item.idx} == null">-->
+                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
+                <!--                  <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
+                <!--                </div>-->
+                <!--                <div th:unless="${good.idx} == null">-->
+                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
+                <!--                  <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>-->
+                <!--                </div>-->
               </div>
-
-
-
-
-
+              <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
               <div th:unless="${session.id} != null">
-                <!-- 빈하트 -->
-                <span class="me-2"><i class="bi bi-hand-thumbs-up"></i></span>
+                <span class="me-2"><i class="bi bi-hand-thumbs-up-fill"></i></span>
               </div>
-              <span class="me-2" th:text="${item.goodCnt}">32</span>
+              <span class="me-2" th:id="|like${item.idx}|" th:text="${item.likeCnt}">32</span>
             </div>
           </div>
         </div>

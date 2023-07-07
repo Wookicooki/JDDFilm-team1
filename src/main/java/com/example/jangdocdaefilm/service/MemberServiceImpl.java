@@ -3,6 +3,7 @@ package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.dto.MemberDto;
 import com.example.jangdocdaefilm.dto.ReviewDto;
+import com.example.jangdocdaefilm.dto.ReviewLikesDto;
 import com.example.jangdocdaefilm.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,36 @@ public class MemberServiceImpl implements MemberService {
   public void updateMovieReview(ReviewDto review) throws Exception {
     memberMapper.updateMovieReview(review);
   }
+
+  // 좋아요 +1
+  @Override
+  public void saveLike(int reviewIdx, String memberId) throws Exception {
+    memberMapper.saveLike(reviewIdx, memberId);
+    memberMapper.likeUp(reviewIdx);
+  }
+
+  @Override
+  public ReviewDto getMovieReview(int reviewIdx) throws Exception {
+    return memberMapper.getMovieReview(reviewIdx);
+  }
+
+  // 좋아요 -1
+  @Override
+  public void removeLike(int reviewIdx, String memberId) throws Exception {
+    memberMapper.removeLike(reviewIdx, memberId);
+    memberMapper.likeDown(reviewIdx);
+  }
+
+  // 좋아요 체크
+  @Override
+  public int checkLike(int reviewIdx, String memberId) throws Exception {
+    return memberMapper.checkLike(reviewIdx, memberId);
+  }
+
+  @Override
+  public void deleteMovieReview(int idx) throws Exception {
+    memberMapper.deleteMovieReview(idx);
+  }
+
 
 }

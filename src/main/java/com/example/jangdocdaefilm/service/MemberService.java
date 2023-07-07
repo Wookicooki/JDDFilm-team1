@@ -2,15 +2,16 @@ package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.dto.MemberDto;
 import com.example.jangdocdaefilm.dto.ReviewDto;
+import com.example.jangdocdaefilm.dto.ReviewLikesDto;
 
 import java.util.List;
 
 public interface MemberService {
 
-//  사용자 정보가 있는지 없는지 확인
+  //  사용자 정보가 있는지 없는지 확인
   public int isMemberInfo(String id, String pw) throws Exception;
 
-//  사용자 정보 가져오기
+  //  사용자 정보 가져오기
   public MemberDto getMemberInfo(String id) throws Exception;
 
   void signUpMember(MemberDto member) throws Exception;
@@ -27,5 +28,17 @@ public interface MemberService {
   ReviewDto getMyMovieReview(String movieId, String userId) throws Exception;
 
   // 리뷰 수정
-    void updateMovieReview(ReviewDto review) throws Exception;
+  void updateMovieReview(ReviewDto review) throws Exception;
+
+  // 좋아요 +1
+  void saveLike(int reviewIdx, String memberId) throws Exception;
+
+  ReviewDto getMovieReview(int reviewIdx) throws Exception;
+
+  // 좋아요 -1
+  void removeLike(int reviewIdx, String memberId) throws Exception;
+
+  int checkLike(int reviewIdx, String memberId) throws Exception;
+
+  void deleteMovieReview(int idx) throws Exception;
 }

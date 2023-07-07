@@ -232,8 +232,16 @@ public class MainController {
     memberService.updateMovieReview(review);
     String movieId = review.getMovieId();
     // String movieTitle = review.getMovieTitle();
-    String redirect = "redirect:/movieReview/" + movieId;
-    return redirect;
+    return "redirect:/movieReview/" + movieId;
+  }
+
+  // 영화 리뷰 삭제
+  @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
+  public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception{
+    memberService.deleteMovieReview(idx);
+    String movieId = review.getMovieId();
+    // String movieTitle = review.getMovieTitle();
+    return "redirect:/movieReview/" + movieId;
   }
 
   // 해당 영화 모든 리뷰 조회
@@ -243,6 +251,8 @@ public class MainController {
     // 내가 쓴 영화 리뷰 조회
     // 로그인 확인 후 로그인 되어있을 경우에만 나의 리뷰 조회
     HttpSession session = req.getSession();
+
+    // int checkLike = memberService.checkLike(,userId);
     List<ReviewDto> reviewList;
     ReviewDto myReview = null;
     String userId;
@@ -264,10 +274,29 @@ public class MainController {
   }
 
   // 리뷰 좋아요
+  @ResponseBody
+  @RequestMapping(value = "/saveLike", method = RequestMethod.GET)
+  public Object saveLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception{
+    HttpSession session = req.getSession();
+    String memberId = (String) session.getAttribute("id");
 
+    memberService.saveLike(reviewIdx, memberId);
+    ReviewDto review = memberService.getMovieReview(reviewIdx);
+
+    return review;
+  }
 
   // 리뷰 좋아요 취소
+  @ResponseBody
+  @RequestMapping(value = "/removeLike", method = RequestMethod.GET)
+  public Object removeLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception{
+    HttpSession session = req.getSession();
+    String memberId = (String) session.getAttribute("id");
 
+    memberService.removeLike(reviewIdx, memberId);
+    ReviewDto review = memberService.getMovieReview(reviewIdx);
+    return review;
+  }
 
   @RequestMapping("/myMovie")
   public String myMovie() throws Exception {

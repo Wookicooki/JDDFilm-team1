@@ -3,8 +3,8 @@ package com.example.jangdocdaefilm.dto;
 import lombok.Data;
 
 @Data
-public class ReviewGoodDto {
-    private int id;
+public class ReviewLikesDto {
+    private int idx;
     private String memberId;
-    private String reviewIdx;
+    private int reviewIdx;
 }
