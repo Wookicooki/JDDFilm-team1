@@ -96,7 +96,7 @@
           });
 
           $("#btn-delete").on("click", function () {
-              alert("정말 삭제하시겠습니까?")
+              confirm("정말 삭제하시겠습니까?")
               $("#method").val("DELETE");
               const frm = $("#frm-delete")[0];
               frm.action = "/deleteMovieReview/" + $("#idx").val();
