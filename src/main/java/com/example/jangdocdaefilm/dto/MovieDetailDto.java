@@ -15,5 +15,4 @@ public class MovieDetailDto {
   private String tagline;
   private String title;
   private String vote_average;
-  // private List<CreditsDto> credits;
 }

@@ -41,4 +41,6 @@ public interface MemberService {
   int checkLike(int reviewIdx, String memberId) throws Exception;
 
   void deleteMovieReview(int idx) throws Exception;
+
+  List<ReviewLikesDto> getReviewLike(String userId) throws Exception;
 }

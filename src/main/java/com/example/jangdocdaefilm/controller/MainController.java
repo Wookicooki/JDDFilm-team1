@@ -57,18 +57,16 @@ public class MainController {
     List<DailyBoxOfficeDto> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
     /**************************/
 
-    /***** 일일 박스 오피스의 영화 상세 정보 *****/
-    // dailyBoxOfficeList에서 10편의 영화 제목만 가져와 리스트로 저장
-    List<String> keywords = dailyBoxOfficeList.stream()
-        .map(MapData -> MapData.getMovieNm())
-        .toList();
-
-    Iterator<String> it = keywords.iterator();
+    /***** 일일 박스 오피스의 영화 상세 정보 tmdb 검색 api *****/
+    // 수정
+    Iterator<DailyBoxOfficeDto> it = dailyBoxOfficeList.iterator();
     List<MovieDto> movieList = new ArrayList<>();
     while (it.hasNext()) {
-      String query = it.next();
+      DailyBoxOfficeDto dailyBoxOffice = it.next();
+      String query = dailyBoxOffice.getMovieNm();
+      String openDt = dailyBoxOffice.getOpenDt();
       String queryEncode = URLEncoder.encode(query, "UTF-8");
-      MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1");
+      MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1&region=KR");
 
       List<MovieDto> movieLists = movies.getResults();
       int total = Integer.parseInt(movies.getTotal_results());
@@ -190,12 +188,46 @@ public class MainController {
   public ModelAndView movieDetail(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
     // 영화 정보 가져오기
     ModelAndView mv = new ModelAndView("movie/movieDetail");
-    String appendUrl = "?append_to_response=credits&language=ko";
-    MovieDetailDto movie = movieService.getMovieDetail(tmdbServiceUrl + "movie/" + movieId + appendUrl);
+    MovieDetailDto movie = movieService.getMovieDetail(tmdbServiceUrl + "movie/" + movieId + "?language=ko");
     List<GenreDto> genre = movie.getGenres();
+    CreditsDto credits = movieService.getCredits(tmdbServiceUrl + "movie/" + movieId + "/credits?&language=ko");
+
+    // 제작진 정보
+    List<CrewDto> crews = credits.getCrew();
+    List<CrewDto> director = new ArrayList<>();
+    ;
+    List<CrewDto> writer = new ArrayList<>();
+    ;
+
+    Iterator<CrewDto> crewIterator = crews.iterator();
+    while (crewIterator.hasNext()) {
+      CrewDto crew = crewIterator.next();
+      if (crew.getJob().equals("Director")) {
+        director.add(crew);
+      } else if (crew.getJob().equals("Writer")) {
+        writer.add(crew);
+      }
+    }
+
+    // 출연진 정보
+    List<CastDto> casts = credits.getCast();
+    List<CastDto> actor = new ArrayList<>();
+    Iterator<CastDto> castIterator = casts.iterator();
+    while (castIterator.hasNext()) {
+      CastDto cast = castIterator.next();
+      switch (cast.getOrder()) {
+        case "0", "1", "2", "3", "4", "5" -> {
+          actor.add(cast);
+          break;
+        }
+      }
+    }
 
     mv.addObject("movieInfo", movie);
     mv.addObject("genre", genre);
+    mv.addObject("director", director);
+    mv.addObject("writer", writer);
+    mv.addObject("actor", actor);
 
     // 리뷰 조회
     HttpSession session = req.getSession();
@@ -228,25 +260,25 @@ public class MainController {
 
   // 영화 리뷰 수정
   @RequestMapping(value = "/updateMovieReview", method = RequestMethod.PUT)
-  public String updateMovieReview(ReviewDto review) throws Exception{
+  public String updateMovieReview(ReviewDto review) throws Exception {
     memberService.updateMovieReview(review);
     String movieId = review.getMovieId();
-    // String movieTitle = review.getMovieTitle();
-    return "redirect:/movieReview/" + movieId;
+    String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
+    return "redirect:/movieReview/" + movieId + "/" + movieTitle;
   }
 
   // 영화 리뷰 삭제
   @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
-  public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception{
+  public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception {
     memberService.deleteMovieReview(idx);
     String movieId = review.getMovieId();
-    // String movieTitle = review.getMovieTitle();
-    return "redirect:/movieReview/" + movieId;
+    String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
+    return "redirect:/movieReview/" + movieId + "/" + movieTitle;
   }
 
   // 해당 영화 모든 리뷰 조회
-  @RequestMapping(value = "/movieReview/{movieId}", method = RequestMethod.GET)
-  public ModelAndView movieReview(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
+  @RequestMapping(value = "/movieReview/{movieId}/{movieTitle}", method = RequestMethod.GET)
+  public ModelAndView movieReview(@PathVariable("movieId") String movieId, @PathVariable("movieTitle") String movieTitle, HttpServletRequest req) throws Exception {
     ModelAndView mv = new ModelAndView("/movie/movieReview");
     // 내가 쓴 영화 리뷰 조회
     // 로그인 확인 후 로그인 되어있을 경우에만 나의 리뷰 조회
@@ -255,6 +287,7 @@ public class MainController {
     // int checkLike = memberService.checkLike(,userId);
     List<ReviewDto> reviewList;
     ReviewDto myReview = null;
+    List<ReviewLikesDto> reviewLikeCheck = null;
     String userId;
     Object storedUserId = session.getAttribute("id");
 
@@ -264,9 +297,14 @@ public class MainController {
       reviewList = memberService.getMovieReviewList(movieId);
       userId = (String) storedUserId;
       myReview = memberService.getMyMovieReview(movieId, userId);
+
+      // 리뷰 좋아요 체크
+      reviewLikeCheck = memberService.getReviewLike(userId);
     }
 
-//    mv.addObject("movieTitle", movieTitle);
+
+    mv.addObject("reviewLikeCheck", reviewLikeCheck);
+    mv.addObject("movieTitle", movieTitle);
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
 
@@ -276,7 +314,7 @@ public class MainController {
   // 리뷰 좋아요
   @ResponseBody
   @RequestMapping(value = "/saveLike", method = RequestMethod.GET)
-  public Object saveLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception{
+  public Object saveLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception {
     HttpSession session = req.getSession();
     String memberId = (String) session.getAttribute("id");
 
@@ -289,7 +327,7 @@ public class MainController {
   // 리뷰 좋아요 취소
   @ResponseBody
   @RequestMapping(value = "/removeLike", method = RequestMethod.GET)
-  public Object removeLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception{
+  public Object removeLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception {
     HttpSession session = req.getSession();
     String memberId = (String) session.getAttribute("id");
 

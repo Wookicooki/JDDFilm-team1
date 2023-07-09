@@ -5,10 +5,12 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -45,7 +47,6 @@ public class MovieServiceImpl implements MovieService {
 
         Gson gson = new Gson();
         MovieDetailDto movieDetail = gson.fromJson(response.body(), MovieDetailDto.class);
-
         return movieDetail;
     }
 
@@ -63,5 +64,20 @@ public class MovieServiceImpl implements MovieService {
         List<DailyBoxOfficeDto> boxOfficeList = boxOffice.getBoxOfficeResult().getDailyBoxOfficeList();
 
         return boxOfficeList;
+    }
+
+    @Override
+    public CreditsDto getCredits(String url) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("accept", "application/json")
+            .header("Authorization", serviceAuthor)
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        Gson gson = new Gson();
+        CreditsDto credits = gson.fromJson(response.body(), CreditsDto.class);
+
+        return credits;
     }
 }
