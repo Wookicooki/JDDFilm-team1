@@ -20,5 +20,4 @@ public class MovieDto {
     private String video;
     private String vote_average;
     private String vote_count;
-    private String score_avg;
 }

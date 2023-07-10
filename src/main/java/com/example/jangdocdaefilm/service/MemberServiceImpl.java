@@ -1,10 +1,7 @@
 package com.example.jangdocdaefilm.service;
 
 
-import com.example.jangdocdaefilm.dto.MemberDto;
-import com.example.jangdocdaefilm.dto.MovieDto;
-import com.example.jangdocdaefilm.dto.ReviewDto;
-import com.example.jangdocdaefilm.dto.ReviewLikesDto;
+import com.example.jangdocdaefilm.dto.*;
 import com.example.jangdocdaefilm.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,22 +99,22 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
-  public void insertUserScoreAvg(MovieDto movie) throws Exception {
-    memberMapper.insertUserScoreAvg(movie);
+  public void insertUserScoreAvg(UserScoreDto userScore) throws Exception {
+    memberMapper.insertUserScoreAvg(userScore);
   }
 
   @Override
-  public void updateUserScoreAvg(MovieDto movie) throws Exception {
-    memberMapper.updateUserScoreAvg(movie);
+  public void updateUserScoreAvg(UserScoreDto userScore) throws Exception {
+    memberMapper.updateUserScoreAvg(userScore);
   }
 
   @Override
-  public MovieDto getScoreAvgMovie(String movieId) throws Exception {
+  public UserScoreDto getScoreAvgMovie(String movieId) throws Exception {
     return memberMapper.getScoreAvgMovie(movieId);
   }
 
   @Override
-  public List<MovieDto> getJangDocDaeChart() throws Exception {
+  public List<UserScoreDto> getJangDocDaeChart() throws Exception {
     return memberMapper.getJangDocDaeChart();
   }
 }

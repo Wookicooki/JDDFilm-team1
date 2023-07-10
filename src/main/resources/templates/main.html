@@ -86,8 +86,9 @@
           </div>
           <table class="table table-hover table-striped">
             <tr th:each="item: ${jangDocDaeChart}">
-              <td th:text="${item.title}"><a th:href="@{/movieDetail/} + ${movieid}" class="text-decoration-none">순위 1</a></td>
-              <td th:text="${item.getScore_avg()}"></td>
+              <td th:text="${item.no}"></td>
+              <td><a th:href="@{/movieDetail/} + ${item.id}" class="text-decoration-none" th:text="${item.title}">순위</a></td>
+              <td th:text="${item.score_avg}"></td>
             </tr>
           </table>
         </div>

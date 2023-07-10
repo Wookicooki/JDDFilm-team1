@@ -1,9 +1,6 @@
 package com.example.jangdocdaefilm.service;
 
-import com.example.jangdocdaefilm.dto.MemberDto;
-import com.example.jangdocdaefilm.dto.MovieDto;
-import com.example.jangdocdaefilm.dto.ReviewDto;
-import com.example.jangdocdaefilm.dto.ReviewLikesDto;
+import com.example.jangdocdaefilm.dto.*;
 
 import java.util.List;
 
@@ -49,12 +46,12 @@ public interface MemberService {
   String userScoreAvg(String movieId) throws Exception;
 
   // 유저 점수 평균 등록
-  void insertUserScoreAvg(MovieDto movie) throws Exception;
+  void insertUserScoreAvg(UserScoreDto userScore) throws Exception;
 
   // 유저 점수 평균 업데이트
-  void updateUserScoreAvg(MovieDto movie) throws Exception;
+  void updateUserScoreAvg(UserScoreDto userScore) throws Exception;
 
-  MovieDto getScoreAvgMovie(String movieId) throws Exception;
+  UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
 
-  List<MovieDto> getJangDocDaeChart() throws Exception;
+  List<UserScoreDto> getJangDocDaeChart() throws Exception;
 }

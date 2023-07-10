@@ -93,7 +93,7 @@ public class MainController {
     mv.addObject("member", member);
 
     // 장독대 순위
-    List<MovieDto> jangDocDaeChart = memberService.getJangDocDaeChart();
+    List<UserScoreDto> jangDocDaeChart = memberService.getJangDocDaeChart();
     mv.addObject("jangDocDaeChart", jangDocDaeChart);
 
     return mv;
@@ -254,9 +254,9 @@ public class MainController {
   public String insertMovieReview(ReviewDto review) throws Exception {
     memberService.insertMovieReview(review);
     // 새 리뷰 insert시 평균 계산하여 영화 테이블에 insert
-    MovieDto movie = memberService.getScoreAvgMovie(review.getMovieId());
+    UserScoreDto movie = memberService.getScoreAvgMovie(review.getMovieId());
     if (movie == null){
-      MovieDto saveMovieScore = new MovieDto();
+      UserScoreDto saveMovieScore = new UserScoreDto();
       saveMovieScore.setId(review.getMovieId());
       saveMovieScore.setTitle(review.getMovieTitle());
       saveMovieScore.setScore_avg(String.valueOf(review.getUserScore()));
@@ -264,7 +264,7 @@ public class MainController {
       memberService.insertUserScoreAvg(saveMovieScore);
     } else {
       String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
-      MovieDto updateMovieScore = new MovieDto();
+      UserScoreDto updateMovieScore = new UserScoreDto();
       updateMovieScore.setId(review.getMovieId());
       updateMovieScore.setTitle(review.getMovieTitle());
       updateMovieScore.setScore_avg(userScoreAvg);
@@ -283,7 +283,7 @@ public class MainController {
 
     // 영화 평점 업데이트
     String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
-    MovieDto updateMovieScore = new MovieDto();
+    UserScoreDto updateMovieScore = new UserScoreDto();
     updateMovieScore.setId(review.getMovieId());
     updateMovieScore.setTitle(review.getMovieTitle());
     updateMovieScore.setScore_avg(userScoreAvg);

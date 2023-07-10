@@ -159,7 +159,7 @@
     </select>
 
 <!--    평균 평점 등록 -->
-    <insert id="insertUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.MovieDto">
+    <insert id="insertUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.UserScoreDto">
         INSERT INTO
         movie (title, score_avg, id)
         VALUES
@@ -167,7 +167,7 @@
     </insert>
 
 <!--    평균 평점 업데이트 -->
-    <update id="updateUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.MovieDto">
+    <update id="updateUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.UserScoreDto">
         UPDATE
             movie
         SET
@@ -178,7 +178,7 @@
             id = #{id}
     </update>
 
-    <select id="getScoreAvgMovie" parameterType="String" resultType="com.example.jangdocdaefilm.dto.MovieDto">
+    <select id="getScoreAvgMovie" parameterType="String" resultType="com.example.jangdocdaefilm.dto.UserScoreDto">
         SELECT
             title, score_avg, id
         FROM
@@ -186,12 +186,10 @@
         WHERE id = #{movieId};
     </select>
 
-    <select id="getJangDocDaeChart" resultType="com.example.jangdocdaefilm.dto.MovieDto">
-        SELECT
-            title, score_avg, id
+    <select id="getJangDocDaeChart" resultType="com.example.jangdocdaefilm.dto.UserScoreDto">
+        select
+            row_number() over(order by score_avg desc) as no, title, score_avg, id
         FROM
-            movie
-        ORDER BY
-            score_avg DESC;
+            movie;
     </select>
 </mapper>
