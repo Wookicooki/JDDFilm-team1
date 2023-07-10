@@ -140,5 +140,13 @@
             review_idx = #{reviewIdx}
     </select>
 
+    <select id="getReviewLike" parameterType="String" resultType="com.example.jangdocdaefilm.dto.ReviewLikesDto">
+        SELECT
+            idx, member_id, review_idx
+        FROM
+            likes
+        WHERE
+            member_id = #{memberId}
+    </select>
 
 </mapper>

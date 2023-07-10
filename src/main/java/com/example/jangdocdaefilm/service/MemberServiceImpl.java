@@ -90,5 +90,10 @@ public class MemberServiceImpl implements MemberService {
     memberMapper.deleteMovieReview(idx);
   }
 
+  @Override
+  public List<ReviewLikesDto> getReviewLike(String userId) throws Exception {
+    return memberMapper.getReviewLike(userId);
+  }
+
 
 }

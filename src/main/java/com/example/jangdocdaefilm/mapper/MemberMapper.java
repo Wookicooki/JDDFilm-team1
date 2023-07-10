@@ -43,4 +43,5 @@ public interface MemberMapper {
   int checkLike(int reviewIdx, String memberId) throws Exception;
 
 
+  List<ReviewLikesDto> getReviewLike(String memberId) throws Exception;
 }

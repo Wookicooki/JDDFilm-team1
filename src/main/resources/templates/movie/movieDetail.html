@@ -14,16 +14,16 @@
   <script src="/js/header.js"></script>
 
   <script>
-      $(document).ready(() => {
-          $("#go-to-login").on("click", () => {
-              alert("로그인 후 이용해주세요");
-              location.href = "/login";
-          });
-
-          $("#review-exist").on("click", () => {
-              alert("등록된 리뷰가 있습니다.");
-          });
+    $(document).ready(() => {
+      $("#go-to-login").on("click", () => {
+        alert("로그인 후 이용해주세요");
+        location.href = "/login";
       });
+
+      $("#review-exist").on("click", () => {
+        alert("등록된 리뷰가 있습니다.");
+      });
+    });
   </script>
 
 </head>
@@ -35,11 +35,11 @@
     <div class="col-sm-2"></div>
     <div class="col-sm">
       <div class="row my-3">
-        <div class="col-sm-3">
+        <div class="col-sm-4">
           <img th:src="@{https://image.tmdb.org/t/p/original/} + ${movieInfo.poster_path}" src="/images/img1.jpg"
                class="img-fluid">
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-8">
           <h1 class="fs-2 fw-bold" th:text="${movieInfo.title}">인디아나 존슨:운명의 다이얼</h1>
           <div class="review my-4 d-flex">
             <div class="me-3">
@@ -112,12 +112,48 @@
           </div>
         </div>
       </div>
+
+      <div class="row my-2">
+        <span class="fw-bold">출연진</span>
+        <div class="col-sm-2" th:each="item :${actor}">
+          <img class="img-fluid my-1" th:if="${item.profile_path} != null"
+               th:src="@{https://image.tmdb.org/t/p/original/} + ${item.profile_path}">
+          <img class="img-fluid my-1" th:unless="${item.profile_path} != null" src="/images/blank.jpg">
+          <br>
+          <span th:text="${item.name}"></span>
+          <br>
+          <span th:text="|배역 : ${item.character}|" style="font-size: smaller"></span>
+        </div>
+      </div>
+
+      <div class="row my-2">
+        <span class="fw-bold">감독</span>
+        <div class="col-sm-2" th:each="item :${director}">
+          <img class="img-fluid my-1" th:if="${item.profile_path} != null"
+               th:src="@{https://image.tmdb.org/t/p/original/} + ${item.profile_path}">
+          <img class="img-fluid my-1" th:unless="${item.profile_path} != null" src="/images/blank.jpg">
+          <br>
+          <span th:text="${item.name}" class="mt-1"></span><br>
+        </div>
+      </div>
+
+      <div class="row my-2">
+        <span class="fw-bold">각본</span>
+        <div class="col-sm-2" th:each="item :${writer}">
+          <img class="img-fluid my-1" th:if="${item.profile_path} != null"
+               th:src="@{https://image.tmdb.org/t/p/original/} + ${item.profile_path}">
+          <img class="img-fluid my-1" th:unless="${item.profile_path} != null" src="/images/blank.jpg">
+          <br>
+          <span th:text="${item.name}" class="mt-1"></span><br>
+        </div>
+      </div>
+
       <div th:if="${reviewList.size()} == 0">
         <p>해당 영화의 리뷰가 없습니다</p>
       </div>
 
       <div th:if="${reviewList.size()} != 0">
-        <a th:href="@{/movieReview/} + ${movieInfo.id}"
+        <a th:href="@{/movieReview/} + ${movieInfo.id} + @{/} + ${movieInfo.title}"
            class="text-decoration-none text-end fw-bold">+ 더보기</a>
         <div class="row row-cols-3 my-2">
           <div th:each="item :${reviewList}">

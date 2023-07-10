@@ -8,5 +8,5 @@ public class CastDto {
   private String name;
   private String profile_path;
   private String character;
-  private int order;
+  private String order;
 }

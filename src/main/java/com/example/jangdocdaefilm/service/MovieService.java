@@ -11,4 +11,6 @@ public interface MovieService {
     MovieDetailDto getMovieDetail(String url) throws Exception;
 
     List<DailyBoxOfficeDto> getDailyBoxOfficeList(String url) throws Exception;
+
+    CreditsDto getCredits(String url) throws Exception;
 }
