@@ -164,39 +164,38 @@
         </form>
       </div>
       <div class="my-4" id="other-reviews">
-        <div class="card my-4" th:each="item : ${reviewList}">
+        <th:block th:each="item: ${reviewList}">
+          <div class="card my-4" th:each="check:${reviewLikeCheck}">
+            <div class="card-body">
+              <p class="card-text" th:text="${item.userName}">작성자 이름</p>
+              <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
+              <br>
+              <span class="card-text" th:text="${item.userScore}">유저 평점</span>
+              <div class="d-flex justify-content-end">
+                <!-- 로그인 상태 -->
+                <div th:if="${session.id} != null">
+                  <!--                테스트 용-->
+<!--                  <input type="hidden" th:value="${item.idx}">-->
+<!--                  <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
 
-          <div class="card-body">
-            <p class="card-text" th:text="${item.userName}">작성자 이름</p>
-            <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
-            <br>
-            <span class="card-text" th:text="${item.userScore}">유저 평점</span>
-            <div class="d-flex justify-content-end">
-              <!-- 로그인 상태 -->
-              <div th:if="${session.id} != null">
-                <!--                테스트 용-->
-                <input type="hidden" th:value="${item.idx}">
-                <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>
-                <th:block th:each="check:${reviewLikeCheck}" th:if="${item.idx} == ${check.idx}">
-                  <input type="hidden" class="review-idx" th:value="${item.idx}">
-                  <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up"></i></a>
-                </th:block>
-                <!--                <div th:if="${item.idx} == null">-->
-
-                <!--                </div>-->
-                <!--                <div th:unless="${good.idx} == null">-->
-                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
-                <!--                  <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>-->
-                <!--                </div>-->
+<!--                  <div th:if="${item.idx} == ${check.idx}">-->
+<!--                    <input type="hidden" class="review-idx" th:value="${item.idx}">-->
+<!--                    <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
+<!--                  </div>-->
+                  <div th:unless="${check.idx} == null">
+                    <input type="hidden" class="review-idx" th:value="${item.idx}">
+                    <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+                  </div>
+                </div>
+                <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
+                <div th:unless="${session.id} != null">
+                  <span class="me-2"><i class="bi bi-hand-thumbs-up-fill"></i></span>
+                </div>
+                <span class="me-2" th:id="|like${item.idx}|" th:text="${item.likeCnt}">32</span>
               </div>
-              <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
-              <div th:unless="${session.id} != null">
-                <span class="me-2"><i class="bi bi-hand-thumbs-up-fill"></i></span>
-              </div>
-              <span class="me-2" th:id="|like${item.idx}|" th:text="${item.likeCnt}">32</span>
             </div>
           </div>
-        </div>
+        </th:block>
       </div>
     </div>
     <div class="col-sm-2"></div>
