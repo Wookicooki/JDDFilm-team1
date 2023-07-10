@@ -119,4 +119,30 @@ public class MovieServiceImpl implements MovieService {
         PosterDto poster = gson.fromJson(response.body(), PosterDto.class);
         return poster.getPoster_path();
     }
+
+    @Override
+    public List<String> getRecomsLike(String userName) throws Exception {
+
+        return movieMapper.selectRecomsLike(userName);
+    }
+
+    @Override
+    public void deleteRecomsLike(String idx, String userName) throws Exception {
+        movieMapper.deleteRecomsLike(idx, userName);
+    }
+
+    @Override
+    public int isRecomsLike(String idx, String userName) throws Exception {
+        return movieMapper.isRecomsLike(idx, userName);
+    }
+
+    @Override
+    public void insertRecomsLike(String idx, String userName) throws Exception {
+        movieMapper.insertRecomsLike(idx, userName);
+    }
+
+    @Override
+    public void updateRecomsLike(String idx, String userName) throws Exception {
+        movieMapper.updateRecomsLike(idx, userName);
+    }
 }

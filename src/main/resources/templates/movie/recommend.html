@@ -12,6 +12,69 @@
             crossorigin="anonymous"></script>
     <script src="/js/header.js"></script>
 
+    <script>
+        $(document).ready(() => {
+
+            $("i").on("click", function () {
+                const id = $(this).attr('id').slice(0, -1);
+                const data = {idx: id}
+
+                if ($(this).hasClass("bi-heart") === true) {
+                    $.ajax({
+                        url: "/movie/recoms/like",
+                        type: "GET",
+                        data: data,
+                        success: (result) => {
+                            if (result == 1) {
+                                $.ajax({
+                                    url: "/movie/recoms/like",
+                                    type: "PUT",
+                                    data: data,
+                                    success: () => {
+                                        $(this).removeClass("bi-heart").addClass("bi-heart-fill");
+                                    },
+                                    error: () => {
+                                    }
+                                });
+                            } else {
+                                $.ajax({
+                                    url: "/movie/recoms/like",
+                                    type: "POST",
+                                    data: data,
+                                    success: () => {
+                                        $(this).removeClass("bi-heart").addClass("bi-heart-fill");
+                                    },
+                                    error: () => {
+                                    }
+                                });
+                            }
+                        },
+                        error: () => {
+                        }
+                    });
+                } else {
+                    //제거 update
+                    $.ajax({
+                        url: "/movie/recoms/like",
+                        type: "DELETE",
+                        data: data,
+                        success: () => {
+                            $(this).removeClass("bi-heart-fill").addClass("bi-heart");
+                        },
+                        error: () => {
+                        }
+                    });
+                }
+
+            });
+
+            $(document).on("click", "img", function () {
+
+                location.href = "/movie/recom/" + $(this).attr('id');
+            });
+        });
+    </script>
+
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
@@ -29,10 +92,13 @@
                     <div th:each="item: ${recomList}" class="d-flex justify-content-center">
                         <div style="width: 180px;">
                             <img th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster}" src="" alt=""
-                                 class="w-100">
+                                 class="w-100" th:id="${item.idx}">
                             <div class="d-flex justify-content-between">
                                 <p th:text="|${item.userName}님의 추천작|">@@님의 추천작</p>
-                                <p><i class="bi bi-heart-fill text-danger"></i></p>
+                                <p th:if="${item.like == 'Y'}">
+                                    <i class="bi bi-heart-fill text-danger" th:id="|${item.idx}i|"></i></p>
+                                <p th:if="${item.like == 'N'}">
+                                    <i class="bi bi-heart text-danger" th:id="|${item.idx}i|"></i></p>
                             </div>
                         </div>
                     </div>

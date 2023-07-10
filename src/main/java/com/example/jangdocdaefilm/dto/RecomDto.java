@@ -9,9 +9,10 @@ public class RecomDto {
     private String userName;
     private String title;
     private String content;
-    private String likeCnt;
+    private String visitCnt;
     private String num;
     private String movieId;
     private String poster;
+    private String like;
 
 }

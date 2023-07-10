@@ -92,4 +92,33 @@ public class MovieController {
         movieService.insertRecom(movies, idx);
     }
 
+    @RequestMapping(value = "/recoms/like", method = RequestMethod.GET)
+    public Object isRecomsLike(@RequestParam("idx") String idx) throws Exception {
+        int result = movieService.isRecomsLike(idx, "tester1");
+        return result;
+    }
+
+    @RequestMapping(value = "/recoms/like", method = RequestMethod.POST)
+    public void insertRecomsLike(@RequestParam("idx") String idx) throws Exception {
+        movieService.insertRecomsLike(idx, "tester1");
+    }
+
+    @RequestMapping(value = "/recoms/like", method = RequestMethod.PUT)
+    public void updateRecomsLike(@RequestParam("idx") String idx) throws Exception {
+        movieService.updateRecomsLike(idx, "tester1");
+    }
+
+
+    @RequestMapping(value = "/recoms/like", method = RequestMethod.DELETE)
+    public void deleteRecomsLike(@RequestParam("idx") String idx) throws Exception {
+        movieService.deleteRecomsLike(idx, "tester1");
+    }
+
+    @RequestMapping(value = "/recom/{idx}", method = RequestMethod.GET)
+    public ModelAndView recommendPage(@PathVariable String idx) throws Exception {
+        ModelAndView mv = new ModelAndView("movie/recommendDetail");
+
+        
+        return mv;
+    }
 }

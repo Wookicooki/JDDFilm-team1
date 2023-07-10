@@ -134,10 +134,18 @@ public class MainController {
         ModelAndView mv = new ModelAndView("movie/recommend");
 
         List<RecomDto> recomList = movieService.getRecoms();
+        List<String> likes = movieService.getRecomsLike("tester1");
 
         for (RecomDto recom : recomList) {
+            if(likes.contains(recom.getIdx())) {
+                recom.setLike("Y");
+            } else {
+                recom.setLike("N");
+            }
             recom.setPoster(movieService.setPosterPath(tmdbServiceUrl + "movie/" + recom.getMovieId() + "?language=ko"));
+
         }
+
 
         mv.addObject("recomList", recomList);
 
@@ -176,11 +184,6 @@ public class MainController {
     public String memberSignUpProcess(MemberDto member) throws Exception {
         memberService.signUpMember(member);
         return "redirect:/main";
-    }
-
-    @RequestMapping("/recommendDetail")
-    public String recommendDetail() throws Exception {
-        return "movie/recommendDetail";
     }
 
     @RequestMapping("/myPage")

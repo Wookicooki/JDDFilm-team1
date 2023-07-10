@@ -21,4 +21,14 @@ public interface MovieService {
     List<RecomDto> getRecoms() throws Exception;
 
     String setPosterPath(String url) throws Exception;
+
+    List<String> getRecomsLike(String userName) throws Exception;
+
+    void deleteRecomsLike(String idx, String userName) throws Exception;
+
+    int isRecomsLike(String idx, String userName) throws Exception;
+
+    void insertRecomsLike(String idx, String userName) throws Exception;
+
+    void updateRecomsLike(String idx, String userName) throws Exception;
 }

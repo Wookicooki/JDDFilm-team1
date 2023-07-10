@@ -15,4 +15,14 @@ public interface MovieMapper {
     int lastRecomsIdx() throws Exception;
 
     List<RecomDto> selectRecoms() throws Exception;
+
+    List<String> selectRecomsLike(String userName) throws Exception;
+
+    void deleteRecomsLike(String idx, String userName) throws Exception;
+
+    int isRecomsLike(String idx, String userName) throws Exception;
+
+    void insertRecomsLike(String idx, String userName) throws Exception;
+
+    void updateRecomsLike(String idx, String userName) throws Exception;
 }
