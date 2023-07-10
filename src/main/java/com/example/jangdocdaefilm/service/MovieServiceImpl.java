@@ -1,7 +1,9 @@
 package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.dto.*;
+import com.example.jangdocdaefilm.mapper.MovieMapper;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService {
+
+    @Autowired
+    private MovieMapper movieMapper;
+
     @Value("${jangDocDae.tmdb.json.Authorization}")
     private String serviceAuthor;
 
@@ -69,15 +75,27 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public CreditsDto getCredits(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .header("accept", "application/json")
-            .header("Authorization", serviceAuthor)
-            .method("GET", HttpRequest.BodyPublishers.noBody())
-            .build();
+                .uri(URI.create(url))
+                .header("accept", "application/json")
+                .header("Authorization", serviceAuthor)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         Gson gson = new Gson();
         CreditsDto credits = gson.fromJson(response.body(), CreditsDto.class);
 
         return credits;
+    }
+
+    @Override
+    public int insertRecoms(String title, String content) throws Exception {
+        movieMapper.insertRecoms(title, content);
+        int idx = movieMapper.lastRecomsIdx();
+        return idx;
+    }
+
+    @Override
+    public void insertRecom(String[] movies, int idx) throws Exception {
+        movieMapper.insertRecom(movies, idx);
     }
 }

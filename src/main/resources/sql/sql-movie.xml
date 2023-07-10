@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.jangdocdaefilm.mapper.MovieMapper">
+
+    <insert id="insertRecoms" parameterType="map">
+        INSERT INTO recoms(user_name, title, content)
+        VALUES('tester1', #{title}, #{content});
+    </insert>
+
+    <select id="lastRecomsIdx" resultType="int">
+        SELECT idx FROM recoms ORDER BY idx DESC LIMIT 1
+    </select>
+
+    <insert id="insertRecom" parameterType="map">
+        INSERT INTO recom(idx, num, movie_id)
+        VALUES
+        <foreach collection="movies" item="item" index="index" separator=",">
+            (#{idx}, #{index}, #{item})
+        </foreach>
+    </insert>
+</mapper>

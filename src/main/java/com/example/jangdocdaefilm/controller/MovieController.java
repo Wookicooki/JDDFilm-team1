@@ -57,4 +57,39 @@ public class MovieController {
         return movieList;
     }
 
+
+    @RequestMapping(value = "/recom/set", method = RequestMethod.GET)
+    public ModelAndView recomSetPage() throws Exception {
+        ModelAndView mv = new ModelAndView("movie/recommendSet");
+        return mv;
+    }
+
+    @RequestMapping(value = "/recom/search", method = RequestMethod.GET)
+    public Object recomSearchMovie(@RequestParam("year") String year, @RequestParam("genre") String genre, @RequestParam("keyword") String keyword) throws Exception {
+
+        String url = serviceUrl;
+
+        if (!keyword.equals("")) {
+            String utf8Keyword = URLEncoder.encode(keyword, "UTF-8");
+            url += "search/movie?query=" + utf8Keyword + "&include_adult=false&language=ko&page=1";
+        } else {
+            String searchUrl = "discover/movie?include_adult=false&include_video=false&language=ko&page=1&sort_by=popularity.desc";
+            String yearQuery = year != null ? "&primary_release_year=" + year : "";
+            String genreQuery = genre != null ? "&with_genres=" + genre : "";
+            url += searchUrl + yearQuery + genreQuery;
+        }
+
+        MoviesDto movies = movieService.getSearchMovies(url);
+        return movies;
+    }
+
+    @RequestMapping(value = "/recom/set", method = RequestMethod.POST)
+    public void recomInsert(@RequestParam("title") String title, @RequestParam("content") String content, @RequestParam("movies[]") String[] movies) throws Exception {
+
+//        // 1. recoms 생성
+        int idx = movieService.insertRecoms(title, content);
+//        // 2. recom 생성
+        movieService.insertRecom(movies, idx);
+    }
+
 }

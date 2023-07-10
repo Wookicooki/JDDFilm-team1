@@ -13,4 +13,8 @@ public interface MovieService {
     List<DailyBoxOfficeDto> getDailyBoxOfficeList(String url) throws Exception;
 
     CreditsDto getCredits(String url) throws Exception;
+
+    int insertRecoms(String title, String content) throws Exception;
+
+    void insertRecom(String[] movies, int idx) throws Exception;
 }

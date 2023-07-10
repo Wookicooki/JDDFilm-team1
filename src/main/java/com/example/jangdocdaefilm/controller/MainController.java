@@ -173,11 +173,6 @@ public class MainController {
     return "movie/recommendDetail";
   }
 
-  @RequestMapping("/recommendSet")
-  public String recommendSet() throws Exception {
-    return "movie/recommendSet";
-  }
-
   @RequestMapping("/myPage")
   public String myPage() throws Exception {
     return "mypage/myPage";
