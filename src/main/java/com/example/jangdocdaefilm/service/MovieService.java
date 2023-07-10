@@ -31,4 +31,10 @@ public interface MovieService {
     void insertRecomsLike(String idx, String userName) throws Exception;
 
     void updateRecomsLike(String idx, String userName) throws Exception;
+
+    RecomDto selectRecom(int idx) throws Exception;
+
+    List<String> selectMovieIds(int idx) throws Exception;
+
+    RecomMovieDto getMovie(String url) throws Exception;
 }

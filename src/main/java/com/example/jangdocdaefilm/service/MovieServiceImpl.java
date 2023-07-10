@@ -145,4 +145,29 @@ public class MovieServiceImpl implements MovieService {
     public void updateRecomsLike(String idx, String userName) throws Exception {
         movieMapper.updateRecomsLike(idx, userName);
     }
+
+    @Override
+    public RecomDto selectRecom(int idx) throws Exception {
+        return movieMapper.selectRecom(idx);
+    }
+
+    @Override
+    public List<String> selectMovieIds(int idx) throws Exception {
+        return movieMapper.selectMovieIds(idx);
+    }
+
+    @Override
+    public RecomMovieDto getMovie(String url) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("accept", "application/json")
+                .header("Authorization", serviceAuthor)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        Gson gson = new Gson();
+        RecomMovieDto movie = gson.fromJson(response.body(), RecomMovieDto.class);
+        return movie;
+    }
 }

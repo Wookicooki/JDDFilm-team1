@@ -2,6 +2,8 @@ package com.example.jangdocdaefilm.controller;
 
 import com.example.jangdocdaefilm.dto.MovieDto;
 import com.example.jangdocdaefilm.dto.MoviesDto;
+import com.example.jangdocdaefilm.dto.RecomDto;
+import com.example.jangdocdaefilm.dto.RecomMovieDto;
 import com.example.jangdocdaefilm.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -115,10 +118,20 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/recom/{idx}", method = RequestMethod.GET)
-    public ModelAndView recommendPage(@PathVariable String idx) throws Exception {
+    public ModelAndView recommendPage(@PathVariable int idx) throws Exception {
         ModelAndView mv = new ModelAndView("movie/recommendDetail");
+        List<RecomMovieDto> movies = new ArrayList<>();
 
-        
+        RecomDto recom = movieService.selectRecom(idx);
+        recom.setPoster(movieService.setPosterPath(serviceUrl + "movie/" + recom.getMovieId() + "?language=ko"));
+        List<String> movieIds = movieService.selectMovieIds(idx);
+        for (String movieId : movieIds) {
+            movies.add(movieService.getMovie(serviceUrl + "movie/" + movieId + "?language=ko"));
+        }
+
+        mv.addObject("recom", recom);
+        mv.addObject("movies", movies);
+
         return mv;
     }
 }

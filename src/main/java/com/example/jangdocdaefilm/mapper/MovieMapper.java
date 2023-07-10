@@ -25,4 +25,8 @@ public interface MovieMapper {
     void insertRecomsLike(String idx, String userName) throws Exception;
 
     void updateRecomsLike(String idx, String userName) throws Exception;
+
+    RecomDto selectRecom(int idx) throws Exception;
+
+    List<String> selectMovieIds(int idx) throws Exception;
 }
