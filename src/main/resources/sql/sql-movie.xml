@@ -73,5 +73,18 @@
         WHERE idx = #{idx} ORDER BY num;
     </select>
 
+    <delete id="deleteRecomsLikes" parameterType="int">
+        DELETE FROM recoms_like
+        WHERE recoms_idx = #{idx}
+    </delete>
 
+    <delete id="deleteRecom" parameterType="int">
+        DELETE FROM recom
+        WHERE idx = #{idx}
+    </delete>
+
+    <delete id="deleteRecoms" parameterType="int">
+        DELETE FROM recoms
+        WHERE idx = #{idx}
+    </delete>
 </mapper>

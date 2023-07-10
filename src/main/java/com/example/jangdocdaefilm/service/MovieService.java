@@ -37,4 +37,6 @@ public interface MovieService {
     List<String> selectMovieIds(int idx) throws Exception;
 
     RecomMovieDto getMovie(String url) throws Exception;
+
+    void deleteRecoms(int idx) throws Exception;
 }

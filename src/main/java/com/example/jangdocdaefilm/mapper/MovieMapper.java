@@ -29,4 +29,10 @@ public interface MovieMapper {
     RecomDto selectRecom(int idx) throws Exception;
 
     List<String> selectMovieIds(int idx) throws Exception;
+
+    void deleteRecoms(int idx) throws Exception;
+
+    void deleteRecom(int idx) throws Exception;
+
+    void deleteRecomsLikes(int idx) throws Exception;
 }

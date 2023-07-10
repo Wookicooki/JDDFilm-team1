@@ -170,4 +170,11 @@ public class MovieServiceImpl implements MovieService {
         RecomMovieDto movie = gson.fromJson(response.body(), RecomMovieDto.class);
         return movie;
     }
+
+    @Override
+    public void deleteRecoms(int idx) throws Exception {
+        movieMapper.deleteRecomsLikes(idx);
+        movieMapper.deleteRecom(idx);
+        movieMapper.deleteRecoms(idx);
+    }
 }

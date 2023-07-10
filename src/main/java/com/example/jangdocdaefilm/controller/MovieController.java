@@ -134,4 +134,10 @@ public class MovieController {
 
         return mv;
     }
+
+
+    @RequestMapping(value = "/recom/{idx}",method = RequestMethod.DELETE)
+    public void deleteRecoms(@PathVariable int idx) throws Exception{
+        movieService.deleteRecoms(idx);
+    }
 }

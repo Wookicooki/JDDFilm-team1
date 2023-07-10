@@ -10,6 +10,23 @@
             integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
             crossorigin="anonymous"></script>
 
+    <script>
+        $(document).ready(() => {
+            $("#delete-btn").on("click", () => {
+                const idx = $("#idx").val();
+                $.ajax({
+                    url: "/movie/recom/" + idx,
+                    type: "DELETE",
+                    success: () => {
+                        location.href = "/recommend";
+                    },
+                    error: () => {
+                    }
+                });
+            });
+        });
+    </script>
+
     <style>
         .text-overflow {
             overflow: hidden;
@@ -27,6 +44,7 @@
         <div class="col-sm-2"></div>
         <div class="col-sm">
             <div class="row">
+                <input type="hidden" th:value="${recom.idx}" id="idx">
                 <div class="col-sm">
                     <img src="/images/poster.jpeg" th:src="@{https://image.tmdb.org/t/p/original} + ${recom.poster}"
                          alt="" class="img-fluid">
@@ -40,7 +58,8 @@
                     <h3 th:text="${recom.title}">@@님의 영화 추천작</h3>
                 </div>
                 <div class="col-sm d-flex justify-content-end">
-                    <button type="button" class="btn btn-danger">삭제</button>
+                    <button type="button" class="btn btn-danger" id="delete-btn">삭제
+                    </button>
                 </div>
             </div>
             <div class="row my-3" th:each="item: ${movies}">
