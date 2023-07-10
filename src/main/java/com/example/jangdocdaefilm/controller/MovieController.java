@@ -68,7 +68,7 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/recom/search", method = RequestMethod.GET)
-    public Object recomSearchMovie(@RequestParam("year") String year, @RequestParam("genre") String genre, @RequestParam("keyword") String keyword) throws Exception {
+    public Object recomSearchMovie(@RequestParam("year") String year, @RequestParam("genre") String genre, @RequestParam("keyword") String keyword, @RequestParam("page") String page) throws Exception {
 
         String url = serviceUrl;
 
@@ -76,7 +76,7 @@ public class MovieController {
             String utf8Keyword = URLEncoder.encode(keyword, "UTF-8");
             url += "search/movie?query=" + utf8Keyword + "&include_adult=false&language=ko&page=1";
         } else {
-            String searchUrl = "discover/movie?include_adult=false&include_video=false&language=ko&page=1&sort_by=popularity.desc";
+            String searchUrl = "discover/movie?include_adult=false&include_video=false&language=ko&page=" + page + "&sort_by=popularity.desc";
             String yearQuery = year != null ? "&primary_release_year=" + year : "";
             String genreQuery = genre != null ? "&with_genres=" + genre : "";
             url += searchUrl + yearQuery + genreQuery;
@@ -136,8 +136,8 @@ public class MovieController {
     }
 
 
-    @RequestMapping(value = "/recom/{idx}",method = RequestMethod.DELETE)
-    public void deleteRecoms(@PathVariable int idx) throws Exception{
+    @RequestMapping(value = "/recom/{idx}", method = RequestMethod.DELETE)
+    public void deleteRecoms(@PathVariable int idx) throws Exception {
         movieService.deleteRecoms(idx);
     }
 }
