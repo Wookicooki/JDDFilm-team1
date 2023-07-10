@@ -17,4 +17,8 @@ public interface MovieService {
     int insertRecoms(String title, String content) throws Exception;
 
     void insertRecom(String[] movies, int idx) throws Exception;
+
+    List<RecomDto> getRecoms() throws Exception;
+
+    String setPosterPath(String url) throws Exception;
 }

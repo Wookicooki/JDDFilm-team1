@@ -26,11 +26,12 @@
             </div>
             <div>
                 <div class="row row-cols-4">
-                    <div th:each="num: ${#numbers.sequence(1, 18)}" class="d-flex justify-content-center" >
+                    <div th:each="item: ${recomList}" class="d-flex justify-content-center">
                         <div style="width: 180px;">
-                            <img th:src="@{/images/poster.jpeg}" src="" alt="" class="w-100">
+                            <img th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster}" src="" alt=""
+                                 class="w-100">
                             <div class="d-flex justify-content-between">
-                                <p>@@님의 추천작</p>
+                                <p th:text="|${item.userName}님의 추천작|">@@님의 추천작</p>
                                 <p><i class="bi bi-heart-fill text-danger"></i></p>
                             </div>
                         </div>

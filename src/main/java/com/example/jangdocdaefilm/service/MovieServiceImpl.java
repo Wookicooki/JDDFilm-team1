@@ -98,4 +98,25 @@ public class MovieServiceImpl implements MovieService {
     public void insertRecom(String[] movies, int idx) throws Exception {
         movieMapper.insertRecom(movies, idx);
     }
+
+    @Override
+    public List<RecomDto> getRecoms() throws Exception {
+
+        return movieMapper.selectRecoms();
+    }
+
+    @Override
+    public String setPosterPath(String url) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("accept", "application/json")
+                .header("Authorization", serviceAuthor)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        Gson gson = new Gson();
+        PosterDto poster = gson.fromJson(response.body(), PosterDto.class);
+        return poster.getPoster_path();
+    }
 }
