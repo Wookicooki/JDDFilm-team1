@@ -55,4 +55,6 @@ public interface MemberService {
   void updateUserScoreAvg(MovieDto movie) throws Exception;
 
   MovieDto getScoreAvgMovie(String movieId) throws Exception;
+
+  List<MovieDto> getJangDocDaeChart() throws Exception;
 }

@@ -185,4 +185,13 @@
             movie
         WHERE id = #{movieId};
     </select>
+
+    <select id="getJangDocDaeChart" resultType="com.example.jangdocdaefilm.dto.MovieDto">
+        SELECT
+            title, score_avg, id
+        FROM
+            movie
+        ORDER BY
+            score_avg DESC;
+    </select>
 </mapper>

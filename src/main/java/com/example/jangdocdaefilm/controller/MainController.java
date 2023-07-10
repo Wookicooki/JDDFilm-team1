@@ -92,6 +92,10 @@ public class MainController {
 
     mv.addObject("member", member);
 
+    // 장독대 순위
+    List<MovieDto> jangDocDaeChart = memberService.getJangDocDaeChart();
+    mv.addObject("jangDocDaeChart", jangDocDaeChart);
+
     return mv;
   }
 
@@ -293,14 +297,7 @@ public class MainController {
   // 영화 리뷰 삭제
   @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
   public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception {
-    memberService.deleteMovieReview(idx);
-
-//    String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
-//    MovieDto updateMovieScore = new MovieDto();
-//    updateMovieScore.setId(review.getMovieId());
-//    updateMovieScore.setTitle(review.getMovieTitle());
-//    updateMovieScore.setScore_avg(userScoreAvg);
-//    memberService.updateUserScoreAvg(updateMovieScore);
+//    memberService.deleteMovieReview(idx);
 
     String movieId = review.getMovieId();
     String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
@@ -318,6 +315,7 @@ public class MainController {
     // int checkLike = memberService.checkLike(,userId);
     List<ReviewDto> reviewList;
     ReviewDto myReview = null;
+
     List<ReviewLikesDto> reviewLikeCheck = null;
     String userId;
     Object storedUserId = session.getAttribute("id");
@@ -328,15 +326,23 @@ public class MainController {
       myReview = memberService.getMyMovieReview(movieId, userId);
 
       // 리뷰 좋아요 체크
-      reviewLikeCheck = memberService.getReviewLike(userId);
+//      reviewLikeCheck = memberService.getReviewLike(userId);
     }
 
-    mv.addObject("reviewLikeCheck", reviewLikeCheck);
+//    mv.addObject("reviewLikeCheck", reviewLikeCheck);
     mv.addObject("movieTitle", movieTitle);
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
 
     return mv;
+  }
+
+  @ResponseBody
+  @RequestMapping(value = "/likeCheck", method = RequestMethod.GET)
+  public Object likeCheck(@RequestParam("userId") String userId) throws Exception{
+    List<ReviewLikesDto> reviewLikeCheck = memberService.getReviewLike(userId);
+
+    return reviewLikeCheck;
   }
 
   // 리뷰 좋아요

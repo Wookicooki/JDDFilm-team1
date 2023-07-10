@@ -14,10 +14,37 @@
   <script src="/js/header.js"></script>
 
   <script th:inline="javascript">
+      /*<![CDATA[*/
+      const userId = [[${session.id}]];
+      /*]]>*/
+
       $(document).ready(function () {
           $("#btnBack").on("click", function () {
               history.back();
           });
+
+          function check(userId) {
+              if (userId != null || userId !== "") {
+                  $.ajax({
+                      url: "/likeCheck",
+                      type: "GET",
+                      data: {userId: userId},
+                      success: function (data) {
+                          console.log(data);
+                          let reviewIdx;
+                          $.each(data, function () {
+                              reviewIdx = $(".like-click").prev().val();
+                              console.log(reviewIdx);
+                          });
+                      },
+                      error: function () {
+                          alert("통신 오류");
+                      }
+                  })
+              }
+          }
+
+          check(userId);
 
           let index = 0;
           $(window).scroll(function () {
@@ -107,6 +134,8 @@
               }
           });
       });
+
+
   </script>
 
 </head>
@@ -184,15 +213,6 @@
                 <!--  테스트 용-->
                 <input type="hidden" th:value="${reveiw.idx}">
                 <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>
-
-                <!--                <div th:if="">-->
-                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
-                <!--                  <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
-                <!--                </div>-->
-                <!--                <div th:unless="">-->
-                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
-                <!--                  <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>-->
-                <!--                </div>-->
               </div>
               <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
               <div th:unless="${session.id} != null">

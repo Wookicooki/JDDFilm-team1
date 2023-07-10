@@ -115,4 +115,9 @@ public class MemberServiceImpl implements MemberService {
   public MovieDto getScoreAvgMovie(String movieId) throws Exception {
     return memberMapper.getScoreAvgMovie(movieId);
   }
+
+  @Override
+  public List<MovieDto> getJangDocDaeChart() throws Exception {
+    return memberMapper.getJangDocDaeChart();
+  }
 }
