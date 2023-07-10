@@ -48,7 +48,8 @@
             </div>
             <div>
               <p class="mb-0">장독대 평점</p>
-              <span>★★★★★</span>
+              <span th:if="${userScoreAvg} == null" th:text="|평점 없음|"></span>
+              <span th:unless="${userScoreAvg} == null" th:text="${userScoreAvg}">★★★★★</span>
             </div>
             <div th:if="${myReview != null}" class="ms-auto align-self-center">
               <div th:if="${session.id} != null and ${session.id} != ${myReview.memberId}">

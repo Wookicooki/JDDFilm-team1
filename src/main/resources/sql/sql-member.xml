@@ -149,4 +149,40 @@
             member_id = #{memberId}
     </select>
 
+<!--    유저 평균 평점 계산 -->
+    <select id="userScoreAvg" parameterType="String" resultType="String">
+        SELECT
+        ROUND(AVG(user_score), 1)
+        FROM
+        review
+        WHERE movie_id = #{movieId};
+    </select>
+
+<!--    평균 평점 등록 -->
+    <insert id="insertUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.MovieDto">
+        INSERT INTO
+        movie (title, score_avg, id)
+        VALUES
+        (#{title}, #{score_avg}, #{id})
+    </insert>
+
+<!--    평균 평점 업데이트 -->
+    <update id="updateUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.MovieDto">
+        UPDATE
+            movie
+        SET
+            score_avg = #{score_avg}
+        WHERE
+            title = #{title}
+        AND
+            id = #{id}
+    </update>
+
+    <select id="getScoreAvgMovie" parameterType="String" resultType="com.example.jangdocdaefilm.dto.MovieDto">
+        SELECT
+            title, score_avg, id
+        FROM
+            movie
+        WHERE id = #{movieId};
+    </select>
 </mapper>

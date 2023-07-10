@@ -2,6 +2,7 @@ package com.example.jangdocdaefilm.service;
 
 
 import com.example.jangdocdaefilm.dto.MemberDto;
+import com.example.jangdocdaefilm.dto.MovieDto;
 import com.example.jangdocdaefilm.dto.ReviewDto;
 import com.example.jangdocdaefilm.dto.ReviewLikesDto;
 import com.example.jangdocdaefilm.mapper.MemberMapper;
@@ -95,5 +96,23 @@ public class MemberServiceImpl implements MemberService {
     return memberMapper.getReviewLike(userId);
   }
 
+  @Override
+  public String userScoreAvg(String movieId) throws Exception {
+    return memberMapper.userScoreAvg(movieId);
+  }
 
+  @Override
+  public void insertUserScoreAvg(MovieDto movie) throws Exception {
+    memberMapper.insertUserScoreAvg(movie);
+  }
+
+  @Override
+  public void updateUserScoreAvg(MovieDto movie) throws Exception {
+    memberMapper.updateUserScoreAvg(movie);
+  }
+
+  @Override
+  public MovieDto getScoreAvgMovie(String movieId) throws Exception {
+    return memberMapper.getScoreAvgMovie(movieId);
+  }
 }

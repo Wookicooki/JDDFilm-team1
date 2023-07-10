@@ -89,18 +89,22 @@
           });
 
           $("#btn-update").on("click", function () {
-              $("#method").val("PUT")
-              const frm = $("#frm")[0]
+              $("#method_put").val("PUT")
+              const frm = $("#frm-put")[0]
               frm.action = "/updateMovieReview";
               frm.submit()
           });
 
           $("#btn-delete").on("click", function () {
-              confirm("정말 삭제하시겠습니까?")
-              $("#method").val("DELETE");
-              const frm = $("#frm-delete")[0];
-              frm.action = "/deleteMovieReview/" + $("#idx").val();
-              frm.submit();
+              const answer = confirm("정말 삭제하시겠습니까?")
+              if (answer) {
+                  $("#method").val("DELETE");
+                  const frm = $("#frm")[0];
+                  frm.action = "/deleteMovieReview/" + $("#idx").val();
+                  frm.submit();
+              } else {
+                  return false;
+              }
           });
       });
   </script>
@@ -114,13 +118,15 @@
     <div class="col-sm-2"></div>
     <div class="col-sm">
       <div class="d-flex justify-content-between my-4">
-        <h1 th:text="|${movieTitle} 영화 리뷰|">xxx 영화 리뷰</h1>
+        <h1 th:text="|${movieTitle} 리뷰|">xxx 영화 리뷰</h1>
         <a class="btn btn-secondary align-self-center" id="btnBack">이전 페이지로</a>
       </div>
       <div class="my-review card text-bg-light my-3" th:if="${myReview} != null">
-        <form id="frm-delete" method="post">
+        <form id="frm" method="post">
+          <div class="card-header">내가 쓴 영화 리뷰</div>
           <div class="card-body">
-            <p class="card-text" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
+            <p class="card-text mb-1" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
+            <span class="card-text" th:text="|내 평점 : ${myReview.userScore}|">유저 평점</span>
             <div class="text-end">
               <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
               <span class="me-2" th:text="${myReview.getLikeCnt}">12</span>
@@ -128,79 +134,86 @@
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                       data-bs-target="#reviewEditModal">수정
               </button>
-              <div class="modal fade" id="reviewEditModal">
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title" th:text="${myReview.movieTitle}">영화이름</h1>
-                    </div>
-                    <div class="modal-body">
-                      <form id="frm" method="post">
-                        <textarea class="form-control" rows="10" name="content" th:text="${myReview.content}"
-                                  placeholder="영화 리뷰를 작성해주세요"></textarea>
-                        <input type="range" class="form-range mt-2" step="1" min="1" max="10"
-                               th:value="${myReview.userScore}" name="userScore">
-                        <input type="hidden" name="idx" th:value="${myReview.idx}">
-                        <input type="hidden" name="movieId" th:value="${myReview.movieId}">
-                        <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
-                        <input type="hidden" name="createDt" th:value="${myReview.createDt}">
-                        <input type="hidden" name="memberId" th:value="${session.id}">
-                        <input type="hidden" name="userName" th:value="${session.userName}">
-                        <div class="text-end">
-                          <button type="button" class="btn btn-primary" id="btn-update">등록</button>
-                        </div>
-                        <input type="hidden" id="method" name="_method">
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
               <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
             </div>
           </div>
           <input type="hidden" name="movieId" th:value="${myReview.movieId}">
           <input type="hidden" id="idx" name="idx" th:value="${myReview.idx}">
-          <input type="hidden" name="_method">
+          <input type="hidden" id="method" name="_method">
         </form>
       </div>
-      <div class="my-4" id="other-reviews">
-        <th:block th:each="item: ${reviewList}">
-          <div class="card my-4" th:each="check:${reviewLikeCheck}">
-            <div class="card-body">
-              <p class="card-text" th:text="${item.userName}">작성자 이름</p>
-              <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
-              <br>
-              <span class="card-text" th:text="${item.userScore}">유저 평점</span>
-              <div class="d-flex justify-content-end">
-                <!-- 로그인 상태 -->
-                <div th:if="${session.id} != null">
-                  <!--                테스트 용-->
-<!--                  <input type="hidden" th:value="${item.idx}">-->
-<!--                  <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
-
-<!--                  <div th:if="${item.idx} == ${check.idx}">-->
-<!--                    <input type="hidden" class="review-idx" th:value="${item.idx}">-->
-<!--                    <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
-<!--                  </div>-->
-                  <div th:unless="${check.idx} == null">
-                    <input type="hidden" class="review-idx" th:value="${item.idx}">
-                    <a class="me-2 good-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>
-                  </div>
+      <!-- 수정시 form 태그를 쓰기 위해 모달창 태그 위치 변경 -->
+      <form id="frm-put" method="post" th:if="${myReview} != null">
+        <div class="modal fade" id="reviewEditModal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title" th:text="${myReview.movieTitle}">영화이름</h1>
+              </div>
+              <div class="modal-body">
+              <textarea class="form-control" rows="10" name="content" th:text="${myReview.content}"
+                        placeholder="영화 리뷰를 작성해주세요"></textarea>
+                <input type="range" class="form-range mt-2" step="1" min="1" max="10"
+                       th:value="${myReview.userScore}" name="userScore">
+                <input type="hidden" name="idx" th:value="${myReview.idx}">
+                <input type="hidden" name="movieId" th:value="${myReview.movieId}">
+                <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
+                <input type="hidden" name="createDt" th:value="${myReview.createDt}">
+                <input type="hidden" name="memberId" th:value="${session.id}">
+                <input type="hidden" name="userName" th:value="${session.userName}">
+                <div class="text-end">
+                  <button type="button" class="btn btn-primary" id="btn-update">등록</button>
                 </div>
-                <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
-                <div th:unless="${session.id} != null">
-                  <span class="me-2"><i class="bi bi-hand-thumbs-up-fill"></i></span>
-                </div>
-                <span class="me-2" th:id="|like${item.idx}|" th:text="${item.likeCnt}">32</span>
+                <input type="hidden" id="method_put" name="_method">
               </div>
             </div>
           </div>
-        </th:block>
+        </div>
+      </form>
+
+      <div class="my-4" id="other-reviews">
+        <div class="card my-3" th:each="reveiw: ${reviewList}">
+          <div class="card-header" th:text="${reveiw.userName}"></div>
+          <div class="card-body">
+            <span class="card-text" th:text="${reveiw.content}">영화 리뷰 내용</span>
+            <br>
+            <div class="d-flex my-2">
+              <span class="card-text me-auto" th:text="|사용자 평점 : ${reveiw.userScore}|">유저 평점</span>
+              <!-- 로그인 상태 -->
+              <div th:if="${session.id} != null">
+                <!--  테스트 용-->
+                <input type="hidden" th:value="${reveiw.idx}">
+                <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>
+
+                <!--                <div th:if="">-->
+                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
+                <!--                  <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up"></i></a>-->
+                <!--                </div>-->
+                <!--                <div th:unless="">-->
+                <!--                  <input type="hidden" class="review-idx" th:value="${item.idx}">-->
+                <!--                  <a class="me-2 like-click"><i class="bi bi-hand-thumbs-up-fill"></i></a>-->
+                <!--                </div>-->
+              </div>
+              <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
+              <div th:unless="${session.id} != null">
+                <span class="me-2"><i class="bi bi-hand-thumbs-up-fill"></i></span>
+              </div>
+              <span class="me-2" th:id="|like${reveiw.idx}|" th:text="${reveiw.likeCnt}">32</span>
+            </div>
+          </div>
+          <div class="card-footer text-end" th:if="${session.grade} == 1">
+            <form id="frm-admin-delete" method="post">
+              <button type="button" class="btn btn-danger" id="btn-admin-delete">관리자 삭제</button>
+              <input type="hidden" name="movieId" th:value="${reveiw.movieId}">
+              <input type="hidden" name="idx" th:value="${reveiw.idx}">
+              <input type="hidden" id="method-admin-delete" name="_method">
+            </form>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-sm-2"></div>
   </div>
-
 </main>
 <footer></footer>
 </body>

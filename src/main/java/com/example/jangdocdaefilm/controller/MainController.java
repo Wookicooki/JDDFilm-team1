@@ -195,13 +195,8 @@ public class MainController {
     // 제작진 정보
     List<CrewDto> crews = credits.getCrew();
     List<CrewDto> director = new ArrayList<>();
-    ;
     List<CrewDto> writer = new ArrayList<>();
-    ;
-
-    Iterator<CrewDto> crewIterator = crews.iterator();
-    while (crewIterator.hasNext()) {
-      CrewDto crew = crewIterator.next();
+    for (CrewDto crew : crews) {
       if (crew.getJob().equals("Director")) {
         director.add(crew);
       } else if (crew.getJob().equals("Writer")) {
@@ -212,9 +207,7 @@ public class MainController {
     // 출연진 정보
     List<CastDto> casts = credits.getCast();
     List<CastDto> actor = new ArrayList<>();
-    Iterator<CastDto> castIterator = casts.iterator();
-    while (castIterator.hasNext()) {
-      CastDto cast = castIterator.next();
+    for (CastDto cast : casts) {
       switch (cast.getOrder()) {
         case "0", "1", "2", "3", "4", "5" -> {
           actor.add(cast);
@@ -236,24 +229,45 @@ public class MainController {
     String userId;
     Object storedUserId = session.getAttribute("id");
 
-    if (storedUserId == null) {
-      reviewList = memberService.getMovieReviewList(movieId);
-    } else {
-      reviewList = memberService.getMovieReviewList(movieId);
+    reviewList = memberService.getMovieReviewList(movieId);
+    if (storedUserId != null) {
       userId = (String) storedUserId;
       myReview = memberService.getMyMovieReview(movieId, userId);
     }
+    // 사용자 리뷰 평점 평균
+    String userScoreAvg = memberService.userScoreAvg(movieId);
+
 
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
+    mv.addObject("userScoreAvg", userScoreAvg);
 
     return mv;
   }
 
-  // 영화 리뷰 작성 // 좋아요 미구현
+  // 영화 리뷰 작성
   @RequestMapping(value = "/insertMovieReview", method = RequestMethod.POST)
   public String insertMovieReview(ReviewDto review) throws Exception {
     memberService.insertMovieReview(review);
+    // 새 리뷰 insert시 평균 계산하여 영화 테이블에 insert
+    MovieDto movie = memberService.getScoreAvgMovie(review.getMovieId());
+    if (movie == null){
+      MovieDto saveMovieScore = new MovieDto();
+      saveMovieScore.setId(review.getMovieId());
+      saveMovieScore.setTitle(review.getMovieTitle());
+      saveMovieScore.setScore_avg(String.valueOf(review.getUserScore()));
+
+      memberService.insertUserScoreAvg(saveMovieScore);
+    } else {
+      String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
+      MovieDto updateMovieScore = new MovieDto();
+      updateMovieScore.setId(review.getMovieId());
+      updateMovieScore.setTitle(review.getMovieTitle());
+      updateMovieScore.setScore_avg(userScoreAvg);
+
+      memberService.updateUserScoreAvg(updateMovieScore);
+    }
+
     String movieId = review.getMovieId();
     return "redirect:/movieDetail/" + movieId;
   }
@@ -262,6 +276,15 @@ public class MainController {
   @RequestMapping(value = "/updateMovieReview", method = RequestMethod.PUT)
   public String updateMovieReview(ReviewDto review) throws Exception {
     memberService.updateMovieReview(review);
+
+    // 영화 평점 업데이트
+    String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
+    MovieDto updateMovieScore = new MovieDto();
+    updateMovieScore.setId(review.getMovieId());
+    updateMovieScore.setTitle(review.getMovieTitle());
+    updateMovieScore.setScore_avg(userScoreAvg);
+    memberService.updateUserScoreAvg(updateMovieScore);
+
     String movieId = review.getMovieId();
     String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
     return "redirect:/movieReview/" + movieId + "/" + movieTitle;
@@ -271,6 +294,14 @@ public class MainController {
   @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
   public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception {
     memberService.deleteMovieReview(idx);
+
+//    String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
+//    MovieDto updateMovieScore = new MovieDto();
+//    updateMovieScore.setId(review.getMovieId());
+//    updateMovieScore.setTitle(review.getMovieTitle());
+//    updateMovieScore.setScore_avg(userScoreAvg);
+//    memberService.updateUserScoreAvg(updateMovieScore);
+
     String movieId = review.getMovieId();
     String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
     return "redirect:/movieReview/" + movieId + "/" + movieTitle;
@@ -291,17 +322,14 @@ public class MainController {
     String userId;
     Object storedUserId = session.getAttribute("id");
 
-    if (storedUserId == null) {
-      reviewList = memberService.getMovieReviewList(movieId);
-    } else {
-      reviewList = memberService.getMovieReviewList(movieId);
+    reviewList = memberService.getMovieReviewList(movieId);
+    if (storedUserId != null) {
       userId = (String) storedUserId;
       myReview = memberService.getMyMovieReview(movieId, userId);
 
       // 리뷰 좋아요 체크
       reviewLikeCheck = memberService.getReviewLike(userId);
     }
-
 
     mv.addObject("reviewLikeCheck", reviewLikeCheck);
     mv.addObject("movieTitle", movieTitle);

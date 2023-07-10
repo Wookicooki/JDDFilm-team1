@@ -1,6 +1,7 @@
 package com.example.jangdocdaefilm.mapper;
 
 import com.example.jangdocdaefilm.dto.MemberDto;
+import com.example.jangdocdaefilm.dto.MovieDto;
 import com.example.jangdocdaefilm.dto.ReviewDto;
 import com.example.jangdocdaefilm.dto.ReviewLikesDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -42,6 +43,14 @@ public interface MemberMapper {
   // 좋아요 체크
   int checkLike(int reviewIdx, String memberId) throws Exception;
 
-
   List<ReviewLikesDto> getReviewLike(String memberId) throws Exception;
+
+  // 평균 점수
+  String userScoreAvg(String movieId) throws Exception;
+
+  void insertUserScoreAvg(MovieDto movie) throws Exception;
+
+  void updateUserScoreAvg(MovieDto movie) throws Exception;
+
+  MovieDto getScoreAvgMovie(String movieId) throws Exception;
 }

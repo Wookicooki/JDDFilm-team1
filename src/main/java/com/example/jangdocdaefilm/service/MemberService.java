@@ -1,6 +1,7 @@
 package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.dto.MemberDto;
+import com.example.jangdocdaefilm.dto.MovieDto;
 import com.example.jangdocdaefilm.dto.ReviewDto;
 import com.example.jangdocdaefilm.dto.ReviewLikesDto;
 
@@ -43,4 +44,15 @@ public interface MemberService {
   void deleteMovieReview(int idx) throws Exception;
 
   List<ReviewLikesDto> getReviewLike(String userId) throws Exception;
+
+  // 유저 점수 평균
+  String userScoreAvg(String movieId) throws Exception;
+
+  // 유저 점수 평균 등록
+  void insertUserScoreAvg(MovieDto movie) throws Exception;
+
+  // 유저 점수 평균 업데이트
+  void updateUserScoreAvg(MovieDto movie) throws Exception;
+
+  MovieDto getScoreAvgMovie(String movieId) throws Exception;
 }
