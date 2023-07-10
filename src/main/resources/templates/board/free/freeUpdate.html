@@ -28,9 +28,9 @@
   <div class="row">
     <div class="col-sm-2"></div>
     <div class="col-sm-8">
-      <h2>할인 정보 작성</h2>
+      <h2>자유게시판 수정</h2>
       <div class="row">
-        <form action="/freeUpdate" id="frm" method="post" enctype="multipart/form-data">
+        <form action="/freeUpdate" method="post" enctype="multipart/form-data">
           <div class="my-3 row">
             <div class="col-sm">
               <input type="hidden" id="idx" name="idx" th:value="${free.idx}">
@@ -42,8 +42,7 @@
           </div>
           <div class="row input-group">
             <div class="my-3 col-sm d-flex justify-content-start gap-3">
-              <div class="my-3">
-                <label for="files" class="form-label">첨부파일 : </label>
+              <div class="input-group">
                 <input type="file" class="form-control" id="files" name="files" multiple>
               </div>
             </div>
@@ -52,6 +51,8 @@
               <button type="reset" class="btn btn-secondary" id="btn-cancel">취소</button>
             </div>
           </div>
+          <input type="hidden" class="form-control" id="user-name" name="userName" th:value="${session.userName}">
+          <input type="hidden" class="form-control" id="user-id" name="id" th:value="${session.id}">
         </form>
       </div>
     </div>

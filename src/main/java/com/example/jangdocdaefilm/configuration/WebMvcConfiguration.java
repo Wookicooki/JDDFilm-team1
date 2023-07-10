@@ -31,8 +31,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Value("${resource.free.path}")
   private String resourceFreePath;
 
+  @Value("${resource.dis.path}")
+  private String resourceDisPath;
+
+
+
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/free/**").addResourceLocations(resourceFreePath);
+    registry.addResourceHandler("/dis/**").addResourceLocations(resourceDisPath);
+
   }
+
+
 }

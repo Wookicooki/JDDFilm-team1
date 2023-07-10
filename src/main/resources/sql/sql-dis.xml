@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  자유게시판-->
+<mapper namespace="com.example.jangdocdaefilm.mapper.DisMapper">
+
+  <select id="selectDisListNewest" resultType="com.example.jangdocdaefilm.dto.DisDto">
+    SELECT
+    idx, title, user_name, id, create_dt, hit_cnt
+    FROM
+    dis
+    WHERE
+    delete_yn = 'N'
+    ORDER BY
+    idx DESC
+  </select>
+
+  <select id="selectDisListViewed" resultType="com.example.jangdocdaefilm.dto.DisDto">
+    SELECT
+    idx, title, user_name, id, create_dt, hit_cnt
+    FROM
+    dis
+    WHERE
+    delete_yn = 'N'
+    ORDER BY
+    hit_cnt DESC
+  </select>
+
+  <select id="selectDisDetail" resultType="com.example.jangdocdaefilm.dto.DisDto" parameterType="int">
+    SELECT
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
+    FROM
+    dis
+    WHERE
+    idx = #{idx}
+    AND
+    delete_yn = 'N'
+  </select>
+
+  <insert id="writeDis" parameterType="com.example.jangdocdaefilm.dto.DisDto" useGeneratedKeys="true" keyProperty="idx">
+    INSERT INTO
+    dis (title, content, id, user_name, create_dt)
+    VALUES
+    (#{title}, #{content} , #{id}, #{userName}, now())
+  </insert>
+
+  <select id="updateDisView" resultType="com.example.jangdocdaefilm.dto.DisDto" parameterType="int">
+    SELECT
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
+    FROM
+    dis
+    WHERE
+    idx = #{idx}
+    AND
+    delete_yn = 'N'
+  </select>
+
+  <update id="updateDis" parameterType="com.example.jangdocdaefilm.dto.DisDto">
+    UPDATE
+    dis
+    SET
+    title = #{title} , content = #{content}
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <update id="deleteDis" parameterType="int">
+    UPDATE
+    dis
+    SET
+    delete_yn = 'Y'
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <update id="updateDisHitCount" parameterType="int">
+    UPDATE
+    dis
+    SET
+    hit_cnt = hit_cnt + 1
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <!--  첨부파일 정보 추가-->
+  <insert id="insertDisFileList" parameterType="com.example.jangdocdaefilm.dto.DisFileDto">
+    INSERT INTO
+    dis_img (dis_idx, original_file_name, stored_file_name, file_size, create_id, create_dt)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.disIdx}, #{item.originalFileName}, #{item.storedFileName}, #{item.fileSize}, #{item.createId}, NOW())
+    </foreach>
+  </insert>
+
+  <select id="selectDisFile" parameterType="int" resultType="com.example.jangdocdaefilm.dto.DisFileDto">
+    select idx, dis_idx, stored_file_name, file_size, create_id, create_dt from dis_img
+    where dis_idx=#{idx}
+  </select>
+
+<!--  첨부파일 업데이트-->
+  <delete id="deleteDisFileList" parameterType="com.example.jangdocdaefilm.dto.DisFileDto">
+    DELETE
+    FROM
+    dis_img
+    WHERE dis_idx = #{idx}
+  </delete>
+
+</mapper>

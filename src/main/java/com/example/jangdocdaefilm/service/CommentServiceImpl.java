@@ -13,6 +13,7 @@ public class CommentServiceImpl implements CommentService {
   @Autowired
   private CommentMapper commentMapper;
 
+
   @Override
   public List<CommentDto> freeCommentList(int idx) throws Exception {
     return commentMapper.freeCommentList(idx);
@@ -26,6 +27,21 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public void freeCommentDelete(int idx) throws Exception {
     commentMapper.freeCommentDelete(idx);
+  }
+
+  @Override
+  public List<CommentDto> disCommentList(int idx) throws Exception {
+    return commentMapper.disCommentList(idx);
+  }
+
+  @Override
+  public void disWriteComment(CommentDto comment) throws Exception {
+    commentMapper.disWriteComment(comment);
+  }
+
+  @Override
+  public void disCommentDelete(int idx) throws Exception {
+    commentMapper.disCommentDelete(idx);
   }
 
 

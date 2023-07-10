@@ -225,54 +225,9 @@ public class MainController {
     @Autowired
     private CommentService commentService;
 
-//    할인정보 게시판
-    @RequestMapping(value = "/disList", method = RequestMethod.GET)
-    public ModelAndView disList() throws Exception {
-        ModelAndView mv = new ModelAndView("board/dis/disList");
-
-        return mv;
-    }
-
-    @RequestMapping(value = "/disDetail", method = RequestMethod.GET)
-    public ModelAndView disDetail() throws Exception {
-        ModelAndView mv = new ModelAndView("board/dis/disDetail");
-
-        return mv;
-    }
-
-    @RequestMapping(value = "/disWrite", method = RequestMethod.GET)
-    public String disInsertView() throws Exception {
-        return "board/dis/disWrite";
-    }
-
-//    자유게시판
     @Autowired
     private FreeService freeService;
 
-    @RequestMapping(value = "/freeList", method = RequestMethod.GET)
-    public ModelAndView freeList() throws Exception {
-        ModelAndView mv = new ModelAndView("board/free/freeList");
-
-        List<FreeDto> freeList = freeService.selectFreeListNewest();
-        mv.addObject("freeList", freeList);
-
-        return mv;
-    }
-
-    // 게시물 순서 변경
-    @ResponseBody
-    @RequestMapping(value = "/freeList", method = RequestMethod.POST)
-    public Object freeList(@RequestParam(value = "checked") String checked) throws Exception{
-        List<FreeDto> freeList = null;
-        if (checked.equals("newest")) {
-            freeList = freeService.selectFreeListNewest();
-        } else if (checked.equals("viewed")) {
-            freeList = freeService.selectFreeListViewed();
-        }
-        return freeList;
-    }
-
-    // 자유게시판 상세 페이지
     @RequestMapping(value = "/free/{idx}", method = RequestMethod.GET)
     public ModelAndView freeDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeDetail");
@@ -327,8 +282,8 @@ public class MainController {
 
     // 자유게시판 수정 구현(freeList 이동)
     @RequestMapping(value = "/freeUpdate", method = RequestMethod.POST)
-    public String freeUpdateProcess(FreeDto free) throws Exception{
-        freeService.updateFree(free);
+    public String freeUpdateProcess(FreeDto free, MultipartHttpServletRequest multipart) throws Exception{
+        freeService.updateFree(free, multipart);
         return "redirect:/freeList";
     }
 
@@ -357,6 +312,100 @@ public class MainController {
     @RequestMapping(value = "/freeList", method = RequestMethod.DELETE)
     public Object freeMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
         freeService.freeMultiDelete(idx);
+        return "success";
+    }
+
+
+    //    자유게시판
+    @Autowired
+    private DisService disService;
+
+
+    // 자유게시판 상세 페이지
+    @RequestMapping(value = "/dis/{idx}", method = RequestMethod.GET)
+    public ModelAndView disDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
+        ModelAndView mv = new ModelAndView("board/dis/disDetail");
+
+        // 세션에서 idx값 불러오기
+        HttpSession session = req.getSession();
+        session.setAttribute("idx", idx);
+
+        // db의 dis테이블에서 idx값 가져와 Comment테이블의 dis_idx값과 일치하는 정보 가져오기
+        DisDto dis = disService.selectDisDetail(idx);
+        mv.addObject("dis", dis);
+
+        // 자유게시판 상세정보 및 해당 게시판의 comment정보를 상세보기 페이지로 전송
+        List<CommentDto> commentList = commentService.disCommentList(idx);
+        mv.addObject("comment", commentList);
+
+        List<DisFileDto> disFiles = disService.selectDisFile(idx);
+        mv.addObject("disFiles", disFiles);
+
+        return mv;
+    }
+
+    // 댓글 달기 구현(db에 저장 후 상세페이지로 다시 이동)
+    @RequestMapping(value = "/disCommentWrite", method = RequestMethod.POST)
+    public String disCommentWrite(CommentDto comment) throws Exception{
+        commentService.disWriteComment(comment);
+        int idx = comment.getDisIdx();
+        return "redirect:/dis/" + idx;
+    }
+
+    // 댓글 삭제 구현
+    @RequestMapping(value = "/disCommentDelete", method = RequestMethod.POST)
+    public String disCommentDelete(CommentDto comment) throws Exception{
+        int idx = comment.getIdx();
+        int disIdx = comment.getDisIdx();
+        commentService.disCommentDelete(idx);
+
+        return "redirect:/dis/" + disIdx;
+    }
+
+    // 자유게시판 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
+    @RequestMapping(value = "/disUpdate/{idx}", method = RequestMethod.PUT)
+    public ModelAndView disUpdateView(@PathVariable("idx") int idx) throws Exception {
+        ModelAndView mv = new ModelAndView("board/dis/disUpdate");
+
+        DisDto dis = disService.updateDisView(idx);
+
+        mv.addObject("dis", dis);
+
+        return mv;
+    }
+
+    // 자유게시판 수정 구현(disList 이동)
+    @RequestMapping(value = "/disUpdate", method = RequestMethod.POST)
+    public String disUpdateProcess(DisDto dis, MultipartHttpServletRequest multipart) throws Exception{
+        disService.updateDis(dis, multipart);
+        return "redirect:/disList";
+    }
+
+    // 자유게시판 글 등록페이지로 이동
+    @RequestMapping(value = "/disWrite", method = RequestMethod.GET)
+    public String disWriteView() throws Exception {
+        return "board/dis/disWrite";
+    }
+
+    // 자유게시판 글 쓰기(파일업로드 수정)
+    @RequestMapping(value = "/disWrite", method = RequestMethod.POST)
+    public String disWriteProcess(DisDto dis, MultipartHttpServletRequest multipart) throws Exception{
+        disService.writeDis(dis, multipart);
+        return "redirect:/disList";
+    }
+
+    // 게시물 삭제
+    @RequestMapping(value = "/dis/{idx}", method = RequestMethod.DELETE)
+    public String disDelete(@PathVariable("idx") int idx) throws Exception{
+        disService.deleteDis(idx);
+        return "redirect:/disList";
+    }
+
+    // 게시물 일괄 삭제
+    @ResponseBody
+    @RequestMapping(value = "/disList", method = RequestMethod.DELETE)
+    public Object disMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
+        disService.disMultiDelete(idx);
         return "success";
     }
 

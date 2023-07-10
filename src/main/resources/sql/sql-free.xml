@@ -5,16 +5,6 @@
 
 <!--  자유게시판-->
 <mapper namespace="com.example.jangdocdaefilm.mapper.FreeMapper">
-<!--  <select id="selectFreeList" resultType="com.example.jangdocdaefilm.dto.FreeDto">-->
-<!--    SELECT-->
-<!--    idx, title, user_name, id, create_dt, hit_cnt-->
-<!--    FROM-->
-<!--    free-->
-<!--    WHERE-->
-<!--    delete_yn = 'N'-->
-<!--    ORDER BY-->
-<!--    idx ASC;-->
-<!--  </select>-->
 
   <select id="selectFreeListNewest" resultType="com.example.jangdocdaefilm.dto.FreeDto">
     SELECT
@@ -24,7 +14,7 @@
     WHERE
     delete_yn = 'N'
     ORDER BY
-    idx DESC;
+    idx DESC
   </select>
 
   <select id="selectFreeListViewed" resultType="com.example.jangdocdaefilm.dto.FreeDto">
@@ -35,7 +25,7 @@
     WHERE
     delete_yn = 'N'
     ORDER BY
-    hit_cnt DESC;
+    hit_cnt DESC
   </select>
 
   <select id="selectFreeDetail" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
@@ -108,5 +98,13 @@
     select idx, free_idx, stored_file_name, file_size, create_id, create_dt from free_img
     where free_idx=#{idx}
   </select>
+
+<!--  첨부파일 업데이트-->
+  <delete id="deleteFreeFileList" parameterType="com.example.jangdocdaefilm.dto.FreeFileDto">
+    DELETE
+    FROM
+    free_img
+    WHERE free_idx = #{idx}
+  </delete>
 
 </mapper>

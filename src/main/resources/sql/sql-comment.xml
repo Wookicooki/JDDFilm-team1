@@ -3,8 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!--  자유게시판-->
 <mapper namespace="com.example.jangdocdaefilm.mapper.CommentMapper">
+<!--자유게시판-->
   <select id="freeCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
     SELECT
     idx, content, create_dt, id, user_name, free_idx
@@ -24,6 +24,30 @@
   </insert>
 
   <select id="freeCommentDelete" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
+    DELETE FROM comment
+    WHERE idx = #{idx};
+  </select>
+
+<!--할인정보 게시판-->
+  <select id="disCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+    SELECT
+    idx, content, create_dt, id, user_name, dis_idx
+    FROM
+    comment
+    WHERE
+    dis_idx = #{idx}
+    ORDER BY
+    idx ASC;
+  </select>
+
+  <insert id="disWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
+    INSERT INTO
+    comment (content, create_dt, id, user_name, dis_idx)
+    VALUES
+    (#{content}, now(), #{id}, #{userName}, #{disIdx})
+  </insert>
+
+  <select id="disCommentDelete" resultType="com.example.jangdocdaefilm.dto.DisDto" parameterType="int">
     DELETE FROM comment
     WHERE idx = #{idx};
   </select>

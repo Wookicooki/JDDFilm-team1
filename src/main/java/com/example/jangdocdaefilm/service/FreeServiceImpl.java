@@ -4,6 +4,8 @@ import com.example.jangdocdaefilm.common.FreeFileUtils;
 import com.example.jangdocdaefilm.dto.FreeDto;
 import com.example.jangdocdaefilm.dto.FreeFileDto;
 import com.example.jangdocdaefilm.mapper.FreeMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -20,17 +22,14 @@ public class FreeServiceImpl implements FreeService {
   @Autowired
   private FreeFileUtils freeFileUtils;
 
-//  @Override
-//  public List<FreeDto> selectFreeList() throws Exception {
-//    return freeMapper.selectFreeList();
-//  }
-
   @Override
-  public List<FreeDto> selectFreeListNewest() throws Exception {
+  public Page<FreeDto> selectFreeListNewest(int pageNum) throws Exception {
+    PageHelper.startPage(pageNum, 10);
     return freeMapper.selectFreeListNewest();
   }
   @Override
-  public List<FreeDto> selectFreeListViewed() throws Exception {
+  public Page<FreeDto> selectFreeListViewed(int pageNum) throws Exception {
+    PageHelper.startPage(pageNum, 10);
     return freeMapper.selectFreeListViewed();
   }
 
@@ -62,8 +61,15 @@ public class FreeServiceImpl implements FreeService {
   }
 
   @Override
-  public void updateFree(FreeDto free) throws Exception {
+  public void updateFree(FreeDto free, MultipartHttpServletRequest updateFiles) throws Exception {
     freeMapper.updateFree(free);
+
+    List<FreeFileDto> fileList = freeFileUtils.parseFreeFileInfo(free.getIdx(), free.getId(), updateFiles);
+    int freeIdx = free.getIdx();
+    if (!CollectionUtils.isEmpty(fileList)) {
+      freeMapper.deleteFreeFileList(freeIdx);
+      freeMapper.insertFreeFileList(fileList);
+    }
   }
 
   @Override
