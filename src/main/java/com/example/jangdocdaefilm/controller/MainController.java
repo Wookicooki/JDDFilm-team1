@@ -316,12 +316,106 @@ public class MainController {
     }
 
 
-    //    자유게시판
+//    문의글 게시판
+    @Autowired
+    private QnaService qnaService;
+
+
+    // 문의글 상세 페이지
+    @RequestMapping(value = "/qna/{idx}", method = RequestMethod.GET)
+    public ModelAndView qnaDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
+        ModelAndView mv = new ModelAndView("board/qna/qnaDetail");
+
+        // 세션에서 idx값 불러오기
+        HttpSession session = req.getSession();
+        session.setAttribute("idx", idx);
+
+        // db의 qna테이블에서 idx값 가져와 Comment테이블의 qna_idx값과 일치하는 정보 가져오기
+        QnaDto qna = qnaService.selectQnaDetail(idx);
+        mv.addObject("qna", qna);
+
+        // 자유게시판 상세정보 및 해당 게시판의 comment정보를 상세보기 페이지로 전송
+        List<CommentDto> commentList = commentService.qnaCommentList(idx);
+        mv.addObject("comment", commentList);
+
+        List<QnaFileDto> qnaFiles = qnaService.selectQnaFile(idx);
+        mv.addObject("qnaFiles", qnaFiles);
+
+        return mv;
+    }
+
+    // 댓글 달기 구현(db에 저장 후 상세페이지로 다시 이동)
+    @RequestMapping(value = "/qnaCommentWrite", method = RequestMethod.POST)
+    public String qnaCommentWrite(CommentDto comment) throws Exception{
+        commentService.qnaWriteComment(comment);
+        int idx = comment.getQnaIdx();
+        return "redirect:/qna/" + idx;
+    }
+
+    // 댓글 삭제 구현
+    @RequestMapping(value = "/qnaCommentDelete", method = RequestMethod.POST)
+    public String qnaCommentDelete(CommentDto comment) throws Exception{
+        int idx = comment.getIdx();
+        int qnaIdx = comment.getQnaIdx();
+        commentService.qnaCommentDelete(idx);
+
+        return "redirect:/qna/" + qnaIdx;
+    }
+
+    // 문의글 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
+    @RequestMapping(value = "/qnaUpdate/{idx}", method = RequestMethod.PUT)
+    public ModelAndView qnaUpdateView(@PathVariable("idx") int idx) throws Exception {
+        ModelAndView mv = new ModelAndView("board/qna/qnaUpdate");
+
+        QnaDto qna = qnaService.updateQnaView(idx);
+
+        mv.addObject("qna", qna);
+
+        return mv;
+    }
+
+    // 문의글 수정 구현(qnaList 이동)
+    @RequestMapping(value = "/qnaUpdate", method = RequestMethod.POST)
+    public String qnaUpdateProcess(QnaDto qna, MultipartHttpServletRequest multipart) throws Exception{
+        qnaService.updateQna(qna, multipart);
+        return "redirect:/qnaList";
+    }
+
+    // 문의글 글 등록페이지로 이동
+    @RequestMapping(value = "/qnaWrite", method = RequestMethod.GET)
+    public String qnaWriteView() throws Exception {
+        return "board/qna/qnaWrite";
+    }
+
+    // 문의글 글 쓰기(파일업로드 수정)
+    @RequestMapping(value = "/qnaWrite", method = RequestMethod.POST)
+    public String qnaWriteProcess(QnaDto qna, MultipartHttpServletRequest multipart) throws Exception{
+        qnaService.writeQna(qna, multipart);
+        return "redirect:/qnaList";
+    }
+
+    // 게시물 삭제
+    @RequestMapping(value = "/qna/{idx}", method = RequestMethod.DELETE)
+    public String qnaDelete(@PathVariable("idx") int idx) throws Exception{
+        qnaService.deleteQna(idx);
+        return "redirect:/qnaList";
+    }
+
+    // 게시물 일괄 삭제
+    @ResponseBody
+    @RequestMapping(value = "/qnaList", method = RequestMethod.DELETE)
+    public Object qnaMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception{
+        qnaService.qnaMultiDelete(idx);
+        return "success";
+    }
+
+
+//    할인정보 게시판
     @Autowired
     private DisService disService;
 
 
-    // 자유게시판 상세 페이지
+    // 할인정보 상세 페이지
     @RequestMapping(value = "/dis/{idx}", method = RequestMethod.GET)
     public ModelAndView disDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
         ModelAndView mv = new ModelAndView("board/dis/disDetail");
@@ -362,7 +456,7 @@ public class MainController {
         return "redirect:/dis/" + disIdx;
     }
 
-    // 자유게시판 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
+    // 할인정보 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
     @RequestMapping(value = "/disUpdate/{idx}", method = RequestMethod.PUT)
     public ModelAndView disUpdateView(@PathVariable("idx") int idx) throws Exception {
         ModelAndView mv = new ModelAndView("board/dis/disUpdate");
@@ -374,20 +468,20 @@ public class MainController {
         return mv;
     }
 
-    // 자유게시판 수정 구현(disList 이동)
+    // 할인정보 수정 구현(disList 이동)
     @RequestMapping(value = "/disUpdate", method = RequestMethod.POST)
     public String disUpdateProcess(DisDto dis, MultipartHttpServletRequest multipart) throws Exception{
         disService.updateDis(dis, multipart);
         return "redirect:/disList";
     }
 
-    // 자유게시판 글 등록페이지로 이동
+    // 할인정보 글 등록페이지로 이동
     @RequestMapping(value = "/disWrite", method = RequestMethod.GET)
     public String disWriteView() throws Exception {
         return "board/dis/disWrite";
     }
 
-    // 자유게시판 글 쓰기(파일업로드 수정)
+    // 할인정보 글 쓰기(파일업로드 수정)
     @RequestMapping(value = "/disWrite", method = RequestMethod.POST)
     public String disWriteProcess(DisDto dis, MultipartHttpServletRequest multipart) throws Exception{
         disService.writeDis(dis, multipart);
@@ -428,25 +522,5 @@ public class MainController {
     @RequestMapping(value = "/nowWrite", method = RequestMethod.GET)
     public String nowInsertView() throws Exception {
         return "board/now/nowWrite";
-    }
-
-//    문의글 게시판
-    @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
-    public ModelAndView qnaList() throws Exception {
-        ModelAndView mv = new ModelAndView("board/qna/qnaList");
-
-        return mv;
-    }
-
-    @RequestMapping(value = "/qnaDetail", method = RequestMethod.GET)
-    public ModelAndView qnaDetail() throws Exception {
-        ModelAndView mv = new ModelAndView("board/qna/qnaDetail");
-
-        return mv;
-    }
-
-    @RequestMapping(value = "/qnaWrite", method = RequestMethod.GET)
-    public String qnaInsertView() throws Exception {
-        return "board/qna/qnaWrite";
     }
 }

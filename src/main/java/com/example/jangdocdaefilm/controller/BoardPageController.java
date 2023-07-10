@@ -2,8 +2,10 @@ package com.example.jangdocdaefilm.controller;
 
 
 import com.example.jangdocdaefilm.dto.DisDto;
+import com.example.jangdocdaefilm.dto.QnaDto;
 import com.example.jangdocdaefilm.dto.FreeDto;
 import com.example.jangdocdaefilm.service.DisService;
+import com.example.jangdocdaefilm.service.QnaService;
 
 import com.example.jangdocdaefilm.service.FreeService;
 import com.github.pagehelper.PageInfo;
@@ -54,6 +56,30 @@ private FreeService freeService;
     return p;
   }
 
+//  문의글 게시판
+  @Autowired
+  private QnaService qnaService;
+
+  @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
+  public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+    ModelAndView mv = new ModelAndView("board/qna/qnaList");
+
+    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
+
+    mv.addObject("qnaList", p);
+
+    return mv;
+  }
+
+  // 게시물 순서 변경
+  @ResponseBody
+  @RequestMapping(value = "/qnaList", method = RequestMethod.POST)
+  public Object qnaPageList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception{
+    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
+
+    return p;
+  }
+
 //  할인정보 게시판
   @Autowired
   private DisService disService;
@@ -68,7 +94,6 @@ private FreeService freeService;
 
     return mv;
   }
-
 
   // 게시물 순서 변경
   @ResponseBody
@@ -90,25 +115,24 @@ private FreeService freeService;
     return p;
   }
 
-
 //  //  할인정보 전체목록 페이징
 //  @Autowired
-//  private DisService disService;
+//  private QnaService qnaService;
 //
-//  @RequestMapping("/disList")
-//  public ModelAndView disList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    ModelAndView mv = new ModelAndView("board/dis/disList");
+//  @RequestMapping("/qnaList")
+//  public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+//    ModelAndView mv = new ModelAndView("board/qna/qnaList");
 //
-//    PageInfo<DisDto> p = new PageInfo<>(disService.selectDisList(pageNum), 10);
+//    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaList(pageNum), 10);
 //
-//    mv.addObject("disList", p);
+//    mv.addObject("qnaList", p);
 //    return mv;
 //  }
 //
 //  @ResponseBody
-//  @RequestMapping(value = "/board/dis/disListAjax")
-//  public Object disListAjax(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    PageInfo<DisDto> p = new PageInfo<>(disService.selectDisList(pageNum), 10);
+//  @RequestMapping(value = "/board/qna/qnaListAjax")
+//  public Object qnaListAjax(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+//    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaList(pageNum), 10);
 //    return p;
 //  }
 //

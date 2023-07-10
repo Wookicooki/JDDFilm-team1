@@ -44,5 +44,20 @@ public class CommentServiceImpl implements CommentService {
     commentMapper.disCommentDelete(idx);
   }
 
+  @Override
+  public List<CommentDto> qnaCommentList(int idx) throws Exception {
+    return commentMapper.qnaCommentList(idx);
+  }
+
+  @Override
+  public void qnaWriteComment(CommentDto comment) throws Exception {
+    commentMapper.qnaWriteComment(comment);
+  }
+
+  @Override
+  public void qnaCommentDelete(int idx) throws Exception {
+    commentMapper.qnaCommentDelete(idx);
+  }
+
 
 }

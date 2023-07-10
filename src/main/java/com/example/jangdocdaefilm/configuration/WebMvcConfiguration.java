@@ -34,12 +34,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Value("${resource.dis.path}")
   private String resourceDisPath;
 
+  @Value("${resource.qna.path}")
+  private String resourceQnaPath;
 
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/free/**").addResourceLocations(resourceFreePath);
     registry.addResourceHandler("/dis/**").addResourceLocations(resourceDisPath);
+    registry.addResourceHandler("/qna/**").addResourceLocations(resourceQnaPath);
 
   }
 

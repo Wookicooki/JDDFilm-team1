@@ -2,107 +2,345 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>Q&A List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/qnat/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/qnat/js/bootstrap.bundle.min.js"
+          integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+          crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
+  <script src="/js/header.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+  <script src="/js/header.js"></script>
+
   <style>
-  
+      /* 프로필 이미지 스타일 */
+      .box {
+          width: 150px;
+          height: 150px;
+          border-radius: 70%;
+          overflow: hidden;
+      }
+
+      .profile {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+
+      /* 탭 스타일 */
+      .tab_item {
+          width: calc(100% / 10);
+          height: 50px;
+          background-color: #f8f8f8;
+          line-height: 50px;
+          font-size: 15px;
+          text-align: center;
+          color: #333333;
+          display: block;
+          float: left;
+          text-align: center;
+          font-weight: bold;
+          transition: all 0.2s ease;
+      }
+
+      .tab_item:hover {
+          opacity: 0.75;
+      }
+
+      /* 라디오 버튼 UI 삭제*/
+      input[name="tab_item"] {
+          display: none;
+      }
+
+      /* 탭 컨텐츠 스타일 */
+      .tab_content {
+          display: none;
+          padding: 40px 40px 0;
+          clear: both;
+          overflow: hidden;
+      }
+
+      /* 선택 된 탭 콘텐츠를 표시 */
+      #all:checked ~ #all_content,
+      #programming:checked ~ #programming_content,
+      #design:checked ~ #design_content {
+          display: block;
+      }
+
+
+      /*선택된 탭 스타일 */
+      .tabs input:checked + .tab_item {
+          font-weight: bold;
+          font-size: 18px;
+      }
   </style>
-  <script>
-  
+
+  <script th:inline="javascript">
+      /*<![CDATA[*/
+      const test = [[${session.grade}]]
+      /*]]>*/
+      let pageNumber = 1;
+
+      $(document).ready(function () {
+          pagination(pageNumber);
+
+          // 일괄 삭제
+          $("#delete").on("click", function () {
+              var checkArr = [];     // 배열 초기화
+              $("input[name='deleteCheck']:checked").each(function (i) {
+                  checkArr.push($(this).val());     // 체크된 것만 값을 뽑아서 배열에 push
+              })
+              $.ajax({
+                  url: 'qnaList',
+                  type: 'DELETE',
+                  data: {
+                      valueArrTest: checkArr
+                  },
+                  success: function (data) {
+                      alert(data);
+                      if (data == "success") {
+                          location.reload();
+                      }
+                  },
+                  error: function () {
+                      alert("삭제 실패")
+                  }
+              });
+          });
+      });
+
+      function pagination(num) {
+          $.ajax({
+              url: "/qnaList",
+              type: "POST",
+              data: {pageNum: num},
+              success: function (data) {
+                  // pagination 이 적용된 ul 태그 찾기
+                  const tagPagination = $("#paginationAjax");
+
+                  // 기존 자식 태그 삭제
+                  tagPagination.empty();
+
+                  // 이전 페이지 버튼 생성
+                  const tagPageBtnPrev = $("<li class=\"page-item\"></li>");
+                  // 이전 페이지 번호가 0이면 qnaabled 클래스 추가, 아니면 qnaabled 클래스 삭제
+                  data.prePage == 0 ? tagPageBtnPrev.addClass("qnaabled") : tagPageBtnPrev.removeClass("qnaabled");
+                  // a 태그 추가 및 클릭 이벤트 추가
+                  const tagPageBtnPrevLink = $("<a class=\"page-link\" onclick='pagination(" + data.prePage + ")'>&laquo;</a>");
+                  tagPageBtnPrev.append(tagPageBtnPrevLink);
+                  tagPagination.append(tagPageBtnPrev);
+
+                  // 페이지 번호 버튼 생성
+                  for (let i = 0; i < data.navigatepageNums.length; i++) {
+                      const tagPageBtnNum = $('<li class="page-item"></li>');
+                      // 현재 페이지 번호와 페이지버튼의 값이 같으면 active 클래스 추가, 아니면 active 클래스 삭제
+                      data.pageNum == data.navigatepageNums[i] ? tagPageBtnNum.addClass("active") : tagPageBtnNum.removeClass("active");
+
+                      // a 태그 추가 및 클릭 이벤트 추가
+                      const tagPageBtnNumLink = $('<a class="page-link" onclick="pagination(' + data.navigatepageNums[i] + ')"></a>');
+                      tagPageBtnNumLink.append(data.navigatepageNums[i]);
+
+                      // li 태그에 a 태그를 자식 태그로 추가
+                      tagPageBtnNum.append(tagPageBtnNumLink);
+                      // ul 태그에 li 태그를 자식 태그로 추가
+                      tagPagination.append(tagPageBtnNum);
+                  }
+
+                  // 다음 페이지 버튼 생성
+                  const tagPageBtnNext = $("<li class=\"page-item\"></li>");
+                  data.nextPage == 0 ? tagPageBtnNext.addClass("qnaabled") : tagPageBtnNext.removeClass("qnaabled");
+                  const tagPageBtnNextLink = $('<a class="page-link" onclick="pagination(' + data.nextPage + ')">&raquo;</a>');
+                  tagPageBtnNext.append(tagPageBtnNextLink);
+                  tagPagination.append(tagPageBtnNext);
+
+              },
+              error: function () {
+                  alert("ddd");
+              }
+          });
+      }
   </script>
 </head>
 <body>
-<header th:replace="~{layout/header :: header-basic}"></header>
+<main class="container my-4">
+  <header th:replace="~{layout/header :: header-basic}"></header>
+  <main class="container">
+    <!--  사이드 바-->
+    <div class="row">
+      <div class="col-sm-2 mt-5 pt-5">
+        <div class="mt-5">
+          <!--프로필 이미지-->
+          <div class="box mx-auto" style="background: #BDBDBD;">
+            <a href="#"><img class="profile" src="/images/img1.jpg"></a>
+          </div>
+          <div>
+            <h6 class="my-3 px-2 text-center text-secondary fw-bold" th:text="${session.userName}"></a></h6>
+          </div>
 
-<main class="container my-5">
-  <div class="row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-8">
-      <div class="row mt-5 mb-3">
-        <div class="col-sm"><h2>할인 정보</h2></div>
-        <div class="col-sm btn-group d-flex justify-content-end">
-          <div class="form-check mx-3 form-check-inline">
-            <input class="form-check-input" type="radio" name="radio" id="newest" value="newest" checked>
-            <label class="form-check-label" for="newest">최신순</label>
-          </div>
-          <div class="form-check mx-3 form-check-inline">
-            <input class="form-check-input" type="radio" name="radio" id="viewed" value="viewed">
-            <label class="form-check-label" for="viewed">조회순</label>
-          </div>
-        </div>
-      </div>
-      <div>
-        <table class="table table-hover text-center">
-          <colgroup>
-            <col style="width: 7%"/>
-            <col style="width: 60%"/>
-            <col style="width: 8%"/>
-            <col style="width: 10%"/>
-            <col style="width: 8%"/>
-            <col style="width: 7%"/>
-          </colgroup>
-          <thead>
-          <tr class="table-secondary">
-            <th>번호</th>
-            <th class="text-start">제목</th>
-            <th>글쓴이</th>
-            <th>날짜</th>
-            <th>조회수</th>
-            <th>삭제</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>100</td>
-            <td class="text-start">
-              <a href="/qnaDetail" class="text-decoration-none">됬으면 좋겠다</a>
-            </td>
-            <td>글쓴이</td>
-            <td>날짜~~</td>
-            <td>10</td>
-            <td>
-              <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault">
-            </td>
-          </tr>
-          <tr>
-            <td colspan="5">조회된 데이터가 없습니다.</td>
-          </tr>
-          </tbody>
-        </table>
-        <div class="d-flex justify-content-end my-3">
-          <a href="/qnaWrite" class="btn btn-outline-primary mx-3">글쓰기</a>
-          <button type="submit" class="btn btn-outline-danger">삭제</button>
-        </div>
-      </div>
-      <div class="container d-flex justify-content-center">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
+          <!--       내가 쓴 글/댓글 탭 바-->
+          <ul class="nav flex-column text-center" id="tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" href="#my-page-board" data-bs-toggle="tab">내 커뮤니티 글</a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
+
+            <!--       나만의 영화공간 탭 바-->
+            <li class="nav-item">
+              <a class="nav-link" href="#my-page-movie" data-bs-toggle="tab">나만의 영화공간</a>
+            </li>
+            <li class="nav-item">
+
+              <!--  정보수정 모달 창  -->
+              <button type="button" class="btn btn-light text-primary"
+                      data-bs-toggle="modal" data-bs-target="#reviewModal"
+                      style="background: none; outline:none; box-shadow:none;">내 정보 수정</button>
+            </li>
+            <div class="modal fade" id="reviewModal">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title">회원정보 수정</h1>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post">
+                      <div class="col-sm form-floating">
+                        <div class="box mx-auto" style="background: #BDBDBD;">
+                          <a href="#"><img class="profile" src="/images/img1.jpg"></a>
+                        </div>
+                        <div>
+                          <h6 class="my-3 px-2 text-center text-secondary fw-bold" th:text="${session.userName}"></h6>
+                        </div>
+                        <div class="input-group">
+                          <span class="input-group-text fw-bold">PW 변경</span>
+                        </div>
+                        <div class="col-sm form-floating">
+                          <input type="text" class="form-control" id="user-pw" name="userPw" placeholder="비밀번호">
+                          <label for="user-pw">기존 비밀번호를 입력</label>
+                        </div>
+                        <div class="col-sm form-floating">
+                          <input type="text" class="form-control" id="user-new-pw" name="userNewPw" placeholder="비밀번호">
+                          <label for="user-pw">새 비밀번호를 입력(8~16자리의 영문,숫자)</label>
+                        </div>
+                      </div>
+                      <div class="form-floating">
+                        <input type="text" class="form-control" id="user-pw-check" name="userNewPw" placeholder="비밀번호 확인">
+                        <label for="user-pw-check">새 비밀번호를 한번 더 입력</label>
+                      </div>
+
+                      <div class="col-sm form-floating  my-4">
+                        <div class="input-group">
+                          <span class="input-group-text fw-bold">닉네임 변경</span>
+                        </div>
+                        <div class="col-sm form-floating">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="user-name" name="userPw" placeholder="닉네임">
+                            <label for="user-name">새 닉네임을 입력</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="d-grid gap-3">
+                        <button type="button" class=" btn btn-primary fw-bold p-2 d-grid gap-3">수정하기</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--          문의하기 탭 바-->
+            <li class="nav-item">
+              <a class="nav-link" href="/myPage" data-bs-toggle="tab">문의하기</a>
             </li>
           </ul>
-        </nav>
+        </div>
+
+      </div>
+
+      <!--   내 커뮤니티 글(탭바)-->
+      <div class="col-sm p-3">
+        <div class="row mt-5 mb-3">
+          <div class="col-sm">
+            <div class="d-flex justify-content-center my-3 mb-5">
+              <h2>문의 게시판</h2>
+            </div>
+          </div>
+        </div>
+        <form action="/qnaList" method="post" id="form">
+          <div>
+            <table class="table table-hover text-center">
+              <colgroup>
+                <col style="width: 7%"/>
+                <col style="width: 66%"/>
+                <col style="width: 8%"/>
+                <col style="width: 12%"/>
+                <col th:if="${session.grade == '1'}" style="width: 7%"/>
+              </colgroup>
+              <thead>
+              <tr class="table-secondary">
+                <th>번호</th>
+                <th class="text-start">제목</th>
+                <th>글쓴이</th>
+                <th>날짜</th>
+                <th th:if="${session.grade == '1'}">삭제</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <tr th:if="${#lists.size(qnaList.getList())} > 0" th:each="qna : ${qnaList.getList()}">
+                <td th:text="${qna.idx}">100</td>
+                <td class="text-start">
+                  <a href="/qna/" th:attrappend="href=${qna.idx}" th:text="${qna.title}"
+                     class="text-decoration-none">됬으면 좋겠다</a>
+                </td>
+                <td th:text="${qna.userName}">글쓴이</td>
+                <td th:text="${qna.createDt}">날짜~~</td>
+                <td th:if="${session.grade == '1'}">
+                  <input class="form-check-input" type="checkbox" th:value="${qna.idx}"
+                         name="deleteCheck">
+                </td>
+              </tr>
+              <tr th:unless="${#lists.size(qnaList)} > 0">
+                <td colspan="6">조회된 데이터가 없습니다.</td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end my-3">
+              <a href="/qnaWrite" class="btn btn-outline-primary mx-3"
+                 th:unless="${session.id == null}">글쓰기</a>
+              <button type="button" class="btn btn-outline-danger" id="delete"
+                      th:if="${session.grade == '1'}">삭제
+              </button>
+            </div>
+          </div>
+          <!--        <input type="hidden" id="method" name="_method">-->
+        </form>
+        <!--    ajax 페이지네이션-->
+        <div class="my-3">
+          <ul class="pagination justify-content-center" id="paginationAjax">
+            <li class="page-item qnaabled">
+              <a class="page-link" href="#">&laquo;</a>
+            </li>
+
+            <li class="page-item">
+              <a class="page-link" href="#">1</a>
+            </li>
+
+            <li class="page-item">
+              <a class="page-link" href="#">&raquo;</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="col-sm-2"></div>
-  </div>
-</main>
+  </main>
 
-<footer th:replace="~{layout/footer :: footer-basic}"></footer>
+  <footer th:replace="~{layout/footer :: footer-basic}"></footer>
+</main>
 </body>
 </html>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  자유게시판-->
+<mapper namespace="com.example.jangdocdaefilm.mapper.QnaMapper">
+
+  <select id="selectQnaListNewest" resultType="com.example.jangdocdaefilm.dto.QnaDto">
+    SELECT
+    idx, title, user_name, id, create_dt
+    FROM
+    qna
+    WHERE
+    delete_yn = 'N'
+    ORDER BY
+    idx DESC
+  </select>
+
+
+  <select id="selectQnaDetail" resultType="com.example.jangdocdaefilm.dto.QnaDto" parameterType="int">
+    SELECT
+    idx, title, content, create_dt, user_name, id, delete_yn
+    FROM
+    qna
+    WHERE
+    idx = #{idx}
+    AND
+    delete_yn = 'N'
+  </select>
+
+  <insert id="writeQna" parameterType="com.example.jangdocdaefilm.dto.QnaDto" useGeneratedKeys="true" keyProperty="idx">
+    INSERT INTO
+    qna (title, content, id, user_name, create_dt)
+    VALUES
+    (#{title}, #{content} , #{id}, #{userName}, now())
+  </insert>
+
+  <select id="updateQnaView" resultType="com.example.jangdocdaefilm.dto.QnaDto" parameterType="int">
+    SELECT
+    idx, title, content, create_dt, user_name, id, delete_yn
+    FROM
+    qna
+    WHERE
+    idx = #{idx}
+    AND
+    delete_yn = 'N'
+  </select>
+
+  <update id="updateQna" parameterType="com.example.jangdocdaefilm.dto.QnaDto">
+    UPDATE
+    qna
+    SET
+    title = #{title} , content = #{content}
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <update id="deleteQna" parameterType="int">
+    UPDATE
+    qna
+    SET
+    delete_yn = 'Y'
+    WHERE
+    idx = #{idx}
+  </update>
+
+  <!--  첨부파일 정보 추가-->
+  <insert id="insertQnaFileList" parameterType="com.example.jangdocdaefilm.dto.QnaFileDto">
+    INSERT INTO
+    qna_img (qna_idx, original_file_name, stored_file_name, file_size, create_id, create_dt)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.qnaIdx}, #{item.originalFileName}, #{item.storedFileName}, #{item.fileSize}, #{item.createId}, NOW())
+    </foreach>
+  </insert>
+
+  <select id="selectQnaFile" parameterType="int" resultType="com.example.jangdocdaefilm.dto.QnaFileDto">
+    select idx, qna_idx, stored_file_name, file_size, create_id, create_dt from qna_img
+    where qna_idx=#{idx}
+  </select>
+
+<!--  첨부파일 업데이트-->
+  <delete id="deleteQnaFileList" parameterType="com.example.jangdocdaefilm.dto.QnaFileDto">
+    DELETE
+    FROM
+    qna_img
+    WHERE qna_idx = #{idx}
+  </delete>
+
+</mapper>
