@@ -101,6 +101,8 @@ public class MainController {
     List<UserScoreDto> jangDocDaeChart = memberService.getJangDocDaeChart();
     mv.addObject("jangDocDaeChart", jangDocDaeChart);
 
+    // 커뮤니티 각각 게시글 정보 가져오기, 최신글 5개 출력(커뮤니티 병합 후)
+
     return mv;
   }
 
@@ -246,7 +248,6 @@ public class MainController {
     // 사용자 리뷰 평점 평균
     String userScoreAvg = memberService.userScoreAvg(movieId);
 
-
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
     mv.addObject("userScoreAvg", userScoreAvg);
@@ -260,7 +261,7 @@ public class MainController {
     memberService.insertMovieReview(review);
     // 새 리뷰 insert시 평균 계산하여 영화 테이블에 insert
     UserScoreDto movie = memberService.getScoreAvgMovie(review.getMovieId());
-    if (movie == null){
+    if (movie == null) {
       UserScoreDto saveMovieScore = new UserScoreDto();
       saveMovieScore.setId(review.getMovieId());
       saveMovieScore.setTitle(review.getMovieTitle());
@@ -301,11 +302,9 @@ public class MainController {
 
   // 영화 리뷰 삭제
   @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
-  public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception {
-    // memberService.deleteMovieReview(idx);
-
-    String movieId = review.getMovieId();
-    String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
+  public String deleteMovieReview(@PathVariable("idx") int idx, @RequestParam("movieTitle") String movieTitle, @RequestParam("movieId") String movieId) throws Exception {
+    memberService.deleteMovieReview(idx);
+    movieTitle = URLEncoder.encode(movieTitle, "UTF-8");
     return "redirect:/movieReview/" + movieId + "/" + movieTitle;
   }
 
@@ -335,9 +334,10 @@ public class MainController {
       int checkLike = 0;
       for (ReviewDto review : reviewList) {
         for (ReviewLikesDto reviewLike : reviewLikeCheck) {
-          checkLike = memberService.checkLike(reviewLike.getIdx(), userId);
+          checkLike = memberService.checkLike(reviewLike.getIdx(), userId, review.getIdx());
+          if (checkLike == 1) break;
         }
-          review.setReviewLikeCheck(checkLike);
+        review.setReviewLikeCheck(checkLike);
       }
     }
 

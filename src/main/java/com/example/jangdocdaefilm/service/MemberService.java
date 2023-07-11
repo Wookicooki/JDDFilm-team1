@@ -36,7 +36,7 @@ public interface MemberService {
   // 좋아요 -1
   void removeLike(int reviewIdx, String memberId) throws Exception;
 
-  int checkLike(int likeIdx, String memberId) throws Exception;
+  int checkLike(int likeIdx, String memberId, int reviewIdx) throws Exception;
 
   void deleteMovieReview(int idx) throws Exception;
 

@@ -14,27 +14,27 @@
   <script src="/js/header.js"></script>
 
   <script th:inline="javascript">
-      /*<![CDATA[*/
-      const userId = [[${session.id}]];
-      /*]]>*/
+    /*<![CDATA[*/
+    const userId = [[${session.id}]];
+    /*]]>*/
 
-      $(document).ready(function () {
-          $("#btnBack").on("click", function () {
-              history.back();
-          });
+    $(document).ready(function () {
+      $("#btnBack").on("click", function () {
+        history.back();
+      });
 
-          let index = 0;
-          $(window).scroll(function () {
-              let window = $(this);
-              let scrollTop = window.scrollTop();
-              let windowHeight = window.height();
-              let docHeight = $(document).height();
+      let index = 0;
+      $(window).scroll(function () {
+        let window = $(this);
+        let scrollTop = window.scrollTop();
+        let windowHeight = window.height();
+        let docHeight = $(document).height();
 
-              function loadReviews() {
-                  $.ajax({
-                      success: function () {
-                          $(".other-reviews").append(
-                              `<div class="card my-4">
+        function loadReviews() {
+          $.ajax({
+            success: function () {
+              $(".other-reviews").append(
+                `<div class="card my-4">
                     <div class="card-body">
                       <p class="card-text">영화 리뷰 내용</p>
                       <div class="text-end">
@@ -43,75 +43,74 @@
                       </div>
                     </div>
                   </div>`
-                          )
-                      },
-                  })
-              }
+              )
+            },
+          })
+        }
 
-              if (scrollTop + windowHeight + 100 >= docHeight) {
-                  index++;
-                  loadReviews();
-              }
-          });
-
-
-          $(".like-click").on("click", function () {
-              const likeIcon = $(this);
-              // hidden input value 값 = 해당 리뷰 글번호
-              let reviewIdx = likeIcon.prev().val();
-
-              if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up') {
-                  $.ajax({
-                      url: '/saveLike',
-                      type: 'GET',
-                      data: {reviewIdx: reviewIdx},
-                      success: function (data) {
-                          let likeCnt = data.likeCnt;
-                          $("#like" + reviewIdx).text(likeCnt);
-                      },
-                      error: function () {
-                          alert("통신 실패");
-                      }
-                  })
-                  // ajax 통신 후 꽉 찬 아이콘으로 변경
-                  likeIcon.html("<i class='bi bi-hand-thumbs-up-fill'></i>");
-              } else if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up-fill') {
-                  $.ajax({
-                      url: '/removeLike',
-                      type: 'GET',
-                      data: {reviewIdx: reviewIdx},
-                      success: function (data) {
-                          let likeCnt = data.likeCnt;
-                          $("#like" + reviewIdx).text(likeCnt);
-                      },
-                      error: function () {
-                          alert("통신 실패");
-                      }
-                  })
-                  // ajax 통신 후 빈 아이콘으로 변경
-                  likeIcon.html("<i class='bi bi-hand-thumbs-up'></i>");
-              }
-          });
-
-          $("#btn-update").on("click", function () {
-              $("#method_put").val("PUT")
-              const frm = $("#frm-put")[0]
-              frm.action = "/updateMovieReview";
-              frm.submit()
-          });
-
-          $("#btn-delete").on("click", function () {
-              const answer = confirm("정말 삭제하시겠습니까?")
-              if (answer) {
-                  $("#method").val("DELETE");
-                  const frm = $("#frm")[0];
-                  frm.action = "/deleteMovieReview/" + $("#idx").val();
-                  frm.submit();
-              } else {
-                  return false;
-              }
-          });
+        if (scrollTop + windowHeight + 100 >= docHeight) {
+          index++;
+          loadReviews();
+        }
       });
+
+
+      $(".like-click").on("click", function () {
+        const likeIcon = $(this);
+        // hidden input value 값 = 해당 리뷰 글번호
+        let reviewIdx = likeIcon.prev().val();
+
+        if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up') {
+          $.ajax({
+            url: '/saveLike',
+            type: 'GET',
+            data: {reviewIdx: reviewIdx},
+            success: function (data) {
+              let likeCnt = data.likeCnt;
+              $("#like" + reviewIdx).text(likeCnt);
+            },
+            error: function () {
+              alert("통신 실패");
+            }
+          })
+          // ajax 통신 후 꽉 찬 아이콘으로 변경
+          likeIcon.html("<i class='bi bi-hand-thumbs-up-fill'></i>");
+        } else if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up-fill') {
+          $.ajax({
+            url: '/removeLike',
+            type: 'GET',
+            data: {reviewIdx: reviewIdx},
+            success: function (data) {
+              let likeCnt = data.likeCnt;
+              $("#like" + reviewIdx).text(likeCnt);
+            },
+            error: function () {
+              alert("통신 실패");
+            }
+          })
+          // ajax 통신 후 빈 아이콘으로 변경
+          likeIcon.html("<i class='bi bi-hand-thumbs-up'></i>");
+        }
+      });
+
+      $("#btn-update").on("click", function () {
+        $("#method_put").val("PUT")
+        const frm = $("#frm-put")[0]
+        frm.action = "/updateMovieReview";
+        frm.submit()
+      });
+
+      $("#btn-delete").on("click", function () {
+        const answer = confirm("정말 삭제하시겠습니까?")
+        if (answer) {
+          const idx = $("#idx").val();
+          $("#method").val("DELETE");
+          const frm = $("#frm")[0];
+          frm.action = "/deleteMovieReview/" + idx;
+          frm.submit();
+        }
+      });
+    });
   </script>
 
 </head>
@@ -143,6 +142,7 @@
             </div>
           </div>
           <input type="hidden" name="movieId" th:value="${myReview.movieId}">
+          <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
           <input type="hidden" id="idx" name="idx" th:value="${myReview.idx}">
           <input type="hidden" id="method" name="_method">
         </form>
@@ -178,6 +178,8 @@
 
       <div class="my-4" id="other-reviews">
         <div class="card my-3" th:each="reveiw: ${reviewList}">
+          <input type="hidden" th:value="reveiw.movieTitle">
+          <input type="hidden" th:value="reveiw.movieId">
           <div class="card-header" th:text="${reveiw.userName}"></div>
           <div class="card-body">
             <span class="card-text" th:text="${reveiw.content}">영화 리뷰 내용</span>
@@ -187,8 +189,10 @@
               <!-- 로그인 상태 -->
               <div th:if="${session.id} != null">
                 <input type="hidden" th:value="${reveiw.idx}">
-                <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 1"><i class="bi bi-hand-thumbs-up-fill"></i></a>
-                <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 0"><i class="bi bi-hand-thumbs-up"></i></a>
+                <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 1"><i
+                    class="bi bi-hand-thumbs-up-fill"></i></a>
+                <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 0"><i
+                    class="bi bi-hand-thumbs-up"></i></a>
 
               </div>
               <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->

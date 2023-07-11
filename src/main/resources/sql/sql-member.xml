@@ -138,6 +138,8 @@
             member_id = #{memberId}
         AND
             idx = #{likeIdx}
+        AND
+            review_idx = #{reviewIdx}
     </select>
 
     <select id="getReviewLike" parameterType="String" resultType="com.example.jangdocdaefilm.dto.ReviewLikesDto">
