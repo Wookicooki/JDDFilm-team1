@@ -31,47 +31,47 @@
         WHERE id = #{id}
     </select>
 
-  <insert id="signUpMember" parameterType="com.example.jangdocdaefilm.dto.MemberDto">
-    INSERT INTO
-    member (id, password, user_name)
-    VALUES
-    (#{id}, #{pw} , #{userName})
-  </insert>
+    <insert id="signUpMember" parameterType="com.example.jangdocdaefilm.dto.MemberDto">
+        INSERT INTO
+        member (id, password, user_name)
+        VALUES
+        (#{id}, #{pw} , #{userName})
+    </insert>
 
-  <!--  회원정보 수정-->
-  <!--  동일한 비밀번호인지 검증-->
-  <select id="confirmPw" parameterType="String" resultType="int">
-    SELECT
-    COUNT(*) AS cnt
-    FROM member
-    WHERE password = #{pw}
-    AND id = #{id}
-  </select>
+    <!--  회원정보 수정-->
+    <!--  동일한 비밀번호인지 검증-->
+    <select id="confirmPw" parameterType="String" resultType="int">
+        SELECT
+        COUNT(*) AS cnt
+        FROM member
+        WHERE password = #{pw}
+        AND id = #{id}
+    </select>
 
-  <select id="confirmName" parameterType="String" resultType="int">
-    SELECT
-    COUNT(*) AS cnt
-    FROM member
-    WHERE user_name = #{name}
-  </select>
+    <select id="confirmName" parameterType="String" resultType="int">
+        SELECT
+        COUNT(*) AS cnt
+        FROM member
+        WHERE user_name = #{name}
+    </select>
 
-  <update id="changePassword" parameterType="String">
-    UPDATE
-    member
-    SET
-    password = #{pw}
-    WHERE
-    id = #{id}
-  </update>
+    <update id="changePassword" parameterType="String">
+        UPDATE
+        member
+        SET
+        password = #{pw}
+        WHERE
+        id = #{id}
+    </update>
 
-  <update id="changeUserName" parameterType="String">
-    UPDATE
-    member
-    SET
-    user_name = #{name}
-    WHERE
-    id = #{id}
-  </update>
+    <update id="changeUserName" parameterType="String">
+        UPDATE
+        member
+        SET
+        user_name = #{name}
+        WHERE
+        id = #{id}
+    </update>
 
 
     <insert id="insertMovieReview" parameterType="com.example.jangdocdaefilm.dto.ReviewDto">
@@ -173,6 +173,8 @@
         WHERE
         member_id = #{memberId}
         AND
+        idx = #{likeIdx}
+        AND
         review_idx = #{reviewIdx}
     </select>
 
@@ -185,4 +187,55 @@
         member_id = #{memberId}
     </select>
 
+    <!--    유저 평균 평점 계산 -->
+    <select id="userScoreAvg" parameterType="String" resultType="String">
+        SELECT
+        ROUND(AVG(user_score), 1)
+        FROM
+        review
+        WHERE movie_id = #{movieId};
+    </select>
+
+    <!--    평균 평점 등록 -->
+    <insert id="insertUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.UserScoreDto">
+        INSERT INTO
+        movie (id, title, score_avg)
+        VALUES
+        (#{id}, #{title}, #{scoreAvg})
+    </insert>
+
+    <!--    평균 평점 업데이트 -->
+    <update id="updateUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.UserScoreDto">
+        UPDATE
+        movie
+        SET
+        score_avg = #{scoreAvg}
+        WHERE
+        title = #{title}
+        AND
+        id = #{id}
+    </update>
+
+    <delete id="deleteUserScoreAvg" parameterType="String">
+        DELETE FROM
+        movie
+        WHERE id = #{movieId}
+    </delete>
+
+    <select id="getScoreAvgMovie" parameterType="String" resultType="com.example.jangdocdaefilm.dto.UserScoreDto">
+        SELECT
+        title, score_avg, id
+        FROM
+        movie
+        WHERE id = #{movieId}
+    </select>
+
+    <select id="getJangDocDaeChart" resultType="com.example.jangdocdaefilm.dto.UserScoreDto">
+        SELECT
+        @rownum:=@rownum+1 as no, title, score_avg, id
+        FROM
+        movie, (SELECT @rownum:=0) TMP
+        ORDER BY
+        score_avg DESC
+    </select>
 </mapper>

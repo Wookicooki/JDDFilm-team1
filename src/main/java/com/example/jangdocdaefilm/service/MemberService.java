@@ -47,9 +47,26 @@ public interface MemberService {
   // 좋아요 -1
   void removeLike(int reviewIdx, String memberId) throws Exception;
 
-  int checkLike(int reviewIdx, String memberId) throws Exception;
+  int checkLike(int likeIdx, String memberId, int reviewIdx) throws Exception;
 
   void deleteMovieReview(int idx) throws Exception;
 
   List<ReviewLikesDto> getReviewLike(String userId) throws Exception;
+
+  // 유저 점수 평균
+  String userScoreAvg(String movieId) throws Exception;
+
+  // 유저 점수 평균 등록
+  void insertUserScoreAvg(UserScoreDto userScore) throws Exception;
+
+  // 유저 점수 평균 업데이트
+  void updateUserScoreAvg(UserScoreDto userScore) throws Exception;
+
+  // 유저 점수 평균 삭제
+  void deleteUserScoreAvg(String movieId) throws Exception;
+
+  UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
+
+  List<UserScoreDto> getJangDocDaeChart() throws Exception;
+
 }

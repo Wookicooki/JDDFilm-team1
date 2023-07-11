@@ -55,7 +55,7 @@
         <div class="accordion" id="accordionDailyBO">
           <!-- 일일 박스 오피스 모델 -->
           <th:block th:each="info : ${movieList}">
-          <div class="accordion-item"  th:if="${infoStat.index} <= 15">
+          <div class="accordion-item"  th:if="${infoStat.index} <= 10">
             <h2 class="accordion-header" id="headingOne">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseOne" th:attr="data-target='#collapse'+${info.id}">
@@ -91,8 +91,8 @@
           <div class="d-flex justify-content-between">
             <h1 class="fs-5 fw-bold">장독대 박스 오피스</h1>
           </div>
-          <table class="table table-hover table-striped">
-            <tr th:each="item: ${jangDocDaeChart}">
+          <table class="table table-hover table-striped" th:if="${jangDocDaeChart} != null">
+            <tr th:each="item: ${jangDocDaeChart}" th:if="${itemStat.index <= 5}">
               <td th:text="${item.no}"></td>
               <td><a th:href="@{/movieDetail/} + ${item.id}" class="text-decoration-none" th:text="${item.title}">순위</a>
               </td>

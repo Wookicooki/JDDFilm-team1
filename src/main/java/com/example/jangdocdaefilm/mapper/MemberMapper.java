@@ -45,9 +45,21 @@ public interface MemberMapper {
   void likeDown(@Param("idx") int reviewIdx) throws Exception;
 
   // 좋아요 체크
-  int checkLike(int reviewIdx, String memberId) throws Exception;
+  int checkLike(int likeIdx, String memberId, int reviewIdx) throws Exception;
 
 
   List<ReviewLikesDto> getReviewLike(String memberId) throws Exception;
+
+  // 평균 점수
+  String userScoreAvg(String movieId) throws Exception;
+
+  void insertUserScoreAvg(UserScoreDto userScore) throws Exception;
+
+  void updateUserScoreAvg(UserScoreDto userScore) throws Exception;
+
+  void deleteUserScoreAvg(String movieId) throws Exception;
+
+  UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
+  List<UserScoreDto> getJangDocDaeChart() throws Exception;
 
 }

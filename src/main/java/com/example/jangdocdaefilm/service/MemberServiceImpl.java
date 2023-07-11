@@ -100,8 +100,8 @@ public class MemberServiceImpl implements MemberService {
 
   // 좋아요 체크
   @Override
-  public int checkLike(int reviewIdx, String memberId) throws Exception {
-    return memberMapper.checkLike(reviewIdx, memberId);
+  public int checkLike(int likeIdx, String memberId, int reviewIdx) throws Exception {
+    return memberMapper.checkLike(likeIdx, memberId, reviewIdx);
   }
 
   @Override
@@ -113,4 +113,36 @@ public class MemberServiceImpl implements MemberService {
   public List<ReviewLikesDto> getReviewLike(String userId) throws Exception {
     return memberMapper.getReviewLike(userId);
   }
+
+
+  @Override
+  public String userScoreAvg(String movieId) throws Exception {
+    return memberMapper.userScoreAvg(movieId);
+  }
+
+  @Override
+  public void insertUserScoreAvg(UserScoreDto userScore) throws Exception {
+    memberMapper.insertUserScoreAvg(userScore);
+  }
+
+  @Override
+  public void updateUserScoreAvg(UserScoreDto userScore) throws Exception {
+    memberMapper.updateUserScoreAvg(userScore);
+  }
+
+  @Override
+  public void deleteUserScoreAvg(String movieId) throws Exception {
+    memberMapper.deleteUserScoreAvg(movieId);
+  }
+
+  @Override
+  public UserScoreDto getScoreAvgMovie(String movieId) throws Exception {
+    return memberMapper.getScoreAvgMovie(movieId);
+  }
+
+  @Override
+  public List<UserScoreDto> getJangDocDaeChart() throws Exception {
+    return memberMapper.getJangDocDaeChart();
+  }
+
 }

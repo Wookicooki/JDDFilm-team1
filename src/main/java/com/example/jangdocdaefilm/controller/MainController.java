@@ -54,35 +54,38 @@ public class MainController {
         String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
         List<DailyBoxOfficeDto> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
         /**************************/
-        /***** 일일 박스 오피스의 영화 상세 정보 *****/
-        // dailyBoxOfficeList에서 10편의 영화 제목만 가져와 리스트로 저장
-        List<String> keywords = dailyBoxOfficeList.stream()
-                .map(MapData -> MapData.getMovieNm())
-                .toList();
 
-        Iterator<String> it = keywords.iterator();
-        List<MovieDto> movieList = new ArrayList<>();
-        while (it.hasNext()) {
-            String query = it.next();
-            String queryEncode = URLEncoder.encode(query, "UTF-8");
-            MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1");
+        /***** 일일 박스 오피스의 영화 상세 정보 tmdb 검색 api *****/
+        // 수정
+//    Iterator<DailyBoxOfficeDto> it = dailyBoxOfficeList.iterator();
+//    List<MovieDto> movieList = new ArrayList<>();
+//    while (it.hasNext()) {
+//      DailyBoxOfficeDto dailyBoxOffice = it.next();
+//      String query = dailyBoxOffice.getMovieNm();
+//      String openDt = dailyBoxOffice.getOpenDt();
+//      String queryEncode = URLEncoder.encode(query, "UTF-8");
+//      MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1&region=KR");
+//
+//      List<MovieDto> movieLists = movies.getResults();
+//      int total = Integer.parseInt(movies.getTotal_results());
+//      if (total != 1) {
+//        for (int i = 0; i < movieLists.size(); i++) {
+//          if (movieLists.get(i).getTitle().equals(query)) {
+//            movieList.add(movieLists.get(i));
+//          }
+//        }
+//      } else {
+//        movieList.add(movieLists.get(0));
+//      }
+//    }
 
-            List<MovieDto> movieLists = movies.getResults();
-            int total = Integer.parseInt(movies.getTotal_results());
-            if (total != 1) {
-                for (int i = 0; i < movieLists.size(); i++) {
-                    if (movieLists.get(i).getTitle().equals(query)) {
-                        movieList.add(movieLists.get(i));
-                    }
-                }
-            } else {
-                movieList.add(movieLists.get(0));
-            }
-        }
-        mv.addObject("dailyBoxOfficeDTOList", dailyBoxOfficeList);
+        // tmdb 영화 인기순
+
+        List<MovieDto> movieList = movieService.getSearchMovies("https://api.themoviedb.org/3/movie/popular?language=ko&page=1&region=KR").getResults();
+
+        mv.addObject("dailyBoxOfficeList", dailyBoxOfficeList);
         mv.addObject("movieList", movieList);
 
-//        *******로그인 시 member에 id, userName, grade 저장 및 main페이지로 전송
         HttpSession session = req.getSession();
 
         MemberDto member = new MemberDto();
@@ -91,6 +94,12 @@ public class MainController {
         member.setGrade((String) session.getAttribute("grade"));
 
         mv.addObject("member", member);
+
+        // 장독대 순위
+        List<UserScoreDto> jangDocDaeChart = memberService.getJangDocDaeChart();
+        mv.addObject("jangDocDaeChart", jangDocDaeChart);
+
+        // 커뮤니티 각각 게시글 정보 가져오기, 최신글 5개 출력(커뮤니티 병합 후)
 
         return mv;
     }
@@ -105,6 +114,7 @@ public class MainController {
     public String MemberChangeProcess(@RequestParam(value = "pw", required = false, defaultValue = "") String pw, @RequestParam(value = "name", required = false, defaultValue = "") String name, HttpServletRequest req) throws Exception {
         HttpSession session = req.getSession();
         String id = session.getAttribute("id").toString();
+
 
         if (pw == null || pw.equals("") || pw.equals("null")) {
             memberService.changeUserName(id, name);
@@ -208,6 +218,7 @@ public class MainController {
         return "redirect:/main";
     }
 
+
     @RequestMapping("/recommendDetail")
     public String recommendDetail() throws Exception {
         return "movie/recommendDetail";
@@ -230,13 +241,8 @@ public class MainController {
         // 제작진 정보
         List<CrewDto> crews = credits.getCrew();
         List<CrewDto> director = new ArrayList<>();
-        ;
         List<CrewDto> writer = new ArrayList<>();
-        ;
-
-        Iterator<CrewDto> crewIterator = crews.iterator();
-        while (crewIterator.hasNext()) {
-            CrewDto crew = crewIterator.next();
+        for (CrewDto crew : crews) {
             if (crew.getJob().equals("Director")) {
                 director.add(crew);
             } else if (crew.getJob().equals("Writer")) {
@@ -247,9 +253,7 @@ public class MainController {
         // 출연진 정보
         List<CastDto> casts = credits.getCast();
         List<CastDto> actor = new ArrayList<>();
-        Iterator<CastDto> castIterator = casts.iterator();
-        while (castIterator.hasNext()) {
-            CastDto cast = castIterator.next();
+        for (CastDto cast : casts) {
             switch (cast.getOrder()) {
                 case "0", "1", "2", "3", "4", "5" -> {
                     actor.add(cast);
@@ -271,18 +275,162 @@ public class MainController {
         String userId;
         Object storedUserId = session.getAttribute("id");
 
-        if (storedUserId == null) {
-            reviewList = memberService.getMovieReviewList(movieId);
-        } else {
-            reviewList = memberService.getMovieReviewList(movieId);
+        reviewList = memberService.getMovieReviewList(movieId);
+        if (storedUserId != null) {
             userId = (String) storedUserId;
             myReview = memberService.getMyMovieReview(movieId, userId);
+        }
+        // 사용자 리뷰 평점 평균
+        String userScoreAvg = memberService.userScoreAvg(movieId);
+
+        mv.addObject("myReview", myReview);
+        mv.addObject("reviewList", reviewList);
+        mv.addObject("userScoreAvg", userScoreAvg);
+
+        return mv;
+    }
+
+    // 영화 리뷰 작성
+    @RequestMapping(value = "/insertMovieReview", method = RequestMethod.POST)
+    public String insertMovieReview(ReviewDto review) throws Exception {
+        memberService.insertMovieReview(review);
+        // 새 리뷰 insert시 평균 계산하여 영화 테이블에 insert
+        UserScoreDto movie = memberService.getScoreAvgMovie(review.getMovieId());
+        if (movie == null) {
+            UserScoreDto saveMovieScore = new UserScoreDto();
+            saveMovieScore.setId(review.getMovieId());
+            saveMovieScore.setTitle(review.getMovieTitle());
+            saveMovieScore.setScoreAvg(String.valueOf(review.getUserScore()));
+
+            memberService.insertUserScoreAvg(saveMovieScore);
+        } else {
+            String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
+            UserScoreDto updateMovieScore = new UserScoreDto();
+            updateMovieScore.setId(review.getMovieId());
+            updateMovieScore.setTitle(review.getMovieTitle());
+            updateMovieScore.setScoreAvg(userScoreAvg);
+
+            memberService.updateUserScoreAvg(updateMovieScore);
+        }
+
+        String movieId = review.getMovieId();
+        return "redirect:/movieDetail/" + movieId;
+    }
+
+    // 영화 리뷰 수정
+    @RequestMapping(value = "/updateMovieReview", method = RequestMethod.PUT)
+    public String updateMovieReview(ReviewDto review) throws Exception {
+        memberService.updateMovieReview(review);
+
+        // 영화 평점 업데이트
+        String userScoreAvg = memberService.userScoreAvg(review.getMovieId());
+        UserScoreDto updateMovieScore = new UserScoreDto();
+        updateMovieScore.setId(review.getMovieId());
+        updateMovieScore.setTitle(review.getMovieTitle());
+        updateMovieScore.setScoreAvg(userScoreAvg);
+        memberService.updateUserScoreAvg(updateMovieScore);
+
+        String movieId = review.getMovieId();
+        return "redirect:/movieReview/" + movieId;
+    }
+
+    // 영화 리뷰 삭제
+    @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
+    public String deleteMovieReview(@PathVariable("idx") int idx, @RequestParam("movieTitle") String movieTitle, @RequestParam("movieId") String movieId) throws Exception {
+        memberService.deleteMovieReview(idx);
+
+        String userScoreAvg = memberService.userScoreAvg(movieId);
+        if (userScoreAvg != null) {
+            UserScoreDto updateMovieScore = new UserScoreDto();
+            updateMovieScore.setId(movieId);
+            updateMovieScore.setTitle(movieTitle);
+            updateMovieScore.setScoreAvg(userScoreAvg);
+            memberService.updateUserScoreAvg(updateMovieScore);
+        } else {
+            memberService.deleteUserScoreAvg(movieId);
+        }
+
+        List<ReviewDto> reviewList = memberService.getMovieReviewList(movieId);
+
+        if (reviewList.size() == 0) {
+            return "redirect:/movieDetail/" + movieId;
+        } else {
+            return "redirect:/movieReview/" + movieId;
+        }
+    }
+
+    // 해당 영화 모든 리뷰 조회
+    @RequestMapping(value = "/movieReview/{movieId}", method = RequestMethod.GET)
+    public ModelAndView movieReview(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
+        ModelAndView mv = new ModelAndView("/movie/movieReview");
+        // 내가 쓴 영화 리뷰 조회
+        // 로그인 확인 후 로그인 되어있을 경우에만 나의 리뷰 조회
+        HttpSession session = req.getSession();
+
+        // int checkLike = memberService.checkLike(,userId);
+        List<ReviewDto> reviewList;
+        ReviewDto myReview = null;
+
+        List<ReviewLikesDto> reviewLikeCheck = null;
+        String userId;
+        Object storedUserId = session.getAttribute("id");
+
+        reviewList = memberService.getMovieReviewList(movieId);
+        if (storedUserId != null) {
+            userId = (String) storedUserId;
+            myReview = memberService.getMyMovieReview(movieId, userId);
+
+            // 리뷰 좋아요 체크
+            reviewLikeCheck = memberService.getReviewLike(userId);
+            int checkLike = 0;
+            for (ReviewDto review : reviewList) {
+                for (ReviewLikesDto reviewLike : reviewLikeCheck) {
+                    checkLike = memberService.checkLike(reviewLike.getIdx(), userId, review.getIdx());
+                    if (checkLike == 1) break;
+                }
+                review.setReviewLikeCheck(checkLike);
+            }
         }
 
         mv.addObject("myReview", myReview);
         mv.addObject("reviewList", reviewList);
 
         return mv;
+    }
+
+    // 리뷰 좋아요
+    @ResponseBody
+    @RequestMapping(value = "/saveLike", method = RequestMethod.GET)
+    public Object saveLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("id");
+
+        memberService.saveLike(reviewIdx, memberId);
+        ReviewDto review = memberService.getMovieReview(reviewIdx);
+
+        return review;
+    }
+
+    // 리뷰 좋아요 취소
+    @ResponseBody
+    @RequestMapping(value = "/removeLike", method = RequestMethod.GET)
+    public Object removeLike(@RequestParam("reviewIdx") int reviewIdx, HttpServletRequest req) throws Exception {
+        HttpSession session = req.getSession();
+        String memberId = (String) session.getAttribute("id");
+
+        memberService.removeLike(reviewIdx, memberId);
+        ReviewDto review = memberService.getMovieReview(reviewIdx);
+        return review;
+    }
+
+    @RequestMapping("/myMovie")
+    public String myMovie() throws Exception {
+        return "mypage/myMovie";
+    }
+
+    @RequestMapping("searchResult")
+    public String searchResult() throws Exception {
+        return "movie/searchResult";
     }
 
     @RequestMapping("/recommend")
@@ -309,11 +457,6 @@ public class MainController {
     }
 
 
-    @RequestMapping("/myMovie")
-    public String myMovie() throws Exception {
-        return "mypage/myMovie";
-    }
-
     @RequestMapping("/movieDetail")
     public String movieDetail() throws Exception {
         return "movie/movieDetail";
@@ -322,11 +465,6 @@ public class MainController {
     @RequestMapping("/movieReview")
     public String movieReview() throws Exception {
         return "movie/movieReview";
-    }
-
-    @RequestMapping("searchResult")
-    public String searchResult() throws Exception {
-        return "movie/searchResult";
     }
 
     //    댓글
