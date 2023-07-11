@@ -14,46 +14,11 @@
   <script src="/js/header.js"></script>
 
   <script th:inline="javascript">
-    /*<![CDATA[*/
-    const userId = [[${session.id}]];
-    /*]]>*/
 
     $(document).ready(function () {
       $("#btnBack").on("click", function () {
         history.back();
       });
-
-      let index = 0;
-      $(window).scroll(function () {
-        let window = $(this);
-        let scrollTop = window.scrollTop();
-        let windowHeight = window.height();
-        let docHeight = $(document).height();
-
-        function loadReviews() {
-          $.ajax({
-            success: function () {
-              $(".other-reviews").append(
-                `<div class="card my-4">
-                    <div class="card-body">
-                      <p class="card-text">영화 리뷰 내용</p>
-                      <div class="text-end">
-                        <span>👍</span>
-                        <span class="me-2">32</span>
-                      </div>
-                    </div>
-                  </div>`
-              )
-            },
-          })
-        }
-
-        if (scrollTop + windowHeight + 100 >= docHeight) {
-          index++;
-          loadReviews();
-        }
-      });
-
 
       $(".like-click").on("click", function () {
         const likeIcon = $(this);
