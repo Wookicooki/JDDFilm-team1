@@ -25,18 +25,31 @@ public class MovieController {
     private String serviceUrl;
 
     @RequestMapping(value = "/search/{keyword}", method = RequestMethod.GET)
-    public ModelAndView searchMovie(@PathVariable String keyword) throws Exception {
+    public ModelAndView searchMoviePage(@PathVariable String keyword, @RequestParam(value = "page", required = false, defaultValue = "1") String page) throws Exception {
         ModelAndView mv = new ModelAndView("movie/searchResult");
 
         String utf8Keyword = URLEncoder.encode(keyword, "UTF-8");
 
-        MoviesDto movies = movieService.getSearchMovies(serviceUrl + "search/movie?query=" + utf8Keyword + "&include_adult=false&language=ko&page=1");
-        List<MovieDto> movieList = movies.getResults();
 
-        mv.addObject("movieList", movieList);
+        MoviesDto movies = movieService.getSearchMovies(serviceUrl + "search/movie?query=" + utf8Keyword + "&include_adult=false&language=ko&page=" + page);
+//        List<MovieDto> movieList = movies.getResults();
+//
+//        mv.addObject("movieList", movieList);
+//        mv.addObject("totalPage", movies.getTotal_pages());
+//        mv.addObject("currentPage", movies.getPage());
+//        mv.addObject("maxPage", 5);
+
         mv.addObject("totalResults", movies.getTotal_results());
+        mv.addObject("keyword", keyword);
 
         return mv;
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public Object getSearchMovie(@RequestParam("keyword") String keyword, @RequestParam("page") String page) throws Exception {
+        String utf8Keyword = URLEncoder.encode(keyword, "UTF-8");
+        MoviesDto movies = movieService.getSearchMovies(serviceUrl + "search/movie?query=" + utf8Keyword + "&include_adult=false&language=ko&page=" + page);
+        return movies;
     }
 
     //페이지 로딩 함수
