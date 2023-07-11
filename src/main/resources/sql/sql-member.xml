@@ -137,6 +137,8 @@
         WHERE
             member_id = #{memberId}
         AND
+            idx = #{likeIdx}
+        AND
             review_idx = #{reviewIdx}
     </select>
 
@@ -163,7 +165,7 @@
         INSERT INTO
         movie (title, score_avg, id)
         VALUES
-        (#{title}, #{score_avg}, #{id})
+        (#{title}, #{scoreAvg}, #{id})
     </insert>
 
 <!--    평균 평점 업데이트 -->
@@ -171,7 +173,7 @@
         UPDATE
             movie
         SET
-            score_avg = #{score_avg}
+            score_avg = #{scoreAvg}
         WHERE
             title = #{title}
         AND
@@ -183,13 +185,15 @@
             title, score_avg, id
         FROM
             movie
-        WHERE id = #{movieId};
+        WHERE id = #{movieId}
     </select>
 
     <select id="getJangDocDaeChart" resultType="com.example.jangdocdaefilm.dto.UserScoreDto">
-        select
-            row_number() over(order by score_avg desc) as no, title, score_avg, id
+        SELECT
+            @rownum:=@rownum+1 as no, title, score_avg, id
         FROM
-            movie;
+            movie, (SELECT @rownum:=0) TMP
+        ORDER BY
+            score_avg DESC
     </select>
 </mapper>
