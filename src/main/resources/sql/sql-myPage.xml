@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--   개봉작 게시판-->
+<mapper namespace="com.example.jangdocdaefilm.mapper.MyMapper">
+  <select id="myFree" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+    SELECT
+    idx, title, user_name, create_dt, hit_cnt
+    FROM
+    free
+    WHERE
+    delete_yn = 'N'
+    AND
+    id = #{id}
+    ORDER BY
+    idx DESC
+  </select>
+
+  <select id="myNow" resultType="com.example.jangdocdaefilm.dto.NowDto">
+    SELECT
+    idx, title, user_name, create_dt, hit_cnt
+    FROM
+    now
+    WHERE
+    delete_yn = 'N'
+    AND
+    id = #{id}
+    ORDER BY
+    idx DESC
+  </select>
+
+  <select id="myDis" resultType="com.example.jangdocdaefilm.dto.DisDto">
+    SELECT
+    idx, title, user_name, create_dt, hit_cnt
+    FROM
+    dis
+    WHERE
+    delete_yn = 'N'
+    AND
+    id = #{id}
+    ORDER BY
+    idx DESC
+  </select>
+</mapper>

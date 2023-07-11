@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.jangdocdaefilm.mapper.CommentMapper">
+<!--자유게시판-->
+  <select id="freeCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+    SELECT
+    idx, content, create_dt, id, user_name, free_idx
+    FROM
+    comment
+    WHERE
+    free_idx = #{idx}
+    ORDER BY
+    idx ASC;
+  </select>
+
+  <insert id="freeWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
+    INSERT INTO
+    comment (content, create_dt, id, user_name, free_idx)
+    VALUES
+    (#{content}, now(), #{id}, #{userName}, #{freeIdx})
+  </insert>
+
+  <!--02개봉작수다-->
+  <select id="nowCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+    SELECT
+    idx, content, create_dt, id, user_name, now_idx
+    FROM
+    comment
+    WHERE
+    now_idx = #{idx}
+    ORDER BY
+    idx ASC;
+  </select>
+
+  <insert id="nowWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
+    INSERT INTO
+    comment (content, create_dt, id, user_name, now_idx)
+    VALUES
+    (#{content}, now(), #{id}, #{userName}, #{nowIdx})
+  </insert>
+
+<!--03문의글 게시판-->
+  <select id="qnaCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+    SELECT
+    idx, content, create_dt, id, user_name, qna_idx
+    FROM
+    comment
+    WHERE
+    qna_idx = #{idx}
+    ORDER BY
+    idx ASC;
+  </select>
+
+  <insert id="qnaWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
+    INSERT INTO
+    comment (content, create_dt, id, user_name, qna_idx)
+    VALUES
+    (#{content}, now(), #{id}, #{userName}, #{qnaIdx})
+  </insert>
+
+
+<!--04할인정보 게시판-->
+  <select id="disCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+    SELECT
+    idx, content, create_dt, id, user_name, dis_idx
+    FROM
+    comment
+    WHERE
+    dis_idx = #{idx}
+    ORDER BY
+    idx ASC;
+  </select>
+
+  <insert id="disWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
+    INSERT INTO
+    comment (content, create_dt, id, user_name, dis_idx)
+    VALUES
+    (#{content}, now(), #{id}, #{userName}, #{disIdx})
+  </insert>
+
+<!--댓글 삭제-->
+  <select id="commentDelete" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
+    DELETE FROM comment
+    WHERE idx = #{idx};
+  </select>
+
+</mapper>

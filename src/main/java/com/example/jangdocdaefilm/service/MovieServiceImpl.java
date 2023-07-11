@@ -36,7 +36,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public MovieDetailDto getMovieDetail(String url) throws Exception {
+    public MovieDto getMovieInfo(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("accept", "application/json")
@@ -46,8 +46,8 @@ public class MovieServiceImpl implements MovieService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         Gson gson = new Gson();
-        MovieDetailDto movieDetail = gson.fromJson(response.body(), MovieDetailDto.class);
-        return movieDetail;
+        MovieDto movie = gson.fromJson(response.body(), MovieDto.class);
+        return movie;
     }
 
     @Override
@@ -66,18 +66,4 @@ public class MovieServiceImpl implements MovieService {
         return boxOfficeList;
     }
 
-    @Override
-    public CreditsDto getCredits(String url) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .header("accept", "application/json")
-            .header("Authorization", serviceAuthor)
-            .method("GET", HttpRequest.BodyPublishers.noBody())
-            .build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        Gson gson = new Gson();
-        CreditsDto credits = gson.fromJson(response.body(), CreditsDto.class);
-
-        return credits;
-    }
 }

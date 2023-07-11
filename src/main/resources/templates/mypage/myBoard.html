@@ -13,7 +13,9 @@
 </head>
 <body>
 <div th:fragment="myBoard" class="tabs mx-auto my-4 text-center">
-    <a href="/myPage" class="text-decoration-none text-black"><h1 class="mb-0">마이페이지</h1></a>
+    <a href="/myPage" class="text-decoration-none text-black">
+        <h1 class="mb-0">마이페이지</h1>
+    </a>
     <p>내 커뮤니티 글</p>
     <input id="all" type="radio" name="tab_item" checked>
     <label class="tab_item" for="all">내가 쓴 글</label>
@@ -23,53 +25,56 @@
     <div class="tab_content mx-0 px-0 py-1" id="all_content">
         <table class="table table-hover text-center">
             <colgroup>
+                <col style="width: 10%"/>
                 <col style="width: 7%"/>
-                <col style="width: 59%"/>
-                <col style="width: 8%"/>
-                <col style="width: 8%"/>
+                <col style="width: 65%"/>
+                <col style="width: 10%"/>
                 <col style="width: 8%"/>
             </colgroup>
             <thead>
             <tr class="table-secondary">
+                <th>게시판</th>
                 <th>번호</th>
                 <th class="text-start">제목</th>
-                <th>글쓴이</th>
                 <th>날짜</th>
                 <th>조회수</th>
             </tr>
             </thead>
             <tbody>
-            <td class="text-center">1</td>
-            <td class="text-start"><a href="#" class="text-decoration-none"></a>글 제목</td>
-            <td>닉네임</td>
-            <td>2시간 전</td>
-            <td>1342</td>
+            <tr th:if="${#lists.size(free)} > 0" th:each="free : ${free}">
+                <td>자유게시판</td>
+                <td th:text="${free.idx}">1</td>
+                <td class="text-start">
+                    <a href="/free/" th:attrappend="href=${free.idx}" th:text="${free.title}" class="text-decoration-none"></a>
+                </td>
+                <td th:text="${free.createDt}">2시간 전</td>
+                <td th:text="${free.hitCnt}">1342</td>
             </tr>
-            <td colspan="5">조회된 데이터가 없습니다.</td>
+            <tr th:if="${#lists.size(now)} > 0" th:each="now : ${now}">
+                <td>개봉작수다</td>
+                <td th:text="${now.idx}">1</td>
+                <td class="text-start">
+                    <a href="/now/" th:attrappend="href=${now.idx}" th:text="${now.title}" class="text-decoration-none"></a>
+                </td>
+                <td th:text="${now.createDt}">2시간 전</td>
+                <td th:text="${now.hitCnt}">1342</td>
             </tr>
+            <tr th:if="${#lists.size(dis)} > 0" th:each="dis : ${dis}">
+                <td>할인정보</td>
+                <td th:text="${dis.idx}">1</td>
+                <td class="text-start">
+                    <a href="/dis/" th:attrappend="href=${dis.idx}" th:text="${dis.title}" class="text-decoration-none"></a>
+                </td>
+                <td th:text="${dis.createDt}">2시간 전</td>
+                <td th:text="${dis.hitCnt}">1342</td>
+            </tr>
+            <tr th:unless="(${#lists.size(free)} > 0) && (${#lists.size(now)} > 0) && (${#lists.size(dis)} > 0)">
+                <td colspan="6">조회된 데이터가 없습니다.</td>
+            </tr>
+
             </tbody>
         </table>
 
-        <!--     페이징-->
-        <div class="container d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     </div>
     <!--            내가 쓴 댓글 테이블-->
     <div class="tab_content mx-0 px-0 py-1" id="programming_content">
