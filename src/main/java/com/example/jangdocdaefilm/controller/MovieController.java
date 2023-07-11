@@ -49,15 +49,14 @@ public class MovieController {
 
     //카테고리 검색 함수
     @RequestMapping(value = "/category/search", method = RequestMethod.GET)
-    public Object categorySearchMovie(@RequestParam("year") String year, @RequestParam("genre") String genre) throws Exception {
+    public Object categorySearchMovie(@RequestParam("year") String year, @RequestParam("genre") String genre, @RequestParam("page") String page) throws Exception {
 
-        String url = "discover/movie?include_adult=false&include_video=false&language=ko&page=1&sort_by=popularity.desc";
+        String url = "discover/movie?include_adult=false&include_video=false&language=ko&page=" + page + "&sort_by=popularity.desc";
         String yearQuery = year != null ? "&primary_release_year=" + year : "";
         String genreQuery = genre != null ? "&with_genres=" + genre : "";
 
         MoviesDto movies = movieService.getSearchMovies(serviceUrl + url + yearQuery + genreQuery);
-        List<MovieDto> movieList = movies.getResults();
-        return movieList;
+        return movies;
     }
 
 
