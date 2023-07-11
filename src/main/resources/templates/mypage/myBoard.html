@@ -68,7 +68,7 @@
                 <td th:text="${dis.createDt}">2시간 전</td>
                 <td th:text="${dis.hitCnt}">1342</td>
             </tr>
-            <tr th:unless="(${#lists.size(free)} > 0) && (${#lists.size(now)} > 0) && (${#lists.size(dis)} > 0)">
+            <tr th:unless="(${#lists.size(free)} > 0) or (${#lists.size(now)} > 0) or (${#lists.size(dis)} > 0)">
                 <td colspan="6">조회된 데이터가 없습니다.</td>
             </tr>
 

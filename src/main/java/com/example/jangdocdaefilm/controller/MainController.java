@@ -54,7 +54,6 @@ public class MainController {
         String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
         List<DailyBoxOfficeDto> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
         /**************************/
-
         /***** 일일 박스 오피스의 영화 상세 정보 *****/
         // dailyBoxOfficeList에서 10편의 영화 제목만 가져와 리스트로 저장
         List<String> keywords = dailyBoxOfficeList.stream()
@@ -146,6 +145,7 @@ public class MainController {
     }
 
     // 로그인 시 session값 저장
+
     @RequestMapping("/loginProcess")
     public String doLoginProcess(@RequestParam("id") String id, @RequestParam("pw") String pw, HttpServletRequest req) throws Exception {
         int result = memberService.isMemberInfo(id, pw);
@@ -164,7 +164,9 @@ public class MainController {
 //            session.setMaxInactiveInterval(60); // 세션 삭제 시간 설정
 
             return "redirect:/main";
+
         } else { // 정보가 없으면 login페이지로 이동
+
             out.println("<script>alert('아이디 혹은 비밀번호가 다릅니다.'); return;</script>");
             return "redirect:/login";
         }
@@ -206,11 +208,6 @@ public class MainController {
         return "redirect:/main";
     }
 
-    @RequestMapping("/recommend")
-    public String recommend() throws Exception {
-        return "movie/recommend";
-    }
-
     @RequestMapping("/recommendDetail")
     public String recommendDetail() throws Exception {
         return "movie/recommendDetail";
@@ -223,10 +220,90 @@ public class MainController {
 
     // 영화 상세 정보 페이지
     @RequestMapping(value = "/movieDetail/{movieId}", method = RequestMethod.GET)
-    public ModelAndView movieDetail(@PathVariable("movieId") String movieId) throws Exception {
+    public ModelAndView movieDetail(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
+        // 영화 정보 가져오기
         ModelAndView mv = new ModelAndView("movie/movieDetail");
-        MovieDto movie = movieService.getMovieInfo(tmdbServiceUrl + "movie/" + movieId + "?language=ko");
+        MovieDetailDto movie = movieService.getMovieDetail(tmdbServiceUrl + "movie/" + movieId + "?language=ko");
+        List<GenreDto> genre = movie.getGenres();
+        CreditsDto credits = movieService.getCredits(tmdbServiceUrl + "movie/" + movieId + "/credits?&language=ko");
+
+        // 제작진 정보
+        List<CrewDto> crews = credits.getCrew();
+        List<CrewDto> director = new ArrayList<>();
+        ;
+        List<CrewDto> writer = new ArrayList<>();
+        ;
+
+        Iterator<CrewDto> crewIterator = crews.iterator();
+        while (crewIterator.hasNext()) {
+            CrewDto crew = crewIterator.next();
+            if (crew.getJob().equals("Director")) {
+                director.add(crew);
+            } else if (crew.getJob().equals("Writer")) {
+                writer.add(crew);
+            }
+        }
+
+        // 출연진 정보
+        List<CastDto> casts = credits.getCast();
+        List<CastDto> actor = new ArrayList<>();
+        Iterator<CastDto> castIterator = casts.iterator();
+        while (castIterator.hasNext()) {
+            CastDto cast = castIterator.next();
+            switch (cast.getOrder()) {
+                case "0", "1", "2", "3", "4", "5" -> {
+                    actor.add(cast);
+                    break;
+                }
+            }
+        }
+
         mv.addObject("movieInfo", movie);
+        mv.addObject("genre", genre);
+        mv.addObject("director", director);
+        mv.addObject("writer", writer);
+        mv.addObject("actor", actor);
+
+        // 리뷰 조회
+        HttpSession session = req.getSession();
+        List<ReviewDto> reviewList;
+        ReviewDto myReview = null;
+        String userId;
+        Object storedUserId = session.getAttribute("id");
+
+        if (storedUserId == null) {
+            reviewList = memberService.getMovieReviewList(movieId);
+        } else {
+            reviewList = memberService.getMovieReviewList(movieId);
+            userId = (String) storedUserId;
+            myReview = memberService.getMyMovieReview(movieId, userId);
+        }
+
+        mv.addObject("myReview", myReview);
+        mv.addObject("reviewList", reviewList);
+
+        return mv;
+    }
+
+    @RequestMapping("/recommend")
+    public ModelAndView recommend() throws Exception {
+        ModelAndView mv = new ModelAndView("movie/recommend");
+
+        List<RecomDto> recomList = movieService.getRecoms();
+        List<String> likes = movieService.getRecomsLike("tester1");
+
+        for (RecomDto recom : recomList) {
+            if (likes.contains(recom.getIdx())) {
+                recom.setLike("Y");
+            } else {
+                recom.setLike("N");
+            }
+            recom.setPoster(movieService.setPosterPath(tmdbServiceUrl + "movie/" + recom.getMovieId() + "?language=ko"));
+
+        }
+
+
+        mv.addObject("recomList", recomList);
 
         return mv;
     }
@@ -332,6 +409,7 @@ public class MainController {
 
         return mv;
     }
+
 
     // 자유게시판 수정 구현(freeList 이동)
     @RequestMapping(value = "/freeUpdate", method = RequestMethod.POST)

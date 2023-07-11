@@ -14,34 +14,95 @@
 
     <script>
         $(document).ready(() => {
-            $('#btn-cate').on('click', () => {
-                const year = $('#input-year').val() != "" ? $('#input-year').val() : null;
-                const genre = $('#genre option:selected').val() != "" ? $('#genre option:selected').val() : null;
 
-                const data = {year: year, genre: genre};
+            function moviePaging(body){
                 $.ajax({
                     url: "/movie/category/search",
                     type: "GET",
-                    data: data,
+                    data: body,
                     dataType: "json",
                     success: (data) => {
                         const div = $('#div-result');
-                        div.empty();
+                        const div2 = $("#paging")
+                        const pagingCnt = 5;
+                        const currentPage = data.page;
+                        const totalPages = data["total_pages"];
 
-                        let movies = "";
-                        for (let i = 0; i < data.length; i++) {
-                            movies += "<div class='d-flex justify-content-center'>";
-                            movies += "<div style='width: 180px;'>";
-                            movies += "<a href='/movieDetail/" + data[i].id +"'><img src='https://image.tmdb.org/t/p/original" + data[i].poster_path + "' class='w-100'></a>";
-                            movies += "<div><h4 class='mt-1 mb-0'>" + data[i].title + "</h4></div> </div></div>";
+                        div.empty();
+                        div2.empty();
+                        const movies = data.results;
+
+                        let html = "";
+                        for (let i = 0; i < movies.length; i++) {
+                            html += "<div class='d-flex justify-content-center'>";
+                            html += "<div style='width: 180px;'>";
+                            html += "<a href='/movieDetail/" + movies[i].id +"'><img src='https://image.tmdb.org/t/p/original" + movies[i].poster_path + "' class='w-100'></a>";
+                            html += "<div><h4 class='mt-1 mb-0'>" + movies[i].title + "</h4></div> </div></div>";
+                        }
+                        div.append(html);
+                        let startPage = Math.trunc(currentPage / pagingCnt) * pagingCnt + 1;
+                        if (currentPage % pagingCnt == 0) {
+                            startPage -= pagingCnt;
+                        }
+                        let endPage = startPage + pagingCnt - 1;
+                        if (endPage > totalPages) {
+                            endPage = totalPages;
                         }
 
-                        div.append(movies);
+                        let html2 = "";
+                        if (currentPage == 1) {
+                            html2 += "<ul class='pagination'><li class='page-item disabled'><a class='page-link'><span aria-hidden='true'>&laquo;</span></a></li>";
+                        } else {
+                            html2 += "<ul class='pagination'><li class='page-item'><a class='page-link'><span aria-hidden='true'>&laquo;</span></a></li>";
+                        }
+
+                        for (let i = startPage; i <= endPage; i++) {
+                            if (currentPage == i) {
+                                html2 += "<li class='page-item active'><a class='page-link'>" + i + "</a></li>";
+                                html2 += "<input type='hidden' value='" + currentPage + "' id='page'>";
+                            } else {
+                                html2 += "<li class='page-item'><a class='page-link'>" + i + "</a></li>";
+                            }
+                        }
+                        if (currentPage == totalPages) {
+                            html2 += "<li class='page-item'><a class='page-link disabled'><span aria-hidden='true'>&raquo;</span></a></li></ul>";
+                        } else {
+                            html2 += "<li class='page-item'><a class='page-link'><span aria-hidden='true'>&raquo;</span></a></li></ul>"
+                        }
+
+
+                        div2.append(html2);
                     },
                     error: (err) => {
                         alert("검색 중 오류가 발생했습니다.");
                     }
                 })
+            }
+
+            $('#btn-cate').on('click', () => {
+                const year = $('#input-year').val() != "" ? $('#input-year').val() : null;
+                const genre = $('#genre option:selected').val() != "" ? $('#genre option:selected').val() : null;
+
+                const body = {year: year, genre: genre, page: 1};
+                moviePaging(body);
+            });
+
+            $(document).on("click", ".page-link", function () {
+                const year = $("#input-year").val() != "" ? $("#input-year").val() : null;
+                const genre = $("#genre option:selected").val() != "" ? $("#genre option:selected").val() : null;
+                const keyword = $("#keyword-input").val() != "" ? $("#keyword-input").val() : null;
+                let page = $(this).text();
+
+                if (page == "«") {
+                    page = Number($("#page").val()) - 1;
+                } else if (page == "»") {
+                    page = Number($("#page").val()) + 1;
+                }
+
+                console.log(`page : ${page}`)
+                const body = {year: year, genre: genre, keyword: keyword, page: page}
+
+                moviePaging(body);
             });
         });
     </script>
@@ -88,26 +149,12 @@
             </div>
 
             <div class="my-5">
-                <div class="row row-cols-5" id="div-result">
+                <div class="row row-cols-5 my-3" id="div-result">
 
                 </div>
 
-                <div class="d-flex justify-content-center">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
+                <div class="d-flex justify-content-center" id="paging">
+
                 </div>
             </div>
 
