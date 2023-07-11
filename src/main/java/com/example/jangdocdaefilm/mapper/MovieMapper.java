@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface MovieMapper {
 
-    void insertRecoms(String title, String content) throws Exception;
+    void insertRecoms(String title, String content, String userName) throws Exception;
 
     void insertRecom(String[] movies, int idx) throws Exception;
 

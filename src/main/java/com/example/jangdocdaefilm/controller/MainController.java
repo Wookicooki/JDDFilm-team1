@@ -434,11 +434,13 @@ public class MainController {
     }
 
     @RequestMapping("/recommend")
-    public ModelAndView recommend() throws Exception {
+    public ModelAndView recommend(HttpServletRequest req) throws Exception {
         ModelAndView mv = new ModelAndView("movie/recommend");
 
+        String userName = (String) req.getSession().getAttribute("userName");
+
         List<RecomDto> recomList = movieService.getRecoms();
-        List<String> likes = movieService.getRecomsLike("tester1");
+        List<String> likes = movieService.getRecomsLike(userName);
 
         for (RecomDto recom : recomList) {
             if (likes.contains(recom.getIdx())) {

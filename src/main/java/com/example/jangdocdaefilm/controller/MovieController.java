@@ -5,6 +5,7 @@ import com.example.jangdocdaefilm.dto.MoviesDto;
 import com.example.jangdocdaefilm.dto.RecomDto;
 import com.example.jangdocdaefilm.dto.RecomMovieDto;
 import com.example.jangdocdaefilm.service.MovieService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -99,34 +100,38 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/recom/set", method = RequestMethod.POST)
-    public void recomInsert(@RequestParam("title") String title, @RequestParam("content") String content, @RequestParam("movies[]") String[] movies) throws Exception {
-
+    public void recomInsert(@RequestParam("title") String title, @RequestParam("content") String content, @RequestParam("movies[]") String[] movies, HttpServletRequest req) throws Exception {
+        String userName = (String) req.getSession().getAttribute("userName");
 //        // 1. recoms 생성
-        int idx = movieService.insertRecoms(title, content);
+        int idx = movieService.insertRecoms(title, content, userName);
 //        // 2. recom 생성
         movieService.insertRecom(movies, idx);
     }
 
     @RequestMapping(value = "/recoms/like", method = RequestMethod.GET)
-    public Object isRecomsLike(@RequestParam("idx") String idx) throws Exception {
-        int result = movieService.isRecomsLike(idx, "tester1");
+    public Object isRecomsLike(@RequestParam("idx") String idx, HttpServletRequest req) throws Exception {
+        String userName = (String) req.getSession().getAttribute("userName");
+        int result = movieService.isRecomsLike(idx, userName);
         return result;
     }
 
     @RequestMapping(value = "/recoms/like", method = RequestMethod.POST)
-    public void insertRecomsLike(@RequestParam("idx") String idx) throws Exception {
-        movieService.insertRecomsLike(idx, "tester1");
+    public void insertRecomsLike(@RequestParam("idx") String idx, HttpServletRequest req) throws Exception {
+        String userName = (String) req.getSession().getAttribute("userName");
+        movieService.insertRecomsLike(idx, userName);
     }
 
     @RequestMapping(value = "/recoms/like", method = RequestMethod.PUT)
-    public void updateRecomsLike(@RequestParam("idx") String idx) throws Exception {
-        movieService.updateRecomsLike(idx, "tester1");
+    public void updateRecomsLike(@RequestParam("idx") String idx, HttpServletRequest req) throws Exception {
+        String userName = (String) req.getSession().getAttribute("userName");
+        movieService.updateRecomsLike(idx, userName);
     }
 
 
     @RequestMapping(value = "/recoms/like", method = RequestMethod.DELETE)
-    public void deleteRecomsLike(@RequestParam("idx") String idx) throws Exception {
-        movieService.deleteRecomsLike(idx, "tester1");
+    public void deleteRecomsLike(@RequestParam("idx") String idx, HttpServletRequest req) throws Exception {
+        String userName = (String) req.getSession().getAttribute("userName");
+        movieService.deleteRecomsLike(idx, userName);
     }
 
     @RequestMapping(value = "/recom/{idx}", method = RequestMethod.GET)

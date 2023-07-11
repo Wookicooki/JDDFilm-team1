@@ -88,8 +88,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public int insertRecoms(String title, String content) throws Exception {
-        movieMapper.insertRecoms(title, content);
+    public int insertRecoms(String title, String content, String userName) throws Exception {
+        movieMapper.insertRecoms(title, content, userName);
         int idx = movieMapper.lastRecomsIdx();
         return idx;
     }

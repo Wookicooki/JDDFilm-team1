@@ -7,7 +7,7 @@
 
     <insert id="insertRecoms" parameterType="map">
         INSERT INTO recoms(user_name, title, content)
-        VALUES('tester1', #{title}, #{content});
+        VALUES(#{userName}, #{title}, #{content});
     </insert>
 
     <select id="lastRecomsIdx" resultType="int">

@@ -85,7 +85,7 @@
         <div class="col-sm-2"></div>
         <div class="col-sm">
             <div class="d-flex justify-content-end my-3">
-                <a href="/movie/recom/set" class="btn-primary btn">추천작 등록하기</a>
+                <a href="/movie/recom/set" class="btn-primary btn" th:unless="${session.id} == null">추천작 등록하기</a>
             </div>
             <div>
                 <div class="row row-cols-4">
@@ -95,9 +95,9 @@
                                  class="w-100" th:id="${item.idx}">
                             <div class="d-flex justify-content-between">
                                 <p th:text="|${item.userName}님의 추천작|">@@님의 추천작</p>
-                                <p th:if="${item.like == 'Y'}">
+                                <p th:if="(${item.like} == 'Y') and (${session.id} != null)">
                                     <i class="bi bi-heart-fill text-danger" th:id="|${item.idx}i|"></i></p>
-                                <p th:if="${item.like == 'N'}">
+                                <p th:if="(${item.like} == 'N') and (${session.id} != null)">
                                     <i class="bi bi-heart text-danger" th:id="|${item.idx}i|"></i></p>
                             </div>
                         </div>

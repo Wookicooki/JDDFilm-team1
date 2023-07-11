@@ -15,7 +15,7 @@ public interface MovieService {
 
     CreditsDto getCredits(String url) throws Exception;
 
-    int insertRecoms(String title, String content) throws Exception;
+    int insertRecoms(String title, String content, String userName) throws Exception;
 
     void insertRecom(String[] movies, int idx) throws Exception;
 
