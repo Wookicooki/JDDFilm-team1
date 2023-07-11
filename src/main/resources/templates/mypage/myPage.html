@@ -12,7 +12,7 @@
   <script src="/js/header.js"></script>
 
   <style>
-    /* 프로필 이미지 스타일 */
+      /* 프로필 이미지 스타일 */
       .box {
           width: 150px;
           height: 150px;
@@ -74,6 +74,121 @@
       }
 
   </style>
+
+  <script>
+      $(document).ready(function () {
+          // 닉네임 중복 확인
+          let confirmName = false;
+          $("#confirmName").on("click", function () {
+              const name = $("#user-name").val();
+              $.ajax({
+                  type: "get",
+                  url: "/confirmName",
+                  data: {name: name},
+                  success: function (data) {
+                      if (data === 1) {
+                          $("#nameCheckMessage").text("이미 존재하는 닉네임입니다..");
+                      } else {
+                          $("#nameCheckMessage").text("사용 가능한 닉네임입니다.");
+                          $("#confirmName").attr("type", "submit");
+                          confirmName = true;
+                      }
+                  },
+                  error: function () {
+                      alert("통신 실패");
+                  }
+              })
+          })
+
+          let confirmPw = false;
+          let nowPwCheck = false;
+          let pwCheck = false;
+          let newPwCheck = false;
+          let userNameCheck = false;
+          let same = false;
+
+          // 수정 및 유효성 검증
+          $("#change").on("click", function () {
+              const pw = $("#user-pw").val();
+              const userPw = $("#user-pw").val();
+              const newPw = $("#user-new-pw").val();
+              const pwck = $("#user-pw-check").val();
+              const userName = $("#user-name").val();
+              const userNewName = $("#user-new-name").val();
+              $.ajax({
+                  type: "get",
+                  url: "/confirmPw",
+                  data: {pw: pw},
+                  success: function (data) {
+                      if (data === 1) {
+                          confirmPw = true;
+                          if (userPw == null || userPw == "") {
+                              alert("기존 비밀번호를 입력하세요");
+                              return;
+                          } else {
+                              nowPwCheck = true;
+                          }
+
+                          if (newPw == null || newPw == "") {
+                              alert("새 비밀번호를 입력하세요")
+                              return;
+                          } else {
+                              pwCheck = true;
+                          }
+
+                          if (pwck == null || pwck == "") {
+                              alert("새 비밀번호를 한번 더 입력하세요");
+                              return;
+                          } else {
+                              newPwCheck = true;
+                          }
+
+                          if (newPw != pwck) {
+                              alert("비밀번호가 일치하지 않습니다.");
+                              return;
+                          } else {
+                              same = true;
+                          }
+
+                          if ((confirmPw && nowPwCheck && pwCheck && newPwCheck && same && confirmName) || (confirmPw && nowPwCheck && pwCheck && newPwCheck && same) || (confirmPw && nowPwCheck && confirmName)) {
+                              const pw = $("#user-new-pw").val();
+                              const userName = $("#user-name").val();
+                              const id = $("#id").val();
+                              $.ajax({
+                                  url: 'myPage/' + id,
+                                  type: 'POST',
+                                  data: {
+                                      pw: pw,
+                                      name: userName
+                                  },
+                                  success: function (data) {
+                                      alert(data)
+                                      if (data == "success") {
+                                          location.reload();
+                                      }
+                                  },
+                                  error: function () {
+                                      alert("변경 실패")
+                                  }
+                              })
+                              form.submit();
+                          } else {
+                          }
+
+                      } else {
+                          alert("기존 비밀번호와 다릅니다.");
+                      }
+                  },
+                  error: function () {
+                      alert("현재 비밀번호를 입력하세요");
+                  }
+              })
+
+
+          })
+      })
+  </script>
+
 </head>
 <body>
 <header th:replace="~{layout/header :: header-basic}"></header>
@@ -104,10 +219,11 @@
 
             <!--  정보수정 모달 창  -->
             <button type="button" class="btn btn-light text-primary"
-                    data-bs-toggle="modal" data-bs-target="#reviewModal"
-                    style="background: none; outline:none; box-shadow:none;">내 정보 수정</button>
+                    data-bs-toggle="modal" data-bs-target="#changeModal"
+                    style="background: none; outline:none; box-shadow:none;">내 정보 수정
+            </button>
           </li>
-          <div class="modal fade" id="reviewModal">
+          <div class="modal fade" id="changeModal">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
@@ -115,50 +231,52 @@
                 </div>
                 <div class="modal-body">
                   <form method="post">
+                    <div class="col-sm form-floating">
+                      <div class="box mx-auto" style="background: #BDBDBD;">
+                        <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
+                      </div>
+                      <div>
+                        <h6 class="my-3 px-2 text-center text-secondary fw-bold" th:text="${session.userName}"></h6>
+                        <input type="hidden" id="id" th:value="${session.id}">
+                      </div>
+                      <div class="input-group">
+                        <span class="input-group-text fw-bold">PW 변경</span>
+                      </div>
                       <div class="col-sm form-floating">
-                        <div class="box mx-auto" style="background: #BDBDBD;">
-                          <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
-                        </div>
-                        <div>
-                          <h6 class="my-3 px-2 text-center text-secondary fw-bold" th:text="${session.userName}"></h6>
-                        </div>
-                        <div class="input-group">
-                          <span class="input-group-text fw-bold">PW 변경</span>
-                        </div>
-                        <div class="col-sm form-floating">
-                          <input type="text" class="form-control" id="user-pw" name="userPw" placeholder="비밀번호">
-                          <label for="user-pw">기존 비밀번호를 입력</label>
-                        </div>
-                        <div class="col-sm form-floating">
-                          <input type="text" class="form-control" id="user-new-pw" name="userNewPw" placeholder="비밀번호">
-                          <label for="user-pw">새 비밀번호를 입력(8~16자리의 영문,숫자)</label>
-                        </div>
+                        <input type="text" class="form-control" id="user-pw" name="userPw" placeholder="비밀번호">
+                        <label for="user-pw">기존 비밀번호를 입력(필수)</label>
                       </div>
-                      <div class="form-floating">
-                        <input type="text" class="form-control" id="user-pw-check" name="userNewPw" placeholder="비밀번호 확인">
-                        <label for="user-pw-check">새 비밀번호를 한번 더 입력</label>
+                      <div class="col-sm form-floating">
+                        <input type="text" class="form-control" id="user-new-pw" name="userNewPw" placeholder="비밀번호">
+                        <label for="user-pw">새 비밀번호를 입력(선택)</label>
                       </div>
+                    </div>
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="user-pw-check" name="userPwCheck"
+                             placeholder="비밀번호 확인">
+                      <label for="user-pw-check">새 비밀번호를 한번 더 입력</label>
+                    </div>
 
-                      <div class="col-sm form-floating  my-4">
-                        <div class="input-group">
-                          <span class="input-group-text fw-bold">닉네임 변경</span>
-                        </div>
-                        <div class="col-sm form-floating">
-                          <div class="form-floating">
-                            <input type="text" class="form-control" id="user-name" name="userPw" placeholder="닉네임">
-                            <label for="user-name">새 닉네임을 입력</label>
-                          </div>
-                        </div>
+                    <div class="col-sm form-floating  my-4">
+                      <div class="input-group">
+                        <span class="input-group-text fw-bold">닉네임 변경</span>
                       </div>
-                      <div class="d-grid gap-3">
-                        <button type="button" class=" btn btn-primary fw-bold p-2 d-grid gap-3">수정하기</button>
+                      <div class="col-sm form-floating text-start">
+                        <input type="text" class="form-control" id="user-name" name="userName" placeholder="닉네임">
+                        <label for="user-name">새 닉네임을 입력(선택)</label>
+                        <button type="button" class="btn btn-outline-success mt-2" id="confirmName">중복확인</button>
+                        <span id="nameCheckMessage"></span>
                       </div>
+                    </div>
+                    <div class="d-grid gap-3">
+                      <button type="button" class=" btn btn-primary fw-bold p-2 d-grid gap-3">수정하기</button>
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
           </div>
-<!--          문의하기 탭 바-->
+          <!--          문의하기 탭 바-->
           <li class="nav-item">
             <a class="nav-link" href="/qnaList">문의하기</a>
           </li>

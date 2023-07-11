@@ -96,10 +96,50 @@ public class MainController {
         return mv;
     }
 
-
-    //    로그인 구현
+    //    회원정보 db와 연동
     @Autowired
     private MemberService memberService;
+
+    // 회원가입 페이지로 이동(회원정보 수정)
+    @ResponseBody
+    @RequestMapping(value = "/myPage/{id}", method = RequestMethod.POST)
+    public String MemberChangeProcess(@RequestParam(value = "pw", required = false, defaultValue = "") String pw, @RequestParam(value = "name", required = false, defaultValue = "") String name, HttpServletRequest req) throws Exception {
+        HttpSession session = req.getSession();
+        String id = session.getAttribute("id").toString();
+
+        if (pw == null || pw.equals("") || pw.equals("null")) {
+            memberService.changeUserName(id, name);
+            session.setAttribute("userName", name);
+        }
+        else if (name == null || name.equals("") || name.equals("null")) {
+            memberService.changePassword(id, pw);
+        }
+        else {
+            memberService.changeMember(id, pw, name);
+            session.setAttribute("userName", name);
+        }
+
+        return "success";
+    }
+
+    //    password 중복확인
+    @ResponseBody
+    @GetMapping("/confirmPw")
+    public int confirmPw(@RequestParam("pw") String pw, HttpServletRequest req) throws Exception {
+        HttpSession session = req.getSession();
+        String id = session.getAttribute("id").toString();
+
+        int result = memberService.confirmPw(id, pw);
+        return result;
+    }
+
+//    user_name 중복확인
+    @ResponseBody
+    @GetMapping("/confirmName")
+    public int confirmName(@RequestParam("name") String name) throws Exception {
+        int result = memberService.confirmName(name);
+        return result;
+    }
 
     // 로그인페이지로 이동
     @RequestMapping("/login")
@@ -132,11 +172,6 @@ public class MainController {
         }
     }
 
-    @RequestMapping("/recommend")
-    public String recommend() throws Exception {
-        return "movie/recommend";
-    }
-
     //  로그 아웃 프로세스 및 페이지
     @GetMapping("/logout")
     public String doLogout(HttpServletRequest req) throws Exception {
@@ -160,7 +195,7 @@ public class MainController {
 
     // 회원가입시 아이디 중복 확인
     @ResponseBody
-    @GetMapping("/confirm")
+    @GetMapping("/confirmId")
     public int confirmId(@RequestParam("id") String id) throws Exception {
         int result = memberService.confirmId(id);
         return result;
@@ -173,6 +208,11 @@ public class MainController {
         return "redirect:/main";
     }
 
+    @RequestMapping("/recommend")
+    public String recommend() throws Exception {
+        return "movie/recommend";
+    }
+
     @RequestMapping("/recommendDetail")
     public String recommendDetail() throws Exception {
         return "movie/recommendDetail";
@@ -181,12 +221,6 @@ public class MainController {
     @RequestMapping("/recommendSet")
     public String recommendSet() throws Exception {
         return "movie/recommendSet";
-    }
-
-    // 마이페이지로 이동
-    @RequestMapping("/myPage")
-    public String myPage() throws Exception {
-        return "mypage/myPage";
     }
 
     // 영화 상세 정보 페이지
@@ -225,9 +259,11 @@ public class MainController {
     @Autowired
     private CommentService commentService;
 
+    // 01 자유게시판
     @Autowired
     private FreeService freeService;
 
+    // 자유게시판 상세 페이지
     @RequestMapping(value = "/free/{idx}", method = RequestMethod.GET)
     public ModelAndView freeDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
         ModelAndView mv = new ModelAndView("board/free/freeDetail");
@@ -260,6 +296,7 @@ public class MainController {
         return "redirect:/free/" + idx;
     }
 
+//    댓글 삭제( 모든 게시판 )
     @RequestMapping(value = "/commentDelete", method = RequestMethod.POST)
     public String commentDelete(CommentDto comment) throws Exception{
         int idx = comment.getIdx();
@@ -374,16 +411,6 @@ public class MainController {
         return "redirect:/qna/" + idx;
     }
 
-//    // 댓글 삭제 구현
-//    @RequestMapping(value = "/qnaCommentDelete", method = RequestMethod.POST)
-//    public String qnaCommentDelete(CommentDto comment) throws Exception{
-//        int idx = comment.getIdx();
-//        int qnaIdx = comment.getQnaIdx();
-//        commentService.qnaCommentDelete(idx);
-//
-//        return "redirect:/qna/" + qnaIdx;
-//    }
-
     // 문의글 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
     @RequestMapping(value = "/qnaUpdate/{idx}", method = RequestMethod.PUT)
     public ModelAndView qnaUpdateView(@PathVariable("idx") int idx) throws Exception {
@@ -468,16 +495,6 @@ public class MainController {
         return "redirect:/dis/" + idx;
     }
 
-//    // 댓글 삭제 구현
-//    @RequestMapping(value = "/disCommentDelete", method = RequestMethod.POST)
-//    public String disCommentDelete(CommentDto comment) throws Exception{
-//        int idx = comment.getIdx();
-//        int disIdx = comment.getDisIdx();
-//        commentService.disCommentDelete(idx);
-//
-//        return "redirect:/dis/" + disIdx;
-//    }
-
     // 할인정보 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
     @RequestMapping(value = "/disUpdate/{idx}", method = RequestMethod.PUT)
     public ModelAndView disUpdateView(@PathVariable("idx") int idx) throws Exception {
@@ -525,24 +542,85 @@ public class MainController {
         return "success";
     }
 
+    // 04개봉작수다 커뮤니티
+    @Autowired
+    private NowService nowService;
 
-    //    현재상영작 수다
-    @RequestMapping(value = "/nowList", method = RequestMethod.GET)
-    public ModelAndView nowList() throws Exception {
-        ModelAndView mv = new ModelAndView("board/now/nowList");
-
-        return mv;
-    }
-
-    @RequestMapping(value = "/nowDetail", method = RequestMethod.GET)
-    public ModelAndView nowDetail() throws Exception {
-        ModelAndView mv = new ModelAndView("board/now/nowDetail");
-
-        return mv;
-    }
-
+    //  개봉작수다 글 등록페이지로 이동
     @RequestMapping(value = "/nowWrite", method = RequestMethod.GET)
-    public String nowInsertView() throws Exception {
+    public String nowWriteView() throws Exception {
         return "board/now/nowWrite";
     }
+    // 개봉작수다 글 등록(내부 프로세스)
+    @RequestMapping(value = "/nowWrite", method = RequestMethod.POST)
+    public String nowWriteProcess(NowDto now,  MultipartHttpServletRequest multipart) throws Exception{
+        nowService.writeNow(now, multipart);
+        return "redirect:/nowList";
+    }
+
+    //  개봉작수다 상세 페이지
+    @RequestMapping(value = "/now/{idx}", method = RequestMethod.GET)
+    public ModelAndView nowDetail(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
+        ModelAndView mv = new ModelAndView("board/now/nowDetail");
+
+        // 세션에서 idx값 불러오기
+        HttpSession session = req.getSession();
+        session.setAttribute("idx", idx);
+
+        // db의 now테이블에서 idx값 가져와 Comment테이블의 now_idx값과 일치하는 정보 가져오기
+        NowDto now = nowService.selectNowDetail(idx);
+        mv.addObject("now", now);
+
+        // 자유게시판 상세정보 및 해당 게시판의 comment정보를 상세보기 페이지로 전송
+        List<CommentDto> commentList = commentService.nowCommentList(idx);
+        mv.addObject("comment", commentList);
+
+        List<NowFileDto> nowFiles = nowService.selectNowFile(idx);
+        mv.addObject("nowFiles", nowFiles);
+
+        return mv;
+    }
+
+    //  개봉작수다 수정
+    @RequestMapping(value = "/nowUpdate/{idx}", method = RequestMethod.PUT)
+    public ModelAndView nowUpdateView(@PathVariable("idx") int idx) throws Exception {
+        ModelAndView mv = new ModelAndView("board/now/nowUpdate");
+
+        NowDto now = nowService.updateNowView(idx);
+
+        mv.addObject("now", now);
+
+        return mv;
+    }
+
+    // 개봉작수다 글 수정페이지로 이동
+    @RequestMapping(value = "/nowUpdate", method = RequestMethod.POST)
+    public String nowUpdateProcess(NowDto now, MultipartHttpServletRequest multipart) throws Exception{
+        nowService.updateNow(now, multipart);
+        return "redirect:/nowList";
+    }
+
+    // 개봉작수다 글 삭제
+    @RequestMapping(value = "/now/{idx}", method = RequestMethod.DELETE)
+    public String nowDelete(@PathVariable("idx") int idx) throws Exception{
+        nowService.deleteNow(idx);
+        return "redirect:/nowList";
+    }
+
+    // 개봉작수다 글 일괄 삭제
+    @ResponseBody
+    @RequestMapping(value = "/nowList", method = RequestMethod.DELETE)
+    public String nowMultiDelete(@RequestParam(value = "valueArrTest[]") Integer[] idx) throws Exception {
+        nowService.nowMultiDelete(idx);
+        return "success";
+    }
+
+    // 댓글 달기 구현(db에 저장 후 상세페이지로 다시 이동)
+    @RequestMapping(value = "/nowCommentWrite", method = RequestMethod.POST)
+    public String nowCommentWrite(CommentDto comment) throws Exception{
+        commentService.nowWriteComment(comment);
+        int idx = comment.getNowIdx();
+        return "redirect:/now/" + idx;
+    }
+
 }

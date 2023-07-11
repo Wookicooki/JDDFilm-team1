@@ -1,16 +1,11 @@
 package com.example.jangdocdaefilm.controller;
 
 
-import com.example.jangdocdaefilm.dto.DisDto;
-import com.example.jangdocdaefilm.dto.NowDto;
-import com.example.jangdocdaefilm.dto.QnaDto;
-import com.example.jangdocdaefilm.dto.FreeDto;
-import com.example.jangdocdaefilm.service.DisService;
-import com.example.jangdocdaefilm.service.NowService;
-import com.example.jangdocdaefilm.service.QnaService;
-
-import com.example.jangdocdaefilm.service.FreeService;
+import com.example.jangdocdaefilm.dto.*;
+import com.example.jangdocdaefilm.service.*;
 import com.github.pagehelper.PageInfo;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 public class BoardPageController {
@@ -147,6 +144,28 @@ private FreeService freeService;
     PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
 
     return p;
+  }
+
+//myPage 나의 글 게시판
+  @Autowired
+  private MyService myService;
+
+  @RequestMapping(value = "/myPage/{id}", method = RequestMethod.GET)
+  public ModelAndView myPage(HttpServletRequest req) throws Exception {
+    ModelAndView mv = new ModelAndView("mypage/myPage");
+    HttpSession session = req.getSession();
+    String id = (String) session.getAttribute("id");
+
+    List<FreeDto> free = myService.myFree(id);
+    List<NowDto> now = myService.myNow(id);
+    List<DisDto> dis = myService.myDis(id);
+
+
+    mv.addObject("free", free);
+    mv.addObject("now", now);
+    mv.addObject("dis", dis);
+
+    return mv;
   }
 }
 

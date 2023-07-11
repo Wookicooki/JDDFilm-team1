@@ -25,7 +25,7 @@
                 <a class="btn btn-outline-secondary" href="/signUp">회원가입</a>
             </div>
             <div th:unless="${session.id == null}">
-                <a class="text-decoration-none mx-3" href="/myPage">
+                <a class="text-decoration-none mx-3" href="/myPage/" th:attrappend="href=${session.id}">
                     <span th:text="${session.userName}"></span> 님</a>
                 <a class="btn btn-outline-danger" href="/logout">로그아웃</a>
             </div>

@@ -13,5 +13,15 @@ public interface MemberService {
 
   void signUpMember(MemberDto member) throws Exception;
 
+  void changeMember(String id, String pw, String name) throws Exception;
+
+  void changePassword(String id, String pw) throws Exception;
+
+  void changeUserName(String id, String name) throws Exception;
+
   public int confirmId(String id) throws Exception;
+
+  public int confirmPw(String id, String pw) throws Exception;
+
+  public int confirmName(String name) throws Exception;
 }

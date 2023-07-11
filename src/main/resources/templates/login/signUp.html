@@ -22,7 +22,7 @@
                 const id = $("#user-id").val();
                 $.ajax({
                     type: "get",
-                    url: "/confirm",
+                    url: "/confirmId",
                     data: {id: id},
                     success: function (data) {
                         if (data === 1) {

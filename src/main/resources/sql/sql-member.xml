@@ -37,4 +37,40 @@
     VALUES
     (#{id}, #{pw} , #{userName})
   </insert>
+
+  <!--  회원정보 수정-->
+  <!--  동일한 비밀번호인지 검증-->
+  <select id="confirmPw" parameterType="String" resultType="int">
+    SELECT
+    COUNT(*) AS cnt
+    FROM member
+    WHERE password = #{pw}
+    AND id = #{id}
+  </select>
+
+  <select id="confirmName" parameterType="String" resultType="int">
+    SELECT
+    COUNT(*) AS cnt
+    FROM member
+    WHERE user_name = #{name}
+  </select>
+
+  <update id="changePassword" parameterType="String">
+    UPDATE
+    member
+    SET
+    password = #{pw}
+    WHERE
+    id = #{id}
+  </update>
+
+  <update id="changeUserName" parameterType="String">
+    UPDATE
+    member
+    SET
+    user_name = #{name}
+    WHERE
+    id = #{id}
+  </update>
+
 </mapper>
