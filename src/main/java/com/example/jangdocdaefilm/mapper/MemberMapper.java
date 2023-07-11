@@ -49,6 +49,10 @@ public interface MemberMapper {
 
   void updateUserScoreAvg(UserScoreDto userScore) throws Exception;
 
+  void deleteUserScoreAvg(String movieId) throws Exception;
+
   UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
   List<UserScoreDto> getJangDocDaeChart() throws Exception;
+
+
 }

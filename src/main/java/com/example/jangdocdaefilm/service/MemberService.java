@@ -51,7 +51,12 @@ public interface MemberService {
   // 유저 점수 평균 업데이트
   void updateUserScoreAvg(UserScoreDto userScore) throws Exception;
 
+  // 유저 점수 평균 삭제
+  void deleteUserScoreAvg(String movieId) throws Exception;
+
   UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
 
   List<UserScoreDto> getJangDocDaeChart() throws Exception;
+
+
 }

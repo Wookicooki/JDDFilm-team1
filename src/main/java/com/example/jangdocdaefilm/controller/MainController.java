@@ -296,21 +296,37 @@ public class MainController {
     memberService.updateUserScoreAvg(updateMovieScore);
 
     String movieId = review.getMovieId();
-    String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
-    return "redirect:/movieReview/" + movieId + "/" + movieTitle;
+    return "redirect:/movieReview/" + movieId;
   }
 
   // 영화 리뷰 삭제
   @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
   public String deleteMovieReview(@PathVariable("idx") int idx, @RequestParam("movieTitle") String movieTitle, @RequestParam("movieId") String movieId) throws Exception {
     memberService.deleteMovieReview(idx);
-    movieTitle = URLEncoder.encode(movieTitle, "UTF-8");
-    return "redirect:/movieReview/" + movieId + "/" + movieTitle;
+
+    String userScoreAvg = memberService.userScoreAvg(movieId);
+    if (userScoreAvg != null) {
+      UserScoreDto updateMovieScore = new UserScoreDto();
+      updateMovieScore.setId(movieId);
+      updateMovieScore.setTitle(movieTitle);
+      updateMovieScore.setScoreAvg(userScoreAvg);
+      memberService.updateUserScoreAvg(updateMovieScore);
+    } else {
+      memberService.deleteUserScoreAvg(movieId);
+    }
+
+    List<ReviewDto> reviewList = memberService.getMovieReviewList(movieId);
+
+    if (reviewList.size() == 0) {
+      return "redirect:/movieDetail/" + movieId;
+    } else {
+      return "redirect:/movieReview/" + movieId;
+    }
   }
 
   // 해당 영화 모든 리뷰 조회
-  @RequestMapping(value = "/movieReview/{movieId}/{movieTitle}", method = RequestMethod.GET)
-  public ModelAndView movieReview(@PathVariable("movieId") String movieId, @PathVariable("movieTitle") String movieTitle, HttpServletRequest req) throws Exception {
+  @RequestMapping(value = "/movieReview/{movieId}", method = RequestMethod.GET)
+  public ModelAndView movieReview(@PathVariable("movieId") String movieId, HttpServletRequest req) throws Exception {
     ModelAndView mv = new ModelAndView("/movie/movieReview");
     // 내가 쓴 영화 리뷰 조회
     // 로그인 확인 후 로그인 되어있을 경우에만 나의 리뷰 조회
@@ -341,7 +357,6 @@ public class MainController {
       }
     }
 
-    mv.addObject("movieTitle", movieTitle);
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
 

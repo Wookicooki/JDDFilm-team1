@@ -109,6 +109,11 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
+  public void deleteUserScoreAvg(String movieId) throws Exception {
+    memberMapper.deleteUserScoreAvg(movieId);
+  }
+
+  @Override
   public UserScoreDto getScoreAvgMovie(String movieId) throws Exception {
     return memberMapper.getScoreAvgMovie(movieId);
   }

@@ -154,7 +154,7 @@
       </div>
 
       <div th:if="${reviewList.size()} != 0">
-        <a th:href="@{/movieReview/} + ${movieInfo.id} + @{/} + ${movieInfo.title}"
+        <a th:href="@{/movieReview/} + ${movieInfo.id}"
            class="text-decoration-none text-end fw-bold">+ 더보기</a>
         <div class="row row-cols-3 my-2">
           <div th:each="item :${reviewList}">

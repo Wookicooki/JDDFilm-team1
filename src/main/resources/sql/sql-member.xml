@@ -163,9 +163,9 @@
 <!--    평균 평점 등록 -->
     <insert id="insertUserScoreAvg" parameterType="com.example.jangdocdaefilm.dto.UserScoreDto">
         INSERT INTO
-        movie (title, score_avg, id)
+        movie (id, title, score_avg)
         VALUES
-        (#{title}, #{scoreAvg}, #{id})
+        (#{id}, #{title}, #{scoreAvg})
     </insert>
 
 <!--    평균 평점 업데이트 -->
@@ -179,6 +179,12 @@
         AND
             id = #{id}
     </update>
+
+    <delete id="deleteUserScoreAvg" parameterType="String">
+        DELETE FROM
+            movie
+        WHERE id = #{movieId}
+    </delete>
 
     <select id="getScoreAvgMovie" parameterType="String" resultType="com.example.jangdocdaefilm.dto.UserScoreDto">
         SELECT

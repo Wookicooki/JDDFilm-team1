@@ -91,7 +91,7 @@
           <div class="d-flex justify-content-between">
             <h1 class="fs-5 fw-bold">장독대 박스 오피스</h1>
           </div>
-          <table class="table table-hover table-striped">
+          <table class="table table-hover table-striped" th:if="${jangDocDaeChart} != null">
             <tr th:each="item: ${jangDocDaeChart}" th:if="${itemStat.index <= 5}">
               <td th:text="${item.no}"></td>
               <td><a th:href="@{/movieDetail/} + ${item.id}" class="text-decoration-none" th:text="${item.title}">순위</a>
