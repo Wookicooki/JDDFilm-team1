@@ -7,5 +7,5 @@ public class UserScoreDto {
     private int no;
     private String title;
     private String id;
-    private String scoreAvg;
+    private String score_avg;
 }

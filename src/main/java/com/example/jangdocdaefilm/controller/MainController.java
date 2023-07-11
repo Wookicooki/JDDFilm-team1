@@ -59,32 +59,27 @@ public class MainController {
 
     /***** 일일 박스 오피스의 영화 상세 정보 tmdb 검색 api *****/
     // 수정
-//    Iterator<DailyBoxOfficeDto> it = dailyBoxOfficeList.iterator();
-//    List<MovieDto> movieList = new ArrayList<>();
-//    while (it.hasNext()) {
-//      DailyBoxOfficeDto dailyBoxOffice = it.next();
-//      String query = dailyBoxOffice.getMovieNm();
-//      String openDt = dailyBoxOffice.getOpenDt();
-//      String queryEncode = URLEncoder.encode(query, "UTF-8");
-//      MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1&region=KR");
-//
-//      List<MovieDto> movieLists = movies.getResults();
-//      int total = Integer.parseInt(movies.getTotal_results());
-//      if (total != 1) {
-//        for (int i = 0; i < movieLists.size(); i++) {
-//          if (movieLists.get(i).getTitle().equals(query)) {
-//            movieList.add(movieLists.get(i));
-//          }
-//        }
-//      } else {
-//        movieList.add(movieLists.get(0));
-//      }
-//    }
+    Iterator<DailyBoxOfficeDto> it = dailyBoxOfficeList.iterator();
+    List<MovieDto> movieList = new ArrayList<>();
+    while (it.hasNext()) {
+      DailyBoxOfficeDto dailyBoxOffice = it.next();
+      String query = dailyBoxOffice.getMovieNm();
+      String openDt = dailyBoxOffice.getOpenDt();
+      String queryEncode = URLEncoder.encode(query, "UTF-8");
+      MoviesDto movies = movieService.getSearchMovies(tmdbServiceUrl + "search/movie?query=" + queryEncode + "&include_adult=false&language=ko&page=1&region=KR");
 
-    // tmdb 영화 인기순
-
-    List<MovieDto> movieList = movieService.getSearchMovies("https://api.themoviedb.org/3/movie/popular?language=ko&page=1&region=KR").getResults();
-
+      List<MovieDto> movieLists = movies.getResults();
+      int total = Integer.parseInt(movies.getTotal_results());
+      if (total != 1) {
+        for (int i = 0; i < movieLists.size(); i++) {
+          if (movieLists.get(i).getTitle().equals(query)) {
+            movieList.add(movieLists.get(i));
+          }
+        }
+      } else {
+        movieList.add(movieLists.get(0));
+      }
+    }
     mv.addObject("dailyBoxOfficeList", dailyBoxOfficeList);
     mv.addObject("movieList", movieList);
 
@@ -264,7 +259,7 @@ public class MainController {
       UserScoreDto saveMovieScore = new UserScoreDto();
       saveMovieScore.setId(review.getMovieId());
       saveMovieScore.setTitle(review.getMovieTitle());
-      saveMovieScore.setScoreAvg(String.valueOf(review.getUserScore()));
+      saveMovieScore.setScore_avg(String.valueOf(review.getUserScore()));
 
       memberService.insertUserScoreAvg(saveMovieScore);
     } else {
@@ -272,7 +267,7 @@ public class MainController {
       UserScoreDto updateMovieScore = new UserScoreDto();
       updateMovieScore.setId(review.getMovieId());
       updateMovieScore.setTitle(review.getMovieTitle());
-      updateMovieScore.setScoreAvg(userScoreAvg);
+      updateMovieScore.setScore_avg(userScoreAvg);
 
       memberService.updateUserScoreAvg(updateMovieScore);
     }
@@ -291,7 +286,7 @@ public class MainController {
     UserScoreDto updateMovieScore = new UserScoreDto();
     updateMovieScore.setId(review.getMovieId());
     updateMovieScore.setTitle(review.getMovieTitle());
-    updateMovieScore.setScoreAvg(userScoreAvg);
+    updateMovieScore.setScore_avg(userScoreAvg);
     memberService.updateUserScoreAvg(updateMovieScore);
 
     String movieId = review.getMovieId();
@@ -331,13 +326,7 @@ public class MainController {
       myReview = memberService.getMyMovieReview(movieId, userId);
 
       // 리뷰 좋아요 체크
-      reviewLikeCheck = memberService.getReviewLike(userId);
-      for (ReviewDto review : reviewList) {
-        for (ReviewLikesDto reviewLike : reviewLikeCheck) {
-          int checkLike = memberService.checkLike(reviewLike.getIdx(), userId, reviewLike.getReviewIdx());
-          review.setReviewLikeCheck(checkLike);
-        }
-      }
+//      reviewLikeCheck = memberService.getReviewLike(userId);
     }
 
 //    mv.addObject("reviewLikeCheck", reviewLikeCheck);
@@ -348,12 +337,13 @@ public class MainController {
     return mv;
   }
 
-//  @ResponseBody
-//  @RequestMapping(value = "/likeCheck", method = RequestMethod.GET)
-//  public Object likeCheck(@RequestParam("userId") String userId) throws Exception{
-//    List<ReviewLikesDto> reviewLikeCheck = memberService.getReviewLike(userId);
-//    return reviewLikeCheck;
-//  }
+  @ResponseBody
+  @RequestMapping(value = "/likeCheck", method = RequestMethod.GET)
+  public Object likeCheck(@RequestParam("userId") String userId) throws Exception{
+    List<ReviewLikesDto> reviewLikeCheck = memberService.getReviewLike(userId);
+
+    return reviewLikeCheck;
+  }
 
   // 리뷰 좋아요
   @ResponseBody

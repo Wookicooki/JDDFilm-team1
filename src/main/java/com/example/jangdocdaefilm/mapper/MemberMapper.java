@@ -38,7 +38,7 @@ public interface MemberMapper {
   void likeDown(@Param("idx") int reviewIdx) throws Exception;
 
   // 좋아요 체크
-  int checkLike(int likeIdx, String memberId, int reviewIdx) throws Exception;
+  int checkLike(int reviewIdx, String memberId) throws Exception;
 
   List<ReviewLikesDto> getReviewLike(String memberId) throws Exception;
 

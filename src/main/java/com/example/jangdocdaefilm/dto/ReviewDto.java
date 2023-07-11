@@ -14,5 +14,5 @@ public class ReviewDto {
   private String movieId;
   private String movieTitle;
 
-  private int reviewLikeCheck;
+  private int reviewLikeIdx;
 }
