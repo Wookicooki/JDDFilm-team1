@@ -28,12 +28,16 @@
             <div class="tab-content">
                 <div id="my-list" class="tab-pane active">
                     <div class="row row-cols-4">
-                        <div th:each="num: ${#numbers.sequence(1, 18)}" class="d-flex justify-content-center">
-                            <div style="width: 180px;">
-                                <img th:src="@{/images/poster.jpeg}" src="" alt="" class="w-100">
-                                <div class="d-flex justify-content-between">
-                                    <p>@@님의 추천작</p>
-                                    <p><i class="bi bi-heart text-danger"></i></p>
+                        <div th:each="item: ${myRecomList}" class="d-flex justify-content-center">
+                            <div style="width: 180px; height: 280px">
+                                <img th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster}" src="" alt=""
+                                     class="object-fit-fill rounded w-100" style="height: 90%" th:id="${item.idx}">
+                                <div class="d-flex justify-content-between" style="height: 10%;">
+                                    <p th:text="|${item.userName}님의 추천작|">@@님의 추천작</p>
+                                    <p th:if="(${item.like} == 'Y')">
+                                        <i class="bi bi-heart-fill text-danger" th:id="|${item.idx}i|"></i></p>
+                                    <p th:if="(${item.like} == 'N')">
+                                        <i class="bi bi-heart text-danger" th:id="|${item.idx}i|"></i></p>
                                 </div>
                             </div>
                         </div>
@@ -41,15 +45,19 @@
                 </div>
                 <div id="like-list" class="tab-pane">
                     <div class="row row-cols-4">
-                        <div th:each="num: ${#numbers.sequence(1, 18)}" class="d-flex justify-content-center">
-                            <div style="width: 180px;">
-                                <img th:src="@{/images/poster.jpeg}" src="" alt="" class="w-100">
-                                <div class="d-flex justify-content-between">
-                                    <p>@@님의 추천작</p>
-                                    <p><i class="bi bi-heart-fill text-danger"></i></p>
+                        <th:block th:each="item: ${myLikeRecom}">
+                            <div th:if="${item.like} == 'Y'" class="d-flex justify-content-center">
+                                <div style="width: 180px; height: 280px">
+                                    <img th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster}" src="" alt=""
+                                         class="object-fit-fill rounded w-100" style="height: 90%" th:id="${item.idx}">
+                                    <div class="d-flex justify-content-between" style="height: 10%;">
+                                        <p th:text="|${item.userName}님의 추천작|">@@님의 추천작</p>
+                                        <p th:if="${item.like} == 'Y'">
+                                            <i class="bi bi-heart-fill text-danger" th:id="|${item.idx}i|"></i></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </th:block>
                     </div>
                 </div>
             </div>

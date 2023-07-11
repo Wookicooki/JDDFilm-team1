@@ -43,8 +43,8 @@
                         let html = "";
                         for (let i = 0; i < movies.length; i++) {
                             html += "<div class='d-flex justify-content-center my-3'>";
-                            html += "<div style='width: 180px;'><img src='https://image.tmdb.org/t/p/original" + movies[i].poster_path + "' class='w-100'>";
-                            html += "<div class='my-2'><input type='checkbox' class='control-input' value='" + movies[i].title + "' id='" + movies[i].id + "'><label class='input-label' for='" + movies[i].id + "'>" + movies[i].title + "</label>"
+                            html += "<div style='width: 150px; height: 280px'><img src='https://image.tmdb.org/t/p/original" + movies[i].poster_path + "' class='object-fit-cover rounded mw-100' style='height: 90%'>";
+                            html += "<div class='my-2 d-flex align-items-center' style='height: 10%;'><input type='checkbox' class='control-input' value='" + movies[i].title + "' id='" + movies[i].id + "'><label class='input-label text-truncate' style='width: 90px;' for='" + movies[i].id + "'>" + movies[i].title + "</label>"
                             html += "</div></div></div>";
                         }
                         div.append(html);
@@ -118,7 +118,7 @@
                         alert("10개 까지만 등록 할 수 있습니다.")
                         return;
                     }
-                    let html = "<div class='d-inline' id='" + id + "'><input type='hidden' value='" + $(this).attr('id') + "'><span class='m-1 bg-secondary text-white' >" + title + "</span></div>";
+                    let html = "<div class='d-inline' id='" + id + "'><input type='hidden' value='" + $(this).attr('id') + "'><span class='m-1 bg-secondary text-white rounded px-1' >" + title + "</span></div>";
                     list.append(html);
                 } else {
                     $("#" + id).remove();

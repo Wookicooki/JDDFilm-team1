@@ -89,11 +89,11 @@
             </div>
             <div>
                 <div class="row row-cols-4">
-                    <div th:each="item: ${recomList}" class="d-flex justify-content-center">
-                        <div style="width: 180px;">
+                    <div th:each="item: ${recomList}" class="d-flex justify-content-center my-3">
+                        <div style="width: 180px; height: 280px">
                             <img th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster}" src="" alt=""
-                                 class="w-100" th:id="${item.idx}">
-                            <div class="d-flex justify-content-between">
+                                 class="object-fit-fill rounded w-100" style="height: 90%" th:id="${item.idx}">
+                            <div class="d-flex justify-content-between" style="height: 10%;">
                                 <p th:text="|${item.userName}님의 추천작|">@@님의 추천작</p>
                                 <p th:if="(${item.like} == 'Y') and (${session.id} != null)">
                                     <i class="bi bi-heart-fill text-danger" th:id="|${item.idx}i|"></i></p>

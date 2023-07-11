@@ -5,42 +5,62 @@
 
 <!--   개봉작 게시판-->
 <mapper namespace="com.example.jangdocdaefilm.mapper.MyMapper">
-  <select id="myFree" resultType="com.example.jangdocdaefilm.dto.FreeDto">
-    SELECT
-    idx, title, user_name, create_dt, hit_cnt
-    FROM
-    free
-    WHERE
-    delete_yn = 'N'
-    AND
-    id = #{id}
-    ORDER BY
-    idx DESC
-  </select>
+    <select id="myFree" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+        SELECT
+        idx, title, user_name, create_dt, hit_cnt
+        FROM
+        free
+        WHERE
+        delete_yn = 'N'
+        AND
+        id = #{id}
+        ORDER BY
+        idx DESC
+    </select>
 
-  <select id="myNow" resultType="com.example.jangdocdaefilm.dto.NowDto">
-    SELECT
-    idx, title, user_name, create_dt, hit_cnt
-    FROM
-    now
-    WHERE
-    delete_yn = 'N'
-    AND
-    id = #{id}
-    ORDER BY
-    idx DESC
-  </select>
+    <select id="myNow" resultType="com.example.jangdocdaefilm.dto.NowDto">
+        SELECT
+        idx, title, user_name, create_dt, hit_cnt
+        FROM
+        now
+        WHERE
+        delete_yn = 'N'
+        AND
+        id = #{id}
+        ORDER BY
+        idx DESC
+    </select>
 
-  <select id="myDis" resultType="com.example.jangdocdaefilm.dto.DisDto">
-    SELECT
-    idx, title, user_name, create_dt, hit_cnt
-    FROM
-    dis
-    WHERE
-    delete_yn = 'N'
-    AND
-    id = #{id}
-    ORDER BY
-    idx DESC
-  </select>
+    <select id="myDis" resultType="com.example.jangdocdaefilm.dto.DisDto">
+        SELECT
+        idx, title, user_name, create_dt, hit_cnt
+        FROM
+        dis
+        WHERE
+        delete_yn = 'N'
+        AND
+        id = #{id}
+        ORDER BY
+        idx DESC
+    </select>
+
+    <select id="selectRecoms" parameterType="string" resultType="com.example.jangdocdaefilm.dto.RecomDto">
+        SELECT r1.idx, r1.user_name, r1.title, r1.content, r1.visit_cnt, r2.num, r2. movie_id
+        FROM recoms r1
+        LEFT JOIN recom r2 on r1.idx = r2.idx
+        WHERE r2.num = 0 AND r1.user_name = #{userName}
+    </select>
+
+    <select id="selectRecomsLike" parameterType="string" resultType="string">
+        SELECT *
+        FROM recoms_like
+        WHERE user_name = #{userName} AND likes = 'Y'
+    </select>
+
+    <select id="selectAllRecom" resultType="com.example.jangdocdaefilm.dto.RecomDto">
+        SELECT r1.idx, r1.user_name, r1.title, r1.content, r1.visit_cnt, r2.num, r2. movie_id
+        FROM recoms r1
+        LEFT JOIN recom r2 on r1.idx = r2.idx
+        WHERE r2.num = 0
+    </select>
 </mapper>

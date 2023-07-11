@@ -15,7 +15,7 @@
     <script>
         $(document).ready(() => {
 
-            function moviePaging(body){
+            function moviePaging(body) {
                 $.ajax({
                     url: "/movie/category/search",
                     type: "GET",
@@ -34,10 +34,11 @@
 
                         let html = "";
                         for (let i = 0; i < movies.length; i++) {
-                            html += "<div class='d-flex justify-content-center'>";
-                            html += "<div style='width: 180px;'>";
-                            html += "<a href='/movieDetail/" + movies[i].id +"'><img src='https://image.tmdb.org/t/p/original" + movies[i].poster_path + "' class='w-100'></a>";
-                            html += "<div><h4 class='mt-1 mb-0'>" + movies[i].title + "</h4></div> </div></div>";
+                            html += "<div class='d-flex justify-content-center my-3'>";
+                            html += "<div style='width: 150px; height: 280px'>";
+                            html += "<a href='/movieDetail/" + movies[i].id + "'><img src='https://image.tmdb.org/t/p/original" + movies[i].poster_path + "' class='object-fit-cover rounded mw-100' style='height: 90%'></a>";
+                            html += "<div style='height: 10%;'><p class='mt-1 mb-0 text-truncate'>" + movies[i].title + "</p></div> </div></div>";
+
                         }
                         div.append(html);
                         let startPage = Math.trunc(currentPage / pagingCnt) * pagingCnt + 1;
