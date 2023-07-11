@@ -79,8 +79,8 @@ public class MemberServiceImpl implements MemberService {
 
   // 좋아요 체크
   @Override
-  public int checkLike(int likeIdx, String memberId, int reviewIdx) throws Exception {
-    return memberMapper.checkLike(likeIdx, memberId, reviewIdx);
+  public int checkLike(int likeIdx, String memberId) throws Exception {
+    return memberMapper.checkLike(likeIdx, memberId);
   }
 
   @Override

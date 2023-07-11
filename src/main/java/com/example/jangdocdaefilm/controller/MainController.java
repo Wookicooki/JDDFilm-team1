@@ -302,7 +302,7 @@ public class MainController {
   // 영화 리뷰 삭제
   @RequestMapping(value = "/deleteMovieReview/{idx}", method = RequestMethod.DELETE)
   public String deleteMovieReview(@PathVariable("idx") int idx, ReviewDto review) throws Exception {
-//    memberService.deleteMovieReview(idx);
+    // memberService.deleteMovieReview(idx);
 
     String movieId = review.getMovieId();
     String movieTitle = URLEncoder.encode(review.getMovieTitle(), "UTF-8");
@@ -332,28 +332,21 @@ public class MainController {
 
       // 리뷰 좋아요 체크
       reviewLikeCheck = memberService.getReviewLike(userId);
+      int checkLike = 0;
       for (ReviewDto review : reviewList) {
         for (ReviewLikesDto reviewLike : reviewLikeCheck) {
-          int checkLike = memberService.checkLike(reviewLike.getIdx(), userId, reviewLike.getReviewIdx());
-          review.setReviewLikeCheck(checkLike);
+          checkLike = memberService.checkLike(reviewLike.getIdx(), userId);
         }
+          review.setReviewLikeCheck(checkLike);
       }
     }
 
-//    mv.addObject("reviewLikeCheck", reviewLikeCheck);
     mv.addObject("movieTitle", movieTitle);
     mv.addObject("myReview", myReview);
     mv.addObject("reviewList", reviewList);
 
     return mv;
   }
-
-//  @ResponseBody
-//  @RequestMapping(value = "/likeCheck", method = RequestMethod.GET)
-//  public Object likeCheck(@RequestParam("userId") String userId) throws Exception{
-//    List<ReviewLikesDto> reviewLikeCheck = memberService.getReviewLike(userId);
-//    return reviewLikeCheck;
-//  }
 
   // 리뷰 좋아요
   @ResponseBody

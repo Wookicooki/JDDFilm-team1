@@ -112,8 +112,6 @@
               }
           });
       });
-
-
   </script>
 
 </head>
@@ -189,8 +187,9 @@
               <!-- 로그인 상태 -->
               <div th:if="${session.id} != null">
                 <input type="hidden" th:value="${reveiw.idx}">
-                <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 0"><i class="bi bi-hand-thumbs-up"></i></a>
                 <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 1"><i class="bi bi-hand-thumbs-up-fill"></i></a>
+                <a class="me-2 like-click" th:if="${reveiw.reviewLikeCheck} == 0"><i class="bi bi-hand-thumbs-up"></i></a>
+
               </div>
               <!--로그인 상태가 아닐 경우 클릭 이벤트 없음-->
               <div th:unless="${session.id} != null">
