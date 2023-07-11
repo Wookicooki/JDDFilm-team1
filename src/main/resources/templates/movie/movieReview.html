@@ -75,6 +75,19 @@
           frm.submit();
         }
       });
+
+      $(".btn-admin-delete").on("click", function () {
+        const deleteBtn = $(this);
+        const idx = deleteBtn.prev().val();
+
+        const answer = confirm("정말 삭제하시겠습니까?")
+        if (answer) {
+          $("#method").val("DELETE");
+          const frm = $("#frm")[0];
+          frm.action = "/deleteMovieReview/" + idx;
+          frm.submit();
+        }
+      });
     });
   </script>
 
@@ -167,12 +180,13 @@
               <span class="me-2" th:id="|like${reveiw.idx}|" th:text="${reveiw.likeCnt}">32</span>
             </div>
           </div>
+<!--          관리자 로그인 시 모든 리뷰 삭제 -->
           <div class="card-footer text-end" th:if="${session.grade} == 1">
             <form id="frm-admin-delete" method="post">
-              <button type="button" class="btn btn-danger" id="btn-admin-delete">관리자 삭제</button>
+              <input type="hidden" id="method-admin-delete" name="_method">
               <input type="hidden" name="movieId" th:value="${reveiw.movieId}">
               <input type="hidden" name="idx" th:value="${reveiw.idx}">
-              <input type="hidden" id="method-admin-delete" name="_method">
+              <button type="button" class="btn btn-danger btn-admin-delete">관리자 삭제</button>
             </form>
           </div>
         </div>
