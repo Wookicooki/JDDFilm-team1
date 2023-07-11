@@ -236,7 +236,9 @@ public class MainController {
         HttpSession session = req.getSession();
         session.setAttribute("idx", idx);
 
-        // db의 free테이블에서 idx값 가져와 Comment테이블의 free_idx값과 일치하는 정보 가져오기
+//        CommentDto comment = new CommentDto();
+//        comment.setFreeIdx(idx);
+
         FreeDto free = freeService.selectFreeDetail(idx);
         mv.addObject("free", free);
 
@@ -258,14 +260,34 @@ public class MainController {
         return "redirect:/free/" + idx;
     }
 
-    // 댓글 삭제 구현
-    @RequestMapping(value = "/freeCommentDelete", method = RequestMethod.POST)
-    public String freeCommentDelete(CommentDto comment) throws Exception{
+    @RequestMapping(value = "/commentDelete", method = RequestMethod.POST)
+    public String commentDelete(CommentDto comment) throws Exception{
         int idx = comment.getIdx();
         int freeIdx = comment.getFreeIdx();
-        commentService.freeCommentDelete(idx);
+        int nowIdx = comment.getNowIdx();
+        int disIdx = comment.getDisIdx();
+        int qnaIdx = comment.getQnaIdx();
 
-        return "redirect:/free/" + freeIdx;
+        String re = null;
+
+        if (freeIdx != 0) {
+            commentService.commentDelete(idx);
+            re = "redirect:/free/" + freeIdx;
+        }
+        else if (nowIdx != 0){
+            commentService.commentDelete(idx);
+            re = "redirect:/now/" + nowIdx;
+        }
+        else if (disIdx != 0){
+            commentService.commentDelete(idx);
+            re = "redirect:/dis/" + disIdx;
+        }
+        else if (qnaIdx != 0){
+            commentService.commentDelete(idx);
+            re = "redirect:/qna/" + qnaIdx;
+        }
+
+        return re;
     }
 
     // 자유게시판 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
@@ -352,15 +374,15 @@ public class MainController {
         return "redirect:/qna/" + idx;
     }
 
-    // 댓글 삭제 구현
-    @RequestMapping(value = "/qnaCommentDelete", method = RequestMethod.POST)
-    public String qnaCommentDelete(CommentDto comment) throws Exception{
-        int idx = comment.getIdx();
-        int qnaIdx = comment.getQnaIdx();
-        commentService.qnaCommentDelete(idx);
-
-        return "redirect:/qna/" + qnaIdx;
-    }
+//    // 댓글 삭제 구현
+//    @RequestMapping(value = "/qnaCommentDelete", method = RequestMethod.POST)
+//    public String qnaCommentDelete(CommentDto comment) throws Exception{
+//        int idx = comment.getIdx();
+//        int qnaIdx = comment.getQnaIdx();
+//        commentService.qnaCommentDelete(idx);
+//
+//        return "redirect:/qna/" + qnaIdx;
+//    }
 
     // 문의글 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
     @RequestMapping(value = "/qnaUpdate/{idx}", method = RequestMethod.PUT)
@@ -446,15 +468,15 @@ public class MainController {
         return "redirect:/dis/" + idx;
     }
 
-    // 댓글 삭제 구현
-    @RequestMapping(value = "/disCommentDelete", method = RequestMethod.POST)
-    public String disCommentDelete(CommentDto comment) throws Exception{
-        int idx = comment.getIdx();
-        int disIdx = comment.getDisIdx();
-        commentService.disCommentDelete(idx);
-
-        return "redirect:/dis/" + disIdx;
-    }
+//    // 댓글 삭제 구현
+//    @RequestMapping(value = "/disCommentDelete", method = RequestMethod.POST)
+//    public String disCommentDelete(CommentDto comment) throws Exception{
+//        int idx = comment.getIdx();
+//        int disIdx = comment.getDisIdx();
+//        commentService.disCommentDelete(idx);
+//
+//        return "redirect:/dis/" + disIdx;
+//    }
 
     // 할인정보 수정 페이지로 이동(상세보기 페이지의 정보들을 수정페이지로 전송)
     @RequestMapping(value = "/disUpdate/{idx}", method = RequestMethod.PUT)

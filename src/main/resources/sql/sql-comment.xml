@@ -23,12 +23,26 @@
     (#{content}, now(), #{id}, #{userName}, #{freeIdx})
   </insert>
 
-  <select id="freeCommentDelete" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
-    DELETE FROM comment
-    WHERE idx = #{idx};
+  <!--02개봉작수다-->
+  <select id="nowCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
+    SELECT
+    idx, content, create_dt, id, user_name, now_idx
+    FROM
+    comment
+    WHERE
+    now_idx = #{idx}
+    ORDER BY
+    idx ASC;
   </select>
 
-<!--문의글 게시판-->
+  <insert id="nowWriteComment" parameterType="com.example.jangdocdaefilm.dto.CommentDto">
+    INSERT INTO
+    comment (content, create_dt, id, user_name, now_idx)
+    VALUES
+    (#{content}, now(), #{id}, #{userName}, #{nowIdx})
+  </insert>
+
+<!--03문의글 게시판-->
   <select id="qnaCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
     SELECT
     idx, content, create_dt, id, user_name, qna_idx
@@ -47,12 +61,8 @@
     (#{content}, now(), #{id}, #{userName}, #{qnaIdx})
   </insert>
 
-  <select id="qnaCommentDelete" resultType="com.example.jangdocdaefilm.dto.QnaDto" parameterType="int">
-    DELETE FROM comment
-    WHERE idx = #{idx};
-  </select>
 
-<!--할인정보 게시판-->
+<!--04할인정보 게시판-->
   <select id="disCommentList" parameterType="int" resultType="com.example.jangdocdaefilm.dto.CommentDto">
     SELECT
     idx, content, create_dt, id, user_name, dis_idx
@@ -71,8 +81,10 @@
     (#{content}, now(), #{id}, #{userName}, #{disIdx})
   </insert>
 
-  <select id="disCommentDelete" resultType="com.example.jangdocdaefilm.dto.DisDto" parameterType="int">
+<!--댓글 삭제-->
+  <select id="commentDelete" resultType="com.example.jangdocdaefilm.dto.FreeDto" parameterType="int">
     DELETE FROM comment
     WHERE idx = #{idx};
   </select>
+
 </mapper>

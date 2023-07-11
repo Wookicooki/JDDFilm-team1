@@ -25,8 +25,8 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void freeCommentDelete(int idx) throws Exception {
-    commentMapper.freeCommentDelete(idx);
+  public void commentDelete(int idx) throws Exception {
+    commentMapper.commentDelete(idx);
   }
 
   @Override
@@ -39,10 +39,6 @@ public class CommentServiceImpl implements CommentService {
     commentMapper.disWriteComment(comment);
   }
 
-  @Override
-  public void disCommentDelete(int idx) throws Exception {
-    commentMapper.disCommentDelete(idx);
-  }
 
   @Override
   public List<CommentDto> qnaCommentList(int idx) throws Exception {
@@ -52,11 +48,6 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public void qnaWriteComment(CommentDto comment) throws Exception {
     commentMapper.qnaWriteComment(comment);
-  }
-
-  @Override
-  public void qnaCommentDelete(int idx) throws Exception {
-    commentMapper.qnaCommentDelete(idx);
   }
 
 

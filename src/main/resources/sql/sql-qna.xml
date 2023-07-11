@@ -17,7 +17,6 @@
     idx DESC
   </select>
 
-
   <select id="selectQnaDetail" resultType="com.example.jangdocdaefilm.dto.QnaDto" parameterType="int">
     SELECT
     idx, title, content, create_dt, user_name, id, delete_yn

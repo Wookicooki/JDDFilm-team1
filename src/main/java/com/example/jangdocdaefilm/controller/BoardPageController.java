@@ -2,9 +2,11 @@ package com.example.jangdocdaefilm.controller;
 
 
 import com.example.jangdocdaefilm.dto.DisDto;
+import com.example.jangdocdaefilm.dto.NowDto;
 import com.example.jangdocdaefilm.dto.QnaDto;
 import com.example.jangdocdaefilm.dto.FreeDto;
 import com.example.jangdocdaefilm.service.DisService;
+import com.example.jangdocdaefilm.service.NowService;
 import com.example.jangdocdaefilm.service.QnaService;
 
 import com.example.jangdocdaefilm.service.FreeService;
@@ -56,31 +58,41 @@ private FreeService freeService;
     return p;
   }
 
-//  문의글 게시판
+  //  02개봉작 수다 전체목록 페이징
   @Autowired
-  private QnaService qnaService;
+  private NowService nowService;
 
-  @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
-  public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-    ModelAndView mv = new ModelAndView("board/qna/qnaList");
+  @RequestMapping(value = "/nowList", method = RequestMethod.GET)
+  public ModelAndView nowList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+    ModelAndView mv = new ModelAndView("board/now/nowList");
 
-    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
+    PageInfo<NowDto> p = new PageInfo<>(nowService.selectNowListNewest(pageNum), 10);
 
-    mv.addObject("qnaList", p);
+    mv.addObject("nowList", p);
 
     return mv;
   }
 
   // 게시물 순서 변경
   @ResponseBody
-  @RequestMapping(value = "/qnaList", method = RequestMethod.POST)
-  public Object qnaPageList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception{
-    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
+  @RequestMapping(value = "/nowList", method = RequestMethod.POST)
+  public Object nowList(@RequestParam(value = "checked", required = false, defaultValue = "") String checked, @RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+    PageInfo<NowDto> p = null;
+
+    if (checked == null || checked.equals("") || checked.equals("null")) {
+      p = new PageInfo<>(nowService.selectNowListNewest(pageNum), 10);
+    } else {
+      if (checked.equals("newest")) {
+        p = new PageInfo<>(nowService.selectNowListNewest(pageNum), 10);
+      } else if (checked.equals("viewed")) {
+        p = new PageInfo<>(nowService.selectNowListViewed(pageNum), 10);
+      }
+    }
 
     return p;
   }
 
-//  할인정보 게시판
+  //  03할인정보 전체목록 페이징
   @Autowired
   private DisService disService;
 
@@ -98,85 +110,44 @@ private FreeService freeService;
   // 게시물 순서 변경
   @ResponseBody
   @RequestMapping(value = "/disList", method = RequestMethod.POST)
-  public Object disList(@RequestParam(value = "checked", required = false, defaultValue = "") String checked, @RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception{
+  public Object disList(@RequestParam(value = "checked", required = false, defaultValue = "") String checked, @RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
     PageInfo<DisDto> p = null;
 
     if (checked == null || checked.equals("") || checked.equals("null")) {
       p = new PageInfo<>(disService.selectDisListNewest(pageNum), 10);
-    }
-    else {
+    } else {
       if (checked.equals("newest")) {
         p = new PageInfo<>(disService.selectDisListNewest(pageNum), 10);
       } else if (checked.equals("viewed")) {
         p = new PageInfo<>(disService.selectDisListViewed(pageNum), 10);
       }
     }
-
     return p;
   }
 
-//  //  할인정보 전체목록 페이징
-//  @Autowired
-//  private QnaService qnaService;
-//
-//  @RequestMapping("/qnaList")
-//  public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    ModelAndView mv = new ModelAndView("board/qna/qnaList");
-//
-//    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaList(pageNum), 10);
-//
-//    mv.addObject("qnaList", p);
-//    return mv;
-//  }
-//
-//  @ResponseBody
-//  @RequestMapping(value = "/board/qna/qnaListAjax")
-//  public Object qnaListAjax(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaList(pageNum), 10);
-//    return p;
-//  }
-//
-////  개봉작수다 전체목록 페이징
-//  @Autowired
-//  private NowService nowService;
-//
-//  @RequestMapping("/nowList")
-//  public ModelAndView nowList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    ModelAndView mv = new ModelAndView("board/now/nowList");
-//
-//    PageInfo<NowDto> p = new PageInfo<>(nowService.selectNowList(pageNum), 10);
-//
-//    mv.addObject("nowList", p);
-//    return mv;
-//  }
-//
-//  @ResponseBody
-//  @RequestMapping(value = "/board/now/nowListAjax")
-//  public Object nowListAjax(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    PageInfo<NowDto> p = new PageInfo<>(nowService.selectNowList(pageNum), 10);
-//    return p;
-//  }
-//
-//  //  문의게시판 전체목록 페이징
-//  @Autowired
-//  private QnaService qnaService;
-//
-//  @RequestMapping("/qnaList")
-//  public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    ModelAndView mv = new ModelAndView("board/qna/qnaList");
-//
-//    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaList(pageNum), 10);
-//
-//    mv.addObject("qnaList", p);
-//    return mv;
-//  }
-//
-//  @ResponseBody
-//  @RequestMapping(value = "/board/qna/qnaListAjax")
-//  public Object qnaListAjax(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-//    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaList(pageNum), 10);
-//    return p;
-//  }
+  //  04문의글 게시판
+  @Autowired
+  private QnaService qnaService;
+
+  @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
+  public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+    ModelAndView mv = new ModelAndView("board/qna/qnaList");
+
+    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
+
+    mv.addObject("qnaList", p);
+
+    return mv;
+  }
+
+  // 게시물 순서 변경
+  @ResponseBody
+  @RequestMapping(value = "/qnaList", method = RequestMethod.POST)
+  public Object qnaPageList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
+    PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
+
+    return p;
+  }
 }
 
 

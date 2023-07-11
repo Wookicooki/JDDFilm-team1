@@ -6,20 +6,31 @@
 
 <!--  현재 상영작-->
 <mapper namespace="com.example.jangdocdaefilm.mapper.NowMapper">
-  <select id="selectNowList" resultType="com.example.jangdocdaefilm.dto.NowDto">
+  <select id="selectNowListNewest" resultType="com.example.jangdocdaefilm.dto.NowDto">
     SELECT
-    idx, title, id, create_dt, hit_cnt
+    idx, title, user_name, id, create_dt, hit_cnt
     FROM
     now
     WHERE
     delete_yn = 'N'
     ORDER BY
-    idx DESC;
+    idx DESC
+  </select>
+
+  <select id="selectNowListViewed" resultType="com.example.jangdocdaefilm.dto.NowDto">
+    SELECT
+    idx, title, user_name, id, create_dt, hit_cnt
+    FROM
+    now
+    WHERE
+    delete_yn = 'N'
+    ORDER BY
+    hit_cnt DESC
   </select>
 
   <select id="selectNowDetail" resultType="com.example.jangdocdaefilm.dto.NowDto" parameterType="int">
     SELECT
-    idx, title, content, image, create_dt, update_dt, id, hit_cnt, delete_yn
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
     FROM
     now
     WHERE
@@ -28,21 +39,34 @@
     delete_yn = 'N'
   </select>
 
-  <insert id="insertNow" parameterType="com.example.jangdocdaefilm.dto.NowDto">
+  <insert id="writeNow" parameterType="com.example.jangdocdaefilm.dto.NowDto" useGeneratedKeys="true" keyProperty="idx">
     INSERT INTO
-    now (title, content, id, create_dt)
+    now (title, content, id, user_name, create_dt)
     VALUES
-    (#{title}, #{content} , #{createId} ,now())
+    (#{title}, #{content} , #{id}, #{userName}, now())
   </insert>
+
+
+  <select id="updateNowView" resultType="com.example.jangdocdaefilm.dto.NowDto" parameterType="int">
+    SELECT
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
+    FROM
+    now
+    WHERE
+    idx = #{idx}
+    AND
+    delete_yn = 'N'
+  </select>
 
   <update id="updateNow" parameterType="com.example.jangdocdaefilm.dto.NowDto">
     UPDATE
     now
     SET
-    title= #{title} , content= #{content}, id= #{Id}, update_dt= now()
+    title = #{title} , content = #{content}
     WHERE
     idx = #{idx}
   </update>
+
 
   <update id="deleteNow" parameterType="int">
     UPDATE
@@ -61,4 +85,27 @@
     WHERE
     idx = #{idx}
   </update>
+
+  <!--  첨부파일 정보 추가-->
+  <insert id="insertNowFileList" parameterType="com.example.jangdocdaefilm.dto.NowFileDto">
+    INSERT INTO
+    now_img (now_idx, original_file_name, stored_file_name, file_size, create_id, create_dt)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.nowIdx}, #{item.originalFileName}, #{item.storedFileName}, #{item.fileSize}, #{item.createId}, NOW())
+    </foreach>
+  </insert>
+
+  <select id="selectNowFile" parameterType="int" resultType="com.example.jangdocdaefilm.dto.NowFileDto">
+    select idx, now_idx, stored_file_name, file_size, create_id, create_dt from now_img
+    where now_idx=#{idx}
+  </select>
+
+  <!--  첨부파일 업데이트-->
+  <delete id="deleteNowFileList" parameterType="com.example.jangdocdaefilm.dto.NowFileDto">
+    DELETE
+    FROM
+    now_img
+    WHERE now_idx = #{idx}
+  </delete>
 </mapper>

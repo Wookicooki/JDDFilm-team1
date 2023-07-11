@@ -4,12 +4,12 @@
 <div th:fragment="comment(comment, idx)">
     <div th:if="${session.idx} == ${idx}" th:each="comment : ${comment}">
         <div class="row">
-            <form action="/freeCommentDelete" method="post" name="comment">
+            <form action="/commentDelete" method="post" name="comment">
                 <div class="justify-content-start my-2 row" th:unless="${comment.id} == ${session.id}">
                     <div class="col-sm-6 mt-2">
                         <p class="m-0 p-0" th:text="${comment.userName}">댓글 id</p>
                         <input type="hidden" th:value="${comment.idx}" name="idx">
-                        <input type="hidden" th:value="${idx}" name="freeIdx">
+                        <input type="hidden" th:value="${idx}" name="contentIdx">
                         <div class="input-group">
                             <input type="text" class="form-control form-control-plaintext bg-white rounded-1" th:value="${comment.content}" readonly>
                             <button type="submit" th:if="${session.grade} == 1" class="btn"><i class="bi bi-x-circle"></i></button>
@@ -17,11 +17,22 @@
                     </div>
                 </div>
             </form>
-            <form action="/freeCommentDelete" method="post" name="comment">
+            <form action="/commentDelete" method="post" name="comment">
                 <div class="justify-content-end my-2 row" th:if="${comment.id} == ${session.id}">
                     <div class="col-sm-6 mt-2">
                         <input type="hidden" th:value="${comment.idx}" name="idx">
-                        <input type="hidden" th:value="${idx}" name="freeIdx">
+                        <th:block th:if="${comment.freeIdx} != 0">
+                            <input type="hidden" th:value="${idx}" name="freeIdx">
+                        </th:block>
+                        <th:block th:if="${comment.nowIdx} != 0">
+                            <input type="hidden" th:value="${idx}" name="nowIdx">
+                        </th:block>
+                        <th:block th:if="${comment.disIdx} != 0">
+                            <input type="hidden" th:value="${idx}" name="disIdx">
+                        </th:block>
+                        <th:block th:if="${comment.qnaIdx} != 0">
+                            <input type="hidden" th:value="${idx}" name="qnaIdx">
+                        </th:block>
                         <div class="input-group">
                             <button type="submit" class="btn"><i class="bi bi-x-circle"></i></button>
                             <input type="text" class="form-control form-control-plaintext bg-white rounded-1" th:value="${comment.content}" readonly>
