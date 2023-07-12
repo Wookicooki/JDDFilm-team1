@@ -34,12 +34,14 @@
                             let html = "";
                             for (let i = 0; i < movies.length; i++) {
                                 const movie = movies[i];
-                                html += "<div class='my-2'><div class='row'><div class='col-sm-4'>";
-                                html += "<a href='/movieDetail/" + movie.id + "'>";
-                                html += "<img src='https://image.tmdb.org/t/p/original/" + movie["poster_path"] + "' class='img-fluid'></a></div>";
+                                html += "<div class='col p-2'>";
+                                html += "<div class='border border-secondary border-opacity-25 p-2 rounded'>";
+                                html += "<a href='/movieDetail/" + movie.id + "' class='text-decoration-none text-black'>";
+                                html += "<div class='row'><div class='col-sm-4'>";
+                                html += "<img src='https://image.tmdb.org/t/p/original/" + movie["poster_path"] + "' class='img-fluid rounded'></div>";
                                 html += "<div class='col-sm'><p class='m-0'>" + movie.title + "</p>";
                                 html += "<p>" + movie["release_date"] + "</p>";
-                                html += "<span class='text-overflow m-0' style='width: 150px;'>" + movie.overview + "</span></div></div></div>";
+                                html += "<span class='text-overflow m-0' style='width: 150px;'>" + movie.overview + "</span></div></div></a></div></div>";
                             }
 
                             div.append(html);
