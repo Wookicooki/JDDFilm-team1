@@ -54,10 +54,20 @@
               <p class="mb-0">TMDB 평점</p>
               <span th:text="${movieInfo.vote_average}">★★★★★</span>
             </div>
-            <div>
+            <div th:if="${userScoreAvg} == null">
               <p class="mb-0">장독대 평점</p>
-              <span th:if="${userScoreAvg} == null" th:text="|평점 없음|"></span>
-              <span th:unless="${userScoreAvg} == null" th:text="${userScoreAvg}">★★★★★</span>
+              <span th:text="|평점 없음|"></span>
+            </div>
+            <div th:if="${userScoreAvg} != null">
+              <div>
+                <p class="mb-0">장독대 평점</p>
+                <div>
+                  <img class="w-25" src="/images/review-full.png" th:if="${userScoreAvg} >= 8">
+                  <img style="width: 2.5rem" src="/images/review-unbroken.png" th:if="${userScoreAvg} >=5 and ${userScoreAvg} < 8">
+                  <img src="/images/review-unbroken.png" th:if="${userScoreAvg} < 5">
+                  <span class="fs-3" th:text="${userScoreAvg}">★★★★★</span>
+                </div>
+              </div>
             </div>
             <div th:if="${myReview != null}" class="ms-auto align-self-center">
               <div th:if="${session.id} != null and ${session.id} != ${myReview.memberId}">
