@@ -856,13 +856,12 @@ public class MainController {
     public String insertProfileImg(MemberDto member, HttpServletRequest req, MultipartHttpServletRequest multipart) throws Exception {
         HttpSession session = req.getSession();
         String id = session.getAttribute("id").toString();
-        String userName = session.getAttribute("userName").toString();
         member.setId(id);
         List<MemberDto> members = memberService.setMemberImg(member, multipart);
 
         session.setAttribute("imgUrl", members.get(0).getStoredFileName());
 
-        return "redirect:/myPage/" + userName;
+        return "redirect:/myPage/" + id;
     }
 
 }
