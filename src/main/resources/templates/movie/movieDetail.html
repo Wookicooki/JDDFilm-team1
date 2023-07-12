@@ -23,6 +23,11 @@
       $("#review-exist").on("click", () => {
         alert("등록된 리뷰가 있습니다.");
       });
+
+
+        $("#backBtn").on("click", () => {
+            history.back();
+        });
     });
   </script>
 
@@ -40,6 +45,9 @@
                class="img-fluid">
         </div>
         <div class="col-sm-8">
+          <div class="text-end">
+          <button class="btn btn-sm btn-secondary" id="backBtn">이전</button>
+          </div>
           <h1 class="fs-2 fw-bold" th:text="${movieInfo.title}">인디아나 존슨:운명의 다이얼</h1>
           <div class="review my-4 d-flex">
             <div class="me-3">
@@ -154,8 +162,11 @@
       </div>
 
       <div th:if="${reviewList.size()} != 0">
-        <a th:href="@{/movieReview/} + ${movieInfo.id}"
-           class="text-decoration-none text-end fw-bold">+ 더보기</a>
+        <div class="d-flex justify-content-between mt-5">
+          <h2>리뷰</h2>
+          <a th:href="@{/movieReview/} + ${movieInfo.id}"
+             class="text-decoration-none text-secondary text-end fw-bold"><i class="bi bi-plus"></i>더보기</a>
+        </div>
         <div class="row row-cols-3 my-2">
           <div th:each="item :${reviewList}">
             <div class="col-sm">

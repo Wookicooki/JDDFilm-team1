@@ -62,7 +62,7 @@
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne" th:attr="data-target='#collapse'+${info.id}">
                   <input type="hidden" class="hidden-movie-id" th:value="${info.id}">
-                  <a class="text-decoration-none box-office-title" th:text="${info.title}">1. 일일 박스 오피스 1위 영화 제목</a>
+                  <a class="text-decoration-none text-black box-office-title" th:text="${info.title}">인기 영화 제목</a>
                   <span th:text="${info.vote_average}" class="ms-2">★★★★★</span>
                 </button>
               </h2>
@@ -74,7 +74,7 @@
                       <a th:href="@{/movieDetail/} + ${info.id}">
                         <img th:src="@{https://image.tmdb.org/t/p/original} + ${info.poster_path}"
                              src="/images/img1.jpg"
-                             class="img-fluid"/></a>
+                             class="img-fluid rounded"/></a>
                     </div>
                     <div class="col-sm">
                       <span th:text="${info.title}" class="fw-bold">영화 제목</span>
@@ -178,7 +178,7 @@
               </div>
             </div>
             <div class="card-body">
-              <table class="table table-hover table-list table-borderless">
+              <table class="table table-sm table-hover table-list table-borderless">
                 <colgroup>
                   <col style="width: 5%"/>
                   <col style="width: 70%"/>
@@ -221,7 +221,7 @@
               </div>
             </div>
             <div class="card-body">
-              <table class="table table-hover table-list table-borderless">
+              <table class="table table-sm table-hover table-list table-borderless">
                 <colgroup>
                   <col style="width: 5%"/>
                   <col style="width: 70%"/>
