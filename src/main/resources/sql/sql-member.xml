@@ -237,5 +237,6 @@
         movie, (SELECT @rownum:=0) TMP
         ORDER BY
         score_avg DESC
+        limit 10;
     </select>
 </mapper>
