@@ -115,8 +115,10 @@
                     <span>평균</span>
                     <span><i class="bi bi-star-fill"></i></span>
                     <span th:text="${item.scoreAvg}"></span>
-                    <span th:if="${item.scoreAvg} >= 6"><i class="bi bi-suit-heart-fill"></i></span>
-                    <span th:if="${item.scoreAvg} < 6"><i class="bi bi-heartbreak-fill"></i></span>
+
+                    <span th:if="${item.scoreAvg} >= 7"><img src="/images/review-full.png"  style="height: 20px"></span>
+                    <span th:if="${item.scoreAvg} >=5 and ${item.scoreAvg} < 7"><img src="/images/review-unbroken.png"  style="height: 20px"></span>
+                    <span th:if="${item.scoreAvg} < 5"><img src="/images/review-broken.png"  style="height: 20px"></span>
                   </td>
                 </tr>
               </table>
