@@ -71,10 +71,12 @@
                 <div th:if="${userScoreAvg} != null">
                   <div class="text-center">
                     <div class="d-flex">
-                      <img class="w-25" src="/images/review-full.png" th:if="${userScoreAvg} >= 8">
+                      <img class="align-self-center" style="width: 2.5rem" src="/images/review-full.png"
+                           th:if="${userScoreAvg} >= 8">
                       <img class="align-self-center" style="width: 2.5rem" src="/images/review-unbroken.png"
                            th:if="${userScoreAvg} >=5 and ${userScoreAvg} < 8">
-                      <img src="/images/review-unbroken.png" th:if="${userScoreAvg} < 5">
+                      <img class="align-self-center me-1" style="width: 2.5rem" src="/images/review-broken.png"
+                           th:if="${userScoreAvg} < 5">
                       <span class="fs-3 mb-0" th:text="${userScoreAvg}">★★★★★</span>
                     </div>
                     <span style="font-size: small">장독대 평점</span>
@@ -128,6 +130,14 @@
                   </div>
                 </div>
               </div>
+
+              <div class="card bg-light bg-opacity-25 my-3"
+                   th:if="${myReview} != null and ${session.id} == ${myReview.memberId}">
+                <div class="card-body">
+                  <p class="card-title fw-bold">나의 리뷰</p>
+                  <p class="mb-0" th:text="${myReview.content}"></p>
+                </div>
+              </div>
               <!-- 줄거리-->
               <div class="border-top mt-3">
                 <p th:text="${movieInfo.tagline}" class="mt-3 mb-1 fw-bold"></p>
@@ -135,87 +145,6 @@
               </div>
             </div>
           </div>
-          <!--          <h1 class="fs-2 fw-bold" th:text="${movieInfo.title}">인디아나 존슨:운명의 다이얼</h1>-->
-          <!--          <div class="review my-4 d-flex">-->
-          <!--            <div class="me-3">-->
-          <!--              <p class="mb-0">TMDB 평점</p>-->
-          <!--              <span th:text="${movieInfo.vote_average}">★★★★★</span>-->
-          <!--            </div>-->
-          <!--            <div th:if="${userScoreAvg} == null">-->
-          <!--              <p class="mb-0">장독대 평점</p>-->
-          <!--              <span th:text="|평점 없음|"></span>-->
-          <!--            </div>-->
-          <!--            <div th:if="${userScoreAvg} != null">-->
-          <!--              <div>-->
-          <!--                <p class="mb-0">장독대 평점</p>-->
-          <!--                <div>-->
-          <!--                  <img class="w-25" src="/images/review-full.png" th:if="${userScoreAvg} >= 8">-->
-          <!--                  <img style="width: 2.5rem" src="/images/review-unbroken.png" th:if="${userScoreAvg} >=5 and ${userScoreAvg} < 8">-->
-          <!--                  <img src="/images/review-unbroken.png" th:if="${userScoreAvg} < 5">-->
-          <!--                  <span class="fs-3" th:text="${userScoreAvg}">★★★★★</span>-->
-          <!--                </div>-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--            <div th:if="${myReview != null}" class="ms-auto align-self-center">-->
-          <!--              <div th:if="${session.id} != null and ${session.id} != ${myReview.memberId}">-->
-          <!--                <button type="button" class="btn btn-primary" data-bs-toggle="modal"-->
-          <!--                        data-bs-target="#reviewModal">리뷰 작성-->
-          <!--                </button>-->
-          <!--              </div>-->
-          <!--              <div th:if="${session.id} == ${myReview.memberId}">-->
-          <!--                <button type="button" class="btn btn-secondary" id="review-exist">리뷰 작성-->
-          <!--                </button>-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--            <div th:unless="${myReview != null}" class="ms-auto align-self-center">-->
-          <!--              <div th:if="${session.id} != null">-->
-          <!--                <button type="button" class="btn btn-primary" data-bs-toggle="modal"-->
-          <!--                        data-bs-target="#reviewModal">리뷰 작성-->
-          <!--                </button>-->
-          <!--              </div>-->
-          <!--              <div th:unless="${session.id} != null">-->
-          <!--                <button type="button" class="btn btn-secondary" id="go-to-login">리뷰 작성-->
-          <!--                </button>-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--            <div class="modal fade" id="reviewModal">-->
-          <!--              <div class="modal-dialog modal-dialog-centered">-->
-          <!--                <div class="modal-content">-->
-          <!--                  <div class="modal-header">-->
-          <!--                    <h1 class="modal-title" th:text="${movieInfo.title}">영화이름</h1>-->
-          <!--                  </div>-->
-          <!--                  <div class="modal-body">-->
-          <!--                    <form method="post" action="/insertMovieReview">-->
-          <!--                      <textarea class="form-control" rows="10" name="content" placeholder="영화 리뷰를 작성해주세요"></textarea>-->
-          <!--                      <input type="range" class="form-range mt-2" step="1" min="1" max="10"-->
-          <!--                             value="1" name="userScore">-->
-          <!--                      <input type="hidden" name="movieId" th:value="${movieInfo.id}">-->
-          <!--                      <input type="hidden" name="movieTitle" th:value="${movieInfo.title}">-->
-          <!--                      <input type="hidden" name="memberId" th:value="${session.id}">-->
-          <!--                      <input type="hidden" name="userName" th:value="${session.userName}">-->
-          <!--                      <div class="text-end">-->
-          <!--                        <button type="submit" class="btn btn-primary">등록</button>-->
-          <!--                      </div>-->
-          <!--                    </form>-->
-          <!--                  </div>-->
-          <!--                </div>-->
-          <!--              </div>-->
-          <!--            </div>-->
-          <!--          </div>-->
-          <!--          <div class="mb-2 text-end">-->
-          <!--            <p th:text="|개봉일 : ${movieInfo.release_date}|" class="mb-0"></p>-->
-          <!--            <p th:text="|상영시간 : ${movieInfo.runtime}분|" class="mb-0"></p>-->
-          <!--            <span>장르 : </span>-->
-          <!--            <span th:each="item : ${genre}">-->
-          <!--              <span th:text="${item.name}"></span>-->
-          <!--            </span>-->
-          <!--          </div>-->
-
-          <!--          <div>-->
-          <!--            <span th:text="${movieInfo.tagline}" class="fw-bold"></span>-->
-          <!--            <br>-->
-          <!--            <p th:text="${movieInfo.overview}">영화 줄거리</p>-->
-          <!--          </div>-->
         </div>
       </div>
 
@@ -269,13 +198,21 @@
         <div class="row row-cols-3 mt-1">
           <div class="px-1" th:each="item :${reviewList}">
             <div class="col-sm">
-              <div class="card">
-                <div class="card-body">
-                  <p class="card-text" th:text="${item.userName}">작성자 이름</p>
-                  <span class="card-text" th:text="|평점 : ${item.userScore}|">유저 평점</span>
-                  <br>
+              <div class="card border-0">
+                <div class="card-header">
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-bold" th:text="${item.userName}">작성자 이름</span>
+                    <div class="d-flex">
+                      <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-full.png" th:if="${item.userScore} >= 8">
+                      <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-unbroken.png" th:if="${item.userScore} >=5 and ${item.userScore} < 8">
+                      <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-broken.png" th:if="${item.userScore} < 5">
+                      <span class="card-text" th:text="${item.userScore}">유저 평점</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body bg-light">
                   <span class="card-text" th:text="${item.content}">영화 리뷰 내용</span>
-                  <div class="text-end">
+                  <div class="mt-2">
                     <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
                     <span class="me-2" th:text="${item.likeCnt}">32</span>
                   </div>
@@ -289,6 +226,6 @@
     <div class="col-sm-2"></div>
   </div>
 </main>
-<footer></footer>
+<footer th:replace="~{layout/footer :: footer-basic}"></footer>
 </body>
 </html>
