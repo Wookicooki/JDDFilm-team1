@@ -26,6 +26,10 @@
                     }
                 });
             });
+
+            $("#list-btn").on("click", () => {
+                history.back();
+            });
         });
     </script>
 
@@ -59,8 +63,12 @@
                 <div class="col-sm">
                     <h3 th:text="${recom.title}">@@님의 영화 추천작</h3>
                 </div>
-                <div th:if="(${session.userName} == ${recom.userName})" class="col-sm d-flex justify-content-end">
-                    <button type="button" class="btn btn-danger" id="delete-btn">삭제
+                <div class="col-sm d-flex justify-content-end">
+                    <button th:if="(${session.userName} == ${recom.userName})" type="button" class="btn btn-danger me-2"
+                            id="delete-btn">삭제
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary"
+                            id="list-btn">목록
                     </button>
                 </div>
             </div>
