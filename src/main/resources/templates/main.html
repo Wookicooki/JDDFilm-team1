@@ -70,7 +70,6 @@
                         data-bs-target="#collapseOne" th:attr="data-target='#collapse'+${info.id}">
                   <input type="hidden" class="hidden-movie-id" th:value="${info.id}">
                   <a class="text-decoration-none text-black box-office-title" th:text="${info.title}">인기 영화 제목</a>
-                  <span th:text="${info.vote_average}" class="ms-2">★★★★★</span>
                 </button>
               </h2>
               <div id="collapseOne" th:id="|collapse${info.id}|" class="accordion-collapse collapse"
