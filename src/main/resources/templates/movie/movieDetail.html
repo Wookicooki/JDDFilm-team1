@@ -25,7 +25,7 @@
       });
 
 
-        $("#backBtn").on("click", () => {
+        $("#backIcon").on("click", () => {
             history.back();
         });
     });
@@ -40,13 +40,13 @@
     <div class="col-sm-2"></div>
     <div class="col-sm">
       <div class="row my-3">
+        <i class="bi bi-arrow-left-square-fill fs-2 text-secondary mb-2" id="backIcon" style="cursor: pointer"></i>
         <div class="col-sm-4">
           <img th:src="@{https://image.tmdb.org/t/p/original/} + ${movieInfo.poster_path}" src="/images/img1.jpg"
                class="img-fluid">
         </div>
         <div class="col-sm-8">
           <div class="text-end">
-          <button class="btn btn-sm btn-secondary" id="backBtn">이전</button>
           </div>
           <h1 class="fs-2 fw-bold" th:text="${movieInfo.title}">인디아나 존슨:운명의 다이얼</h1>
           <div class="review my-4 d-flex">
