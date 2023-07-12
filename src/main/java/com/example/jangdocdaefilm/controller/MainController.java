@@ -650,7 +650,7 @@ public class MainController {
         qnaService.updateQna(qna, multipart);
         HttpSession session = req.getSession();
 
-        return "redirect:/myPage/" + session.getAttribute("userName").toString();
+        return "redirect:/myPage/" + session.getAttribute("id").toString();
     }
 
     // 문의글 글 등록페이지로 이동
@@ -665,7 +665,7 @@ public class MainController {
         qnaService.writeQna(qna, multipart);
         HttpSession session = req.getSession();
 
-        return "redirect:/myPage/" + session.getAttribute("userName").toString();
+        return "redirect:/myPage/" + session.getAttribute("id").toString();
     }
 
     // 게시물 삭제
@@ -674,7 +674,7 @@ public class MainController {
         qnaService.deleteQna(idx);
         HttpSession session = req.getSession();
 
-        return "redirect:/myPage/" + session.getAttribute("userName").toString();
+        return "redirect:/myPage/" + session.getAttribute("id").toString();
     }
 
     // 게시물 일괄 삭제

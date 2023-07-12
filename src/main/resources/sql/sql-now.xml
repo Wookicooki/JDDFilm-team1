@@ -19,7 +19,7 @@
 
   <select id="selectNowListViewed" resultType="com.example.jangdocdaefilm.dto.NowDto">
     SELECT
-    idx, title, user_name, id, create_dt, hit_cnt
+    idx, title, user_name, id, create_dt, hit_cnt, movie_nm
     FROM
     now
     WHERE
