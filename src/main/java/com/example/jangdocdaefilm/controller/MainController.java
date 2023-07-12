@@ -40,6 +40,9 @@ public class MainController {
         return "index";
     }
 
+    @Autowired
+    private MainService mainService;
+
     @ResponseBody
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public ModelAndView getDailyBoxOfficeProcess(HttpServletRequest req) throws Exception {
@@ -100,6 +103,12 @@ public class MainController {
         mv.addObject("jangDocDaeChart", jangDocDaeChart);
 
         // 커뮤니티 각각 게시글 정보 가져오기, 최신글 5개 출력(커뮤니티 병합 후)
+        List<FreeDto> free = mainService.mainFree();
+        List<NowDto> now = mainService.mainNow();
+        List<DisDto> dis = mainService.mainDis();
+        mv.addObject("free", free);
+        mv.addObject("now", now);
+        mv.addObject("dis", dis);
 
         return mv;
     }
