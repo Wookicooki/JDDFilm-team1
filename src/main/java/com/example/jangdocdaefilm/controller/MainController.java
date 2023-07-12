@@ -309,7 +309,7 @@ public class MainController {
             UserScoreDto saveMovieScore = new UserScoreDto();
             saveMovieScore.setId(review.getMovieId());
             saveMovieScore.setTitle(review.getMovieTitle());
-            saveMovieScore.setScoreAvg(String.valueOf(review.getUserScore()));
+            saveMovieScore.setScoreAvg(review.getUserScore());
 
             memberService.insertUserScoreAvg(saveMovieScore);
         } else {
@@ -317,7 +317,7 @@ public class MainController {
             UserScoreDto updateMovieScore = new UserScoreDto();
             updateMovieScore.setId(review.getMovieId());
             updateMovieScore.setTitle(review.getMovieTitle());
-            updateMovieScore.setScoreAvg(userScoreAvg);
+            updateMovieScore.setScoreAvg(Float.parseFloat(userScoreAvg));
 
             memberService.updateUserScoreAvg(updateMovieScore);
         }
@@ -336,7 +336,7 @@ public class MainController {
         UserScoreDto updateMovieScore = new UserScoreDto();
         updateMovieScore.setId(review.getMovieId());
         updateMovieScore.setTitle(review.getMovieTitle());
-        updateMovieScore.setScoreAvg(userScoreAvg);
+        updateMovieScore.setScoreAvg(Float.parseFloat(userScoreAvg));
         memberService.updateUserScoreAvg(updateMovieScore);
 
         String movieId = review.getMovieId();
@@ -353,7 +353,7 @@ public class MainController {
             UserScoreDto updateMovieScore = new UserScoreDto();
             updateMovieScore.setId(movieId);
             updateMovieScore.setTitle(movieTitle);
-            updateMovieScore.setScoreAvg(userScoreAvg);
+            updateMovieScore.setScoreAvg(Float.parseFloat(userScoreAvg));
             memberService.updateUserScoreAvg(updateMovieScore);
         } else {
             memberService.deleteUserScoreAvg(movieId);
