@@ -53,7 +53,7 @@
                 <input type="hidden" th:value="${recom.idx}" id="idx">
                 <div class="col-sm">
                     <img src="/images/poster.jpeg" th:src="@{https://image.tmdb.org/t/p/original} + ${recom.poster}"
-                         alt="" class="img-fluid">
+                         alt="" class="img-fluid rounded">
                 </div>
                 <div class="col-sm-7">
                     <p class="py-5" th:text="${recom.content}">나만의 영화 추천작 모음 소개글</p>

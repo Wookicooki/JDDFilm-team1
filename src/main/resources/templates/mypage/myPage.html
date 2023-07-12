@@ -73,6 +73,25 @@
             font-size: 18px;
         }
 
+        .nav {
+            --bs-nav-tabs-border-width: 0px;
+            --bs-nav-tabs-link-active-border-color: #000;
+            border-bottom: 1px solid var(--bs-nav-tabs-border-color);
+        }
+
+        .nav-link,
+        .nav-link:hover,
+        .nav-link:focus {
+            color: gray;
+        }
+
+        .nav .nav-link.active,
+        .nav .nav-item.show .nav-link {
+            border-bottom: 2px solid black;
+            color: black;
+            font-weight: bold;
+        }
+
     </style>
 
     <script>
