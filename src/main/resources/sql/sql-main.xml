@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--   개봉작 게시판-->
+<mapper namespace="com.example.jangdocdaefilm.mapper.MainMapper">
+    <select id="mainFree" resultType="com.example.jangdocdaefilm.dto.FreeDto">
+        SELECT
+        @rownum:=@rownum+1 as no, idx, title, hit_cnt
+        FROM
+        free, (SELECT @rownum:=0) TMP
+        WHERE
+        delete_yn = 'N'
+        ORDER BY
+        hit_cnt DESC
+        LIMIT 5;
+    </select>
+
+    <select id="mainNow" resultType="com.example.jangdocdaefilm.dto.NowDto">
+        SELECT
+        @rownum:=@rownum+1 as no, idx, title, hit_cnt
+        FROM
+        now, (SELECT @rownum:=0) TMP
+        WHERE
+        delete_yn = 'N'
+        ORDER BY
+        hit_cnt DESC
+        LIMIT 5;
+    </select>
+
+    <select id="mainDis" resultType="com.example.jangdocdaefilm.dto.DisDto">
+        SELECT
+        @rownum:=@rownum+1 as no, idx, title, hit_cnt
+        FROM
+        dis, (SELECT @rownum:=0) TMP
+        WHERE
+        delete_yn = 'N'
+        ORDER BY
+        hit_cnt DESC
+        LIMIT 5;
+    </select>
+
+</mapper>

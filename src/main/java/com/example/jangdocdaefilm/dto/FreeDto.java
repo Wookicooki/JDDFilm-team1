@@ -6,6 +6,8 @@ import java.sql.Date;
 
 @Data
 public class FreeDto {
+  private int no;
+
   private int idx;
   private String title;
   private String content;

@@ -23,6 +23,11 @@
       $("#review-exist").on("click", () => {
         alert("등록된 리뷰가 있습니다.");
       });
+
+
+        $("#backIcon").on("click", () => {
+            history.back();
+        });
     });
   </script>
 
@@ -35,21 +40,34 @@
     <div class="col-sm-2"></div>
     <div class="col-sm">
       <div class="row my-3">
+        <i class="bi bi-arrow-left-square-fill fs-2 text-secondary mb-2" id="backIcon" style="cursor: pointer"></i>
         <div class="col-sm-4">
           <img th:src="@{https://image.tmdb.org/t/p/original/} + ${movieInfo.poster_path}" src="/images/img1.jpg"
                class="img-fluid">
         </div>
         <div class="col-sm-8">
+          <div class="text-end">
+          </div>
           <h1 class="fs-2 fw-bold" th:text="${movieInfo.title}">인디아나 존슨:운명의 다이얼</h1>
           <div class="review my-4 d-flex">
             <div class="me-3">
               <p class="mb-0">TMDB 평점</p>
               <span th:text="${movieInfo.vote_average}">★★★★★</span>
             </div>
-            <div>
+            <div th:if="${userScoreAvg} == null">
               <p class="mb-0">장독대 평점</p>
-              <span th:if="${userScoreAvg} == null" th:text="|평점 없음|"></span>
-              <span th:unless="${userScoreAvg} == null" th:text="${userScoreAvg}">★★★★★</span>
+              <span th:text="|평점 없음|"></span>
+            </div>
+            <div th:if="${userScoreAvg} != null">
+              <div>
+                <p class="mb-0">장독대 평점</p>
+                <div>
+                  <img class="w-25" src="/images/review-full.png" th:if="${userScoreAvg} >= 8">
+                  <img style="width: 2.5rem" src="/images/review-unbroken.png" th:if="${userScoreAvg} >=5 and ${userScoreAvg} < 8">
+                  <img src="/images/review-unbroken.png" th:if="${userScoreAvg} < 5">
+                  <span class="fs-3" th:text="${userScoreAvg}">★★★★★</span>
+                </div>
+              </div>
             </div>
             <div th:if="${myReview != null}" class="ms-auto align-self-center">
               <div th:if="${session.id} != null and ${session.id} != ${myReview.memberId}">
@@ -154,8 +172,11 @@
       </div>
 
       <div th:if="${reviewList.size()} != 0">
-        <a th:href="@{/movieReview/} + ${movieInfo.id}"
-           class="text-decoration-none text-end fw-bold">+ 더보기</a>
+        <div class="d-flex justify-content-between mt-5">
+          <h2>리뷰</h2>
+          <a th:href="@{/movieReview/} + ${movieInfo.id}"
+             class="text-decoration-none text-secondary text-end fw-bold"><i class="bi bi-plus"></i>더보기</a>
+        </div>
         <div class="row row-cols-3 my-2">
           <div th:each="item :${reviewList}">
             <div class="col-sm">
