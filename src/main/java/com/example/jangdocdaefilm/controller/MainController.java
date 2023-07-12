@@ -251,13 +251,12 @@ public class MainController {
 
         // 제작진 정보
         List<CrewDto> crews = credits.getCrew();
-        List<CrewDto> director = new ArrayList<>();
-        List<CrewDto> writer = new ArrayList<>();
+        List<CrewDto> mainCrew = new ArrayList<>();
         for (CrewDto crew : crews) {
             if (crew.getJob().equals("Director")) {
-                director.add(crew);
+                mainCrew.add(crew);
             } else if (crew.getJob().equals("Writer")) {
-                writer.add(crew);
+                mainCrew.add(crew);
             }
         }
 
@@ -275,8 +274,7 @@ public class MainController {
 
         mv.addObject("movieInfo", movie);
         mv.addObject("genre", genre);
-        mv.addObject("director", director);
-        mv.addObject("writer", writer);
+        mv.addObject("mainCrew", mainCrew);
         mv.addObject("actor", actor);
 
         // 리뷰 조회

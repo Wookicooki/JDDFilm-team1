@@ -15,80 +15,80 @@
 
   <script th:inline="javascript">
 
-    $(document).ready(function () {
-      $("#btnBack").on("click", function () {
-        history.back();
+      $(document).ready(function () {
+          $("#backIcon").on("click", function () {
+              history.back();
+          });
+
+          $(".like-click").on("click", function () {
+              const likeIcon = $(this);
+              // hidden input value 값 = 해당 리뷰 글번호
+              let reviewIdx = likeIcon.prev().val();
+
+              if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up') {
+                  $.ajax({
+                      url: '/saveLike',
+                      type: 'GET',
+                      data: {reviewIdx: reviewIdx},
+                      success: function (data) {
+                          let likeCnt = data.likeCnt;
+                          $("#like" + reviewIdx).text(likeCnt);
+                      },
+                      error: function () {
+                          alert("통신 실패");
+                      }
+                  })
+                  // ajax 통신 후 꽉 찬 아이콘으로 변경
+                  likeIcon.html("<i class='bi bi-hand-thumbs-up-fill'></i>");
+              } else if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up-fill') {
+                  $.ajax({
+                      url: '/removeLike',
+                      type: 'GET',
+                      data: {reviewIdx: reviewIdx},
+                      success: function (data) {
+                          let likeCnt = data.likeCnt;
+                          $("#like" + reviewIdx).text(likeCnt);
+                      },
+                      error: function () {
+                          alert("통신 실패");
+                      }
+                  })
+                  // ajax 통신 후 빈 아이콘으로 변경
+                  likeIcon.html("<i class='bi bi-hand-thumbs-up'></i>");
+              }
+          });
+
+          $("#btn-update").on("click", function () {
+              $("#method_put").val("PUT")
+              const frm = $("#frm-put")[0]
+              frm.action = "/updateMovieReview";
+              frm.submit()
+          });
+
+          $("#btn-delete").on("click", function () {
+              const answer = confirm("정말 삭제하시겠습니까?")
+              if (answer) {
+                  const idx = $("#idx").val();
+                  $("#method").val("DELETE");
+                  const frm = $("#frm")[0];
+                  frm.action = "/deleteMovieReview/" + idx;
+                  frm.submit();
+              }
+          });
+
+          $(".btn-admin-delete").on("click", function () {
+              const deleteBtn = $(this);
+              const idx = deleteBtn.prev().val();
+
+              const answer = confirm("정말 삭제하시겠습니까?")
+              if (answer) {
+                  $("#method").val("DELETE");
+                  const frm = $("#frm")[0];
+                  frm.action = "/deleteMovieReview/" + idx;
+                  frm.submit();
+              }
+          });
       });
-
-      $(".like-click").on("click", function () {
-        const likeIcon = $(this);
-        // hidden input value 값 = 해당 리뷰 글번호
-        let reviewIdx = likeIcon.prev().val();
-
-        if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up') {
-          $.ajax({
-            url: '/saveLike',
-            type: 'GET',
-            data: {reviewIdx: reviewIdx},
-            success: function (data) {
-              let likeCnt = data.likeCnt;
-              $("#like" + reviewIdx).text(likeCnt);
-            },
-            error: function () {
-              alert("통신 실패");
-            }
-          })
-          // ajax 통신 후 꽉 찬 아이콘으로 변경
-          likeIcon.html("<i class='bi bi-hand-thumbs-up-fill'></i>");
-        } else if (likeIcon.children('i').attr('class') === 'bi bi-hand-thumbs-up-fill') {
-          $.ajax({
-            url: '/removeLike',
-            type: 'GET',
-            data: {reviewIdx: reviewIdx},
-            success: function (data) {
-              let likeCnt = data.likeCnt;
-              $("#like" + reviewIdx).text(likeCnt);
-            },
-            error: function () {
-              alert("통신 실패");
-            }
-          })
-          // ajax 통신 후 빈 아이콘으로 변경
-          likeIcon.html("<i class='bi bi-hand-thumbs-up'></i>");
-        }
-      });
-
-      $("#btn-update").on("click", function () {
-        $("#method_put").val("PUT")
-        const frm = $("#frm-put")[0]
-        frm.action = "/updateMovieReview";
-        frm.submit()
-      });
-
-      $("#btn-delete").on("click", function () {
-        const answer = confirm("정말 삭제하시겠습니까?")
-        if (answer) {
-          const idx = $("#idx").val();
-          $("#method").val("DELETE");
-          const frm = $("#frm")[0];
-          frm.action = "/deleteMovieReview/" + idx;
-          frm.submit();
-        }
-      });
-
-      $(".btn-admin-delete").on("click", function () {
-        const deleteBtn = $(this);
-        const idx = deleteBtn.prev().val();
-
-        const answer = confirm("정말 삭제하시겠습니까?")
-        if (answer) {
-          $("#method").val("DELETE");
-          const frm = $("#frm")[0];
-          frm.action = "/deleteMovieReview/" + idx;
-          frm.submit();
-        }
-      });
-    });
   </script>
 
 </head>
@@ -101,22 +101,38 @@
     <div class="col-sm">
       <div class="d-flex justify-content-between my-4">
         <h1 th:text="|${reviewList.get(0).movieTitle} 리뷰|">xxx 영화 리뷰</h1>
-        <a class="btn btn-secondary align-self-center" id="btnBack">이전 페이지로</a>
+        <i class="bi bi-arrow-left-square-fill fs-2 text-secondary align-self-center" id="backIcon"
+           style="cursor: pointer"></i>
       </div>
-      <div class="my-review card text-bg-light my-3" th:if="${myReview} != null">
+      <div class="my-review card border-0 my-3" th:if="${myReview} != null">
         <form id="frm" method="post">
-          <div class="card-header">내가 쓴 영화 리뷰</div>
-          <div class="card-body">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold">나의 리뷰</span>
+              <div class="d-flex">
+              <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-full.png"
+                   th:if="${myReview.userScore} >= 8">
+              <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-unbroken.png"
+                   th:if="${myReview.userScore} >=5 and ${myReview.userScore} < 8">
+              <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-broken.png"
+                   th:if="${myReview.userScore} < 5">
+              <span class="card-text" th:text="${myReview.userScore}">유저 평점</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body bg-light">
             <p class="card-text mb-1" th:text="${myReview.content}">내가 쓴 영화 리뷰 내용</p>
-            <span class="card-text" th:text="|내 평점 : ${myReview.userScore}|">유저 평점</span>
-            <div class="text-end">
-              <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
-              <span class="me-2" th:text="${myReview.getLikeCnt}">12</span>
-              <!-- 내가 쓴 리뷰 수정 -->
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                      data-bs-target="#reviewEditModal">수정
-              </button>
-              <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+            <div class="mt-2 d-flex justify-content-between">
+              <div class="align-self-center">
+                <span><i class="bi bi-hand-thumbs-up-fill"></i></span>
+                <span class="me-2" th:text="${myReview.getLikeCnt}">12</span>
+              </div>
+              <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#reviewEditModal">수정
+                </button>
+                <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+              </div>
             </div>
           </div>
           <input type="hidden" name="movieId" th:value="${myReview.movieId}">
@@ -155,15 +171,23 @@
       </form>
 
       <div class="my-4" id="other-reviews">
-        <div class="card my-3" th:each="reveiw: ${reviewList}">
+        <div class="card border-0 my-3" th:each="reveiw: ${reviewList}">
           <input type="hidden" th:value="reveiw.movieTitle">
           <input type="hidden" th:value="reveiw.movieId">
-          <div class="card-header" th:text="${reveiw.userName}"></div>
-          <div class="card-body">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold" th:text="${reveiw.userName}">작성자 이름</span>
+              <div class="d-flex">
+                <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-full.png" th:if="${reveiw.userScore} >= 8">
+                <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-unbroken.png" th:if="${reveiw.userScore} >=5 and ${reveiw.userScore} < 8">
+                <img class="align-self-baseline me-1" style="width: 20px" src="/images/review-broken.png" th:if="${reveiw.userScore} < 5">
+                <span class="card-text" th:text="${reveiw.userScore}">유저 평점</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body bg-light">
             <span class="card-text" th:text="${reveiw.content}">영화 리뷰 내용</span>
-            <br>
-            <div class="d-flex my-2">
-              <span class="card-text me-auto" th:text="|사용자 평점 : ${reveiw.userScore}|">유저 평점</span>
+            <div class="d-flex mt-2">
               <!-- 로그인 상태 -->
               <div th:if="${session.id} != null">
                 <input type="hidden" th:value="${reveiw.idx}">
@@ -180,7 +204,7 @@
               <span class="me-2" th:id="|like${reveiw.idx}|" th:text="${reveiw.likeCnt}">32</span>
             </div>
           </div>
-<!--          관리자 로그인 시 모든 리뷰 삭제 -->
+          <!--          관리자 로그인 시 모든 리뷰 삭제 -->
           <div class="card-footer text-end" th:if="${session.grade} == 1">
             <form id="frm-admin-delete" method="post">
               <input type="hidden" id="method-admin-delete" name="_method">

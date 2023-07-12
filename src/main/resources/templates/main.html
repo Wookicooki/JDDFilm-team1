@@ -48,7 +48,7 @@
   </div>
   <div class="row">
     <div class="col-sm-2 p-0">
-      <div class="card mt-1 sticky-top" style="font-size: 0.9rem">
+      <div class="card mt-1 sticky-top" style="font-size: 0.9rem; top: 20px">
         <div class="card-header fw-bold">일일 박스 오피스</div>
         <div class="card-body">
           <table class="table table-sm table-hover">
@@ -119,13 +119,10 @@
                          th:text="${item.title}">순위</a>
                   </td>
                   <td>
-                    <span>평균</span>
-                    <span><i class="bi bi-star-fill"></i></span>
-                    <span th:text="${item.scoreAvg}"></span>
-
                     <span th:if="${item.scoreAvg} >= 8"><img src="/images/review-full.png"  style="height: 20px"></span>
                     <span th:if="${item.scoreAvg} >=5 and ${item.scoreAvg} < 8"><img src="/images/review-unbroken.png"  style="height: 20px"></span>
                     <span th:if="${item.scoreAvg} < 5"><img src="/images/review-broken.png"  style="height: 20px"></span>
+                    <span th:text="${item.scoreAvg}"></span>
                   </td>
                 </tr>
               </table>
