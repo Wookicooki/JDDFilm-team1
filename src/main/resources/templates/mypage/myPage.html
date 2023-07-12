@@ -26,53 +26,6 @@
             object-fit: cover;
         }
 
-        /* 탭 스타일 */
-        .tab_item {
-            width: calc(100% / 10);
-            height: 50px;
-            background-color: #f8f8f8;
-            line-height: 50px;
-            font-size: 15px;
-            text-align: center;
-            color: #333333;
-            display: block;
-            float: left;
-            text-align: center;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-
-        .tab_item:hover {
-            opacity: 0.75;
-        }
-
-        /* 라디오 버튼 UI 삭제*/
-        input[name="tab_item"] {
-            display: none;
-        }
-
-        /* 탭 컨텐츠 스타일 */
-        .tab_content {
-            display: none;
-            padding: 40px 40px 0;
-            clear: both;
-            overflow: hidden;
-        }
-
-        /* 선택 된 탭 콘텐츠를 표시 */
-        #all:checked ~ #all_content,
-        #programming:checked ~ #programming_content,
-        #design:checked ~ #design_content {
-            display: block;
-        }
-
-
-        /*선택된 탭 스타일 */
-        .tabs input:checked + .tab_item {
-            font-weight: bold;
-            font-size: 18px;
-        }
-
         .nav {
             --bs-nav-tabs-border-width: 0px;
             --bs-nav-tabs-link-active-border-color: #000;
@@ -275,7 +228,105 @@
                 reader.readAsDataURL(file);
             });
 
-        })
+            // 일괄 삭제
+            $("#delete").on("click", function () {
+                var checkArr = [];     // 배열 초기화
+                $("input[name='deleteCheck']:checked").each(function (i) {
+                    checkArr.push($(this).val());     // 체크된 것만 값을 뽑아서 배열에 push
+                })
+                $.ajax({
+                    url: 'qnaList',
+                    type: 'DELETE',
+                    data: {
+                        valueArrTest: checkArr
+                    },
+                    success: function (data) {
+                        alert(data);
+                        if (data == "success") {
+                            location.reload();
+                        }
+                    },
+                    error: function () {
+                        alert("삭제 실패")
+                    }
+                });
+            });
+
+            function pagination(num) {
+                $.ajax({
+                    url: "/qnaList",
+                    type: "GET",
+                    data: {pageNum: num},
+                    success: function (data) {
+
+                        if (data.size > 0) {
+                            const tbody = $('#my-page-qna #tbody');
+
+                            tbody.empty();
+                            const qna = data.list;
+                            let tag = "";
+                            for (let i = 0; i < qna.length; i++) {
+                                tag += "<tr>";
+                                tag += "<td>" + qna[i].idx + "</td>";
+                                tag += "<td class='text-start'><a href='/qna/" + qna[i].idx + "' class='text-decoration-none'>" + qna[i].title + "</a></td>";
+                                tag += "<td>" + qna[i].userName + "</td>";
+                                tag += "<td>" + qna[i].createDt + "</td>";
+                                if (sessionStorage.getItem("grade") == '1') {
+                                    tag += "<td><input class='form-check-input' type='checkbox' value='" + qna[i].idx + "' name='deleteCheck'></td>";
+                                }
+                                tag += "</tr>";
+                            }
+
+                            tbody.append(tag);
+
+
+                            // pagination 이 적용된 ul 태그 찾기
+                            const tagPagination = $("#paginationAjax");
+
+                            // 기존 자식 태그 삭제
+                            tagPagination.empty();
+
+                            // 이전 페이지 버튼 생성
+                            const tagPageBtnPrev = $("<li class=\"page-item\"></li>");
+                            // 이전 페이지 번호가 0이면 qnaabled 클래스 추가, 아니면 qnaabled 클래스 삭제
+                            data.prePage == 0 ? tagPageBtnPrev.addClass("qnaabled") : tagPageBtnPrev.removeClass("qnaabled");
+                            // a 태그 추가 및 클릭 이벤트 추가
+                            const tagPageBtnPrevLink = $("<a class=\"page-link\" onclick='pagination(" + data.prePage + ")'>&laquo;</a>");
+                            tagPageBtnPrev.append(tagPageBtnPrevLink);
+                            tagPagination.append(tagPageBtnPrev);
+
+                            // 페이지 번호 버튼 생성
+                            for (let i = 0; i < data.navigatepageNums.length; i++) {
+                                const tagPageBtnNum = $('<li class="page-item"></li>');
+                                // 현재 페이지 번호와 페이지버튼의 값이 같으면 active 클래스 추가, 아니면 active 클래스 삭제
+                                data.pageNum == data.navigatepageNums[i] ? tagPageBtnNum.addClass("active") : tagPageBtnNum.removeClass("active");
+
+                                // a 태그 추가 및 클릭 이벤트 추가
+                                const tagPageBtnNumLink = $('<a class="page-link" onclick="pagination(' + data.navigatepageNums[i] + ')"></a>');
+                                tagPageBtnNumLink.append(data.navigatepageNums[i]);
+
+                                // li 태그에 a 태그를 자식 태그로 추가
+                                tagPageBtnNum.append(tagPageBtnNumLink);
+                                // ul 태그에 li 태그를 자식 태그로 추가
+                                tagPagination.append(tagPageBtnNum);
+                            }
+
+                            // 다음 페이지 버튼 생성
+                            const tagPageBtnNext = $("<li class=\"page-item\"></li>");
+                            data.nextPage == 0 ? tagPageBtnNext.addClass("qnaabled") : tagPageBtnNext.removeClass("qnaabled");
+                            const tagPageBtnNextLink = $('<a class="page-link" onclick="pagination(' + data.nextPage + ')">&raquo;</a>');
+                            tagPageBtnNext.append(tagPageBtnNextLink);
+                            tagPagination.append(tagPageBtnNext);
+                        }
+                    },
+                    error: function () {
+                        alert("pagination");
+                    }
+                });
+            }
+
+            pagination(1);
+        });
     </script>
 
 </head>
@@ -304,12 +355,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#my-page-movie" data-bs-toggle="tab">나만의 영화공간</a>
                     </li>
+                    <!--          문의하기 탭 바-->
                     <li class="nav-item">
-
-                        <!--  정보수정 모달 창  -->
-                        <button type="button" class="btn btn-light text-primary"
-                                data-bs-toggle="modal" data-bs-target="#changeModal"
-                                style="background: none; outline:none; box-shadow:none;">내 정보 수정
+                        <a class="nav-link" href="#my-page-qna" data-bs-toggle="tab">문의사항</a>
+                    </li>
+                    <!--  정보수정 모달 창  -->
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-outline-primary mt-4"
+                                data-bs-toggle="modal" data-bs-target="#changeModal">내 정보 수정
                         </button>
                     </li>
                     <div class="modal fade" id="changeModal">
@@ -383,10 +436,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--          문의하기 탭 바-->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/qnaList">문의하기</a>
-                    </li>
+
                 </ul>
             </div>
 
@@ -400,6 +450,9 @@
                 </div>
                 <div id="my-page-movie" class="tab-pane">
                     <div th:replace="~{mypage/myMovie :: myMovie}"/>
+                </div>
+                <div id="my-page-qna" class="tab-pane">
+                    <div th:replace="~{mypage/myQna :: myQna}"/>
                 </div>
             </div>
         </div>

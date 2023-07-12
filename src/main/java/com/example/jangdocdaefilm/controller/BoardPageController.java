@@ -109,6 +109,7 @@ public class BoardPageController {
         List<DailyBoxOfficeDto> dailyBoxOfficeList = nowService.getDailyBoxOfficeList(url);
         return dailyBoxOfficeList;
     }
+
     //  03할인정보 전체목록 페이징
     @Autowired
     private DisService disService;
@@ -146,15 +147,12 @@ public class BoardPageController {
     @Autowired
     private QnaService qnaService;
 
+    @ResponseBody
     @RequestMapping(value = "/qnaList", method = RequestMethod.GET)
-    public ModelAndView qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
-        ModelAndView mv = new ModelAndView("board/qna/qnaList");
-
+    public Object qnaList(@RequestParam(required = false, defaultValue = "1") int pageNum) throws Exception {
         PageInfo<QnaDto> p = new PageInfo<>(qnaService.selectQnaListNewest(pageNum), 10);
 
-        mv.addObject("qnaList", p);
-
-        return mv;
+        return p;
     }
 
     // 게시물 순서 변경

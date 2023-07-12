@@ -648,9 +648,11 @@ public class MainController {
 
     // 문의글 수정 구현(qnaList 이동)
     @RequestMapping(value = "/qnaUpdate", method = RequestMethod.POST)
-    public String qnaUpdateProcess(QnaDto qna, MultipartHttpServletRequest multipart) throws Exception {
+    public String qnaUpdateProcess(QnaDto qna, MultipartHttpServletRequest multipart, HttpServletRequest req) throws Exception {
         qnaService.updateQna(qna, multipart);
-        return "redirect:/qnaList";
+        HttpSession session = req.getSession();
+
+        return "redirect:/myPage/" + session.getAttribute("userName").toString();
     }
 
     // 문의글 글 등록페이지로 이동
@@ -661,16 +663,20 @@ public class MainController {
 
     // 문의글 글 쓰기(파일업로드 수정)
     @RequestMapping(value = "/qnaWrite", method = RequestMethod.POST)
-    public String qnaWriteProcess(QnaDto qna, MultipartHttpServletRequest multipart) throws Exception {
+    public String qnaWriteProcess(QnaDto qna, MultipartHttpServletRequest multipart, HttpServletRequest req) throws Exception {
         qnaService.writeQna(qna, multipart);
-        return "redirect:/qnaList";
+        HttpSession session = req.getSession();
+
+        return "redirect:/myPage/" + session.getAttribute("userName").toString();
     }
 
     // 게시물 삭제
     @RequestMapping(value = "/qna/{idx}", method = RequestMethod.DELETE)
-    public String qnaDelete(@PathVariable("idx") int idx) throws Exception {
+    public String qnaDelete(@PathVariable("idx") int idx, HttpServletRequest req) throws Exception {
         qnaService.deleteQna(idx);
-        return "redirect:/qnaList";
+        HttpSession session = req.getSession();
+
+        return "redirect:/myPage/" + session.getAttribute("userName").toString();
     }
 
     // 게시물 일괄 삭제

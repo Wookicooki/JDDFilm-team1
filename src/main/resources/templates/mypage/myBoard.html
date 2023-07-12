@@ -17,18 +17,14 @@
         <h1 class="mb-0">마이페이지</h1>
     </a>
     <p>내 커뮤니티 글</p>
-    <input id="all" type="radio" name="tab_item" checked>
-    <label class="tab_item" for="all">내가 쓴 글</label>
-    <input id="programming" type="radio" name="tab_item">
-    <label class="tab_item" for="programming">내가 쓴 댓글</label>
     <!--            내가 쓴 글 테이블-->
     <div class="tab_content mx-0 px-0 py-1" id="all_content">
         <table class="table table-hover text-center">
             <colgroup>
-                <col style="width: 10%"/>
+                <col style="width: 15%"/>
                 <col style="width: 7%"/>
-                <col style="width: 65%"/>
-                <col style="width: 10%"/>
+                <col style="width: 55%"/>
+                <col style="width: 15%"/>
                 <col style="width: 8%"/>
             </colgroup>
             <thead>
@@ -45,7 +41,8 @@
                 <td>자유게시판</td>
                 <td th:text="${free.idx}">1</td>
                 <td class="text-start">
-                    <a href="/free/" th:attrappend="href=${free.idx}" th:text="${free.title}" class="text-decoration-none"></a>
+                    <a href="/free/" th:attrappend="href=${free.idx}" th:text="${free.title}"
+                       class="text-decoration-none"></a>
                 </td>
                 <td th:text="${free.createDt}">2시간 전</td>
                 <td th:text="${free.hitCnt}">1342</td>
@@ -54,7 +51,8 @@
                 <td>개봉작수다</td>
                 <td th:text="${now.idx}">1</td>
                 <td class="text-start">
-                    <a href="/now/" th:attrappend="href=${now.idx}" th:text="${now.title}" class="text-decoration-none"></a>
+                    <a href="/now/" th:attrappend="href=${now.idx}" th:text="${now.title}"
+                       class="text-decoration-none"></a>
                 </td>
                 <td th:text="${now.createDt}">2시간 전</td>
                 <td th:text="${now.hitCnt}">1342</td>
@@ -63,7 +61,8 @@
                 <td>할인정보</td>
                 <td th:text="${dis.idx}">1</td>
                 <td class="text-start">
-                    <a href="/dis/" th:attrappend="href=${dis.idx}" th:text="${dis.title}" class="text-decoration-none"></a>
+                    <a href="/dis/" th:attrappend="href=${dis.idx}" th:text="${dis.title}"
+                       class="text-decoration-none"></a>
                 </td>
                 <td th:text="${dis.createDt}">2시간 전</td>
                 <td th:text="${dis.hitCnt}">1342</td>
@@ -75,58 +74,6 @@
             </tbody>
         </table>
 
-    </div>
-    <!--            내가 쓴 댓글 테이블-->
-    <div class="tab_content mx-0 px-0 py-1" id="programming_content">
-        <table class="table table-hover text-center">
-            <colgroup>
-                <col style="width: 7%"/>
-                <col style="width: 59%"/>
-                <col style="width: 8%"/>
-                <col style="width: 8%"/>
-                <col style="width: 8%"/>
-            </colgroup>
-            <thead>
-            <tr class="table-secondary">
-                <th>번호</th>
-                <th class="text-start">댓글내용</th>
-                <th>글쓴이</th>
-                <th>날짜</th>
-                <th>조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <td class="text-center">1</td>
-            <td class="text-start"><a href="#" class="text-decoration-none"></a>댓글 내용입니다.</td>
-            <td>닉네임</td>
-            <td>2시간 전</td>
-            <td>1342</td>
-            </tr>
-            <td colspan="5">조회된 데이터가 없습니다.</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <!--     페이징-->
-        <div class="container d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     </div>
 </div>
 </body>
