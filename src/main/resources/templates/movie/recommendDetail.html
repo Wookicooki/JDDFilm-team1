@@ -59,27 +59,30 @@
                 <div class="col-sm">
                     <h3 th:text="${recom.title}">@@님의 영화 추천작</h3>
                 </div>
-                <div class="col-sm d-flex justify-content-end">
+                <div th:if="(${session.userName} == ${recom.userName})" class="col-sm d-flex justify-content-end">
                     <button type="button" class="btn btn-danger" id="delete-btn">삭제
                     </button>
                 </div>
             </div>
-            <div class="row my-3" th:each="item: ${movies}">
-                <div class="col-sm-3">
-                    <a th:href="@{/movieDetail/} + ${item.id}"><img src="/images/poster.jpeg"
-                                                                    th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster_path}"
-                                                                    alt="" class="img-fluid"></a>
-
-                </div>
-                <div class="col-sm">
-                    <div class="flex-column">
-                        <h3 class="d-inline me-2" th:text="${item.title}">영화제목</h3>
-                        <p class="d-inline" th:text="${item.release_date}">개봉연도</p>
+            <div class="my-3 border border-secondary border-opacity-25 p-2 rounded" th:each="item: ${movies}">
+                <a th:href="@{/movieDetail/} + ${item.id}" class="text-decoration-none text-black">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <img src="/images/poster.jpeg"
+                                 th:src="@{https://image.tmdb.org/t/p/original} + ${item.poster_path}"
+                                 alt="" class="img-fluid">
+                        </div>
+                        <div class="col-sm">
+                            <div class="flex-column">
+                                <h3 class="d-inline me-2" th:text="${item.title}">영화제목</h3>
+                                <p class="d-inline" th:text="${item.release_date}">개봉연도</p>
+                            </div>
+                            <div class="my-5">
+                                <p class="text-overflow" th:text="${item.overview}">줄거리</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="my-5">
-                        <p class="text-overflow" th:text="${item.overview}">줄거리</p>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-sm-2"></div>
