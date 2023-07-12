@@ -16,7 +16,7 @@
   <script th:inline="javascript">
 
     $(document).ready(function () {
-      $("#btnBack").on("click", function () {
+      $("#backIcon").on("click", function () {
         history.back();
       });
 
@@ -101,7 +101,7 @@
     <div class="col-sm">
       <div class="d-flex justify-content-between my-4">
         <h1 th:text="|${reviewList.get(0).movieTitle} 리뷰|">xxx 영화 리뷰</h1>
-        <a class="btn btn-secondary align-self-center" id="btnBack">이전 페이지로</a>
+        <i class="bi bi-arrow-left-square-fill fs-2 text-secondary align-self-center" id="backIcon" style="cursor: pointer"></i>
       </div>
       <div class="my-review card text-bg-light my-3" th:if="${myReview} != null">
         <form id="frm" method="post">
