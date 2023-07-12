@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 @Controller
@@ -22,7 +24,10 @@ public class BoardPageController {
 
     @Value("${jangDocDae.tmdb.json.Url}")
     private String tmdbServiceUrl;
-
+    @Value("${jang.kobis.json.DailyBoxOfficeResultUrl}")
+    private String serviceUrl;
+    @Value("${jang.kobis.json.key}")
+    private String serviceKey;
     //  자유게시판 전체목록 페이징
     @Autowired
     private FreeService freeService;
@@ -92,6 +97,18 @@ public class BoardPageController {
         return p;
     }
 
+    // 현재 상영작 데이터 조회 함수
+    @ResponseBody
+    @RequestMapping(value = "/nowMovie", method = RequestMethod.GET)
+    public Object getBoxOffice() throws Exception {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        cal.add(cal.DATE, -1);
+        String targetDt = simpleDateFormat.format(cal.getTime());
+        String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
+        List<DailyBoxOfficeDto> dailyBoxOfficeList = nowService.getDailyBoxOfficeList(url);
+        return dailyBoxOfficeList;
+    }
     //  03할인정보 전체목록 페이징
     @Autowired
     private DisService disService;

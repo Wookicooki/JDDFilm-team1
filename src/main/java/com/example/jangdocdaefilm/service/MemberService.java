@@ -1,6 +1,7 @@
 package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.dto.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -68,5 +69,6 @@ public interface MemberService {
   UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
 
   List<UserScoreDto> getJangDocDaeChart() throws Exception;
-
+  //  프로필 등록
+  List<MemberDto> setMemberImg(MemberDto member, MultipartHttpServletRequest uploadFiles) throws Exception;
 }

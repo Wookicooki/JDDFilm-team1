@@ -9,4 +9,7 @@ public class MemberDto {
   private String pw;
   private String userName;
   private String grade;
+  //  파일정보용 프로필이미지 컬럼 추가
+  private String originalFileName;
+  private String storedFileName;
 }

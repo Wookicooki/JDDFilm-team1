@@ -8,7 +8,7 @@
 <mapper namespace="com.example.jangdocdaefilm.mapper.NowMapper">
   <select id="selectNowListNewest" resultType="com.example.jangdocdaefilm.dto.NowDto">
     SELECT
-    idx, title, user_name, id, create_dt, hit_cnt
+    idx, title, user_name, id, create_dt, hit_cnt, movie_nm
     FROM
     now
     WHERE
@@ -30,7 +30,7 @@
 
   <select id="selectNowDetail" resultType="com.example.jangdocdaefilm.dto.NowDto" parameterType="int">
     SELECT
-    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn
+    idx, title, content, create_dt, user_name, id, hit_cnt, delete_yn, movie_nm
     FROM
     now
     WHERE
@@ -41,9 +41,9 @@
 
   <insert id="writeNow" parameterType="com.example.jangdocdaefilm.dto.NowDto" useGeneratedKeys="true" keyProperty="idx">
     INSERT INTO
-    now (title, content, id, user_name, create_dt)
+    now (title, content, id, user_name, create_dt, movie_nm)
     VALUES
-    (#{title}, #{content} , #{id}, #{userName}, now())
+    (#{title}, #{content} , #{id}, #{userName}, now(), #{movieNm})
   </insert>
 
 

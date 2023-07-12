@@ -61,5 +61,5 @@ public interface MemberMapper {
 
   UserScoreDto getScoreAvgMovie(String movieId) throws Exception;
   List<UserScoreDto> getJangDocDaeChart() throws Exception;
-
+  void setMemberImg(List<MemberDto> fileList) throws  Exception;
 }

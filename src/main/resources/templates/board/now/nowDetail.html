@@ -53,7 +53,8 @@
           <div class="row my-3 py-2">
             <div class="col-sm">
               <input type="hidden" th:value="${now.idx}" name="idx" id="idx">
-              <input type="text" class="form-control-plaintext fs-5 fw-bold" name="title" th:value="${now.title}" readonly>
+              <input th:if="${now.movieNm} != null" type="text" class="form-control-plaintext fs-5 fw-bold" name="title" th:value="|[${now.movieNm}] ${now.title}|" readonly>
+              <input th:unless="${now.movieNm} != null" type="text" class="form-control-plaintext fs-5 fw-bold" name="title" th:value="${now.title}" readonly>
             </div>
             <div class="col-sm d-flex justify-content-end" th:if="${session.id} == ${now.id}">
               <button type="button" class="btn btn-warning me-2" id="btn-update">수정</button>

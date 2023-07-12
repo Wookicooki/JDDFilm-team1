@@ -39,13 +39,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Value("${resource.now.path}")
   private String resourceNowPath;
-
+  //  프로필 이미지 경로(추가)
+  @Value("${resource.member.path}")
+  private String resourceMemberPath;
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/free/**").addResourceLocations(resourceFreePath);
     registry.addResourceHandler("/dis/**").addResourceLocations(resourceDisPath);
     registry.addResourceHandler("/qna/**").addResourceLocations(resourceQnaPath);
     registry.addResourceHandler("/now/**").addResourceLocations(resourceNowPath);
+    //  프로필 이미지(추가)
+    registry.addResourceHandler("/member/**").addResourceLocations(resourceMemberPath);
 
   }
 

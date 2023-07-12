@@ -238,9 +238,22 @@
 
             });
 
-            $(document).on("click", "img", function () {
+            $(document).on("click", "#my-page-movie img", function () {
 
                 location.href = "/movie/recom/" + $(this).attr('id');
+            });
+
+            $("#image-file").on("change", function (event) {
+
+                var file = event.target.files[0];
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+
+                    $("#preview").attr("src", e.target.result);
+                }
+
+                reader.readAsDataURL(file);
             });
 
         })
@@ -256,7 +269,7 @@
             <div class="mt-5">
                 <!--프로필 이미지-->
                 <div class="box mx-auto" style="background: #BDBDBD;">
-                    <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
+                    <a href="#"><img class="profile" src="/images/squirrel.jpg" th:src="${session.imgUrl}"></a>
                 </div>
                 <div>
                     <h6 class="my-3 px-2 text-center text-secondary fw-bold" th:text="${session.userName}"></a></h6>
@@ -287,16 +300,24 @@
                                     <h1 class="modal-title">회원정보 수정</h1>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="post">
+                                    <form action="/member/updateImg" method="post" enctype="multipart/form-data">
                                         <div class="col-sm form-floating">
                                             <div class="box mx-auto" style="background: #BDBDBD;">
-                                                <a href="#"><img class="profile" src="/images/squirrel.jpg"></a>
+                                                <label for="image-file" class="w-100 h-100">
+                                                    <img id="preview" src="" alt="" class="img-fluid"
+                                                         th:src="${session.imgUrl}">
+                                                </label>
                                             </div>
+                                            <input type="file" id="image-file" name="imageFile" accept="image/*"
+                                                   class="invisible">
+                                            <button type="submit" class="btn btn-primary">사진 변경</button>
                                             <div>
-                                                <h6 class="my-3 px-2 text-center text-secondary fw-bold"
+                                                <h6 class=" px-2 text-center text-secondary fw-bold"
                                                     th:text="${session.userName}"></h6>
                                                 <input type="hidden" id="id" th:value="${session.id}">
                                             </div>
+                                            <input type="hidden" name="memberId" id="memberId"
+                                                   value="${login.memberId}">
                                             <div class="input-group">
                                                 <span class="input-group-text fw-bold">PW 변경</span>
                                             </div>
@@ -326,6 +347,7 @@
                                                 <input type="text" class="form-control" id="user-name" name="userName"
                                                        placeholder="닉네임">
                                                 <label for="user-name">새 닉네임을 입력(선택)</label>
+
                                                 <button type="button" class="btn btn-outline-success mt-2"
                                                         id="confirmName">중복확인
                                                 </button>

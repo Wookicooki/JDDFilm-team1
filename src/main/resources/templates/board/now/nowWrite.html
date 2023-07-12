@@ -17,6 +17,26 @@
           $("#btn-cancel").on("click", function () {
               history.back();
           });
+
+        function getBoxOffice() {
+          $.ajax({
+            url: "/nowMovie",
+            type: "GET",
+            success: (data) => {
+              const selectBox = $("#box-office");
+              let tag = "";
+              for (let i = 0; i < data.length; i++) {
+                tag += "<option value='" + data[i].movieNm + "'>" + data[i].movieNm + "</option>";
+              }
+              selectBox.append(tag);
+
+            },
+            error: () => {
+            }
+          });
+        }
+
+        getBoxOffice();
       });
   </script>
 </head>
@@ -31,12 +51,18 @@
       <div class="row">
         <form action="/nowWrite" method="post" enctype="multipart/form-data">
           <div class="my-3 row">
+            <div class="col-sm-2">
+              <select id="box-office" class="form-control me-3" name="movieNm">
+                <option value="" selected="selected">상영작</option>
+              </select>
+            </div>
             <div class="col-sm">
               <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요">
             </div>
           </div>
           <div class="my-3">
-            <textarea class="form-control" id="content" name="content" rows="20" placeholder="글 내용을 입력하세요"></textarea>
+                        <textarea class="form-control" id="content" name="content" rows="20"
+                                  placeholder="글 내용을 입력하세요"></textarea>
           </div>
           <div class="row input-group">
             <div class="my-3 col-sm d-flex justify-content-start gap-3">
@@ -49,7 +75,8 @@
               <button type="reset" class="btn btn-secondary" id="btn-cancel">취소</button>
             </div>
           </div>
-          <input type="hidden" class="form-control" id="user-name" name="userName" th:value="${session.userName}">
+          <input type="hidden" class="form-control" id="user-name" name="userName"
+                 th:value="${session.userName}">
           <input type="hidden" class="form-control" id="user-id" name="id" th:value="${session.id}">
         </form>
       </div>

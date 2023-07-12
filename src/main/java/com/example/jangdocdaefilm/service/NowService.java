@@ -1,5 +1,6 @@
 package com.example.jangdocdaefilm.service;
 
+import com.example.jangdocdaefilm.dto.DailyBoxOfficeDto;
 import com.example.jangdocdaefilm.dto.NowDto;
 import com.example.jangdocdaefilm.dto.NowFileDto;
 import com.github.pagehelper.Page;
@@ -35,4 +36,6 @@ public interface NowService {
 
   //  게시물 조회수 카운트
   void updateNowHtiCount(int idx) throws Exception;
+  // 현재 상영작 데이터 조회
+  List<DailyBoxOfficeDto> getDailyBoxOfficeList(String url) throws Exception;
 }

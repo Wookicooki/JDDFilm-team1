@@ -1,16 +1,23 @@
 package com.example.jangdocdaefilm.service;
 
 import com.example.jangdocdaefilm.common.NowFileUtils;
+import com.example.jangdocdaefilm.dto.BoxOfficeDto;
+import com.example.jangdocdaefilm.dto.DailyBoxOfficeDto;
 import com.example.jangdocdaefilm.dto.NowDto;
 import com.example.jangdocdaefilm.dto.NowFileDto;
 import com.example.jangdocdaefilm.mapper.NowMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @Service
@@ -87,5 +94,20 @@ public class NowServiceImpl implements NowService {
   @Override
   public void updateNowHtiCount(int idx) throws Exception {
 
+  }
+
+  @Override
+  public List<DailyBoxOfficeDto> getDailyBoxOfficeList(String url) throws Exception {
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .GET()
+            .build();
+
+    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+    Gson gson = new Gson();
+    BoxOfficeDto boxOffice = gson.fromJson(response.body(), BoxOfficeDto.class);
+    List<DailyBoxOfficeDto> boxOfficeList = boxOffice.getBoxOfficeResult().getDailyBoxOfficeList();
+    return boxOfficeList;
   }
 }

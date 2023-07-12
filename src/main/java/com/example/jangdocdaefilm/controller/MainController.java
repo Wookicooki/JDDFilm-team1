@@ -171,6 +171,7 @@ public class MainController {
             session.setAttribute("id", memberInfo.getId());
             session.setAttribute("userName", memberInfo.getUserName());
             session.setAttribute("grade", memberInfo.getGrade());
+            session.setAttribute("imgUrl", memberInfo.getStoredFileName());
 //            session.setMaxInactiveInterval(60); // 세션 삭제 시간 설정
 
             return "redirect:/main";
@@ -191,6 +192,7 @@ public class MainController {
         session.removeAttribute("id");
         session.removeAttribute("userName");
         session.removeAttribute("grade");
+        session.removeAttribute("imgUrl");
 
         session.invalidate(); // 세션의 모든 정보 삭제
 
@@ -834,6 +836,20 @@ public class MainController {
         commentService.nowWriteComment(comment);
         int idx = comment.getNowIdx();
         return "redirect:/now/" + idx;
+    }
+
+    //    마이페이지 프로필 이미지 변경
+    @RequestMapping(value = "member/updateImg", method = RequestMethod.POST)
+    public String insertProfileImg(MemberDto member, HttpServletRequest req, MultipartHttpServletRequest multipart) throws Exception {
+        HttpSession session = req.getSession();
+        String id = session.getAttribute("id").toString();
+        String userName = session.getAttribute("userName").toString();
+        member.setId(id);
+        List<MemberDto> members = memberService.setMemberImg(member, multipart);
+
+        session.setAttribute("imgUrl", members.get(0).getStoredFileName());
+
+        return "redirect:/myPage/" + userName;
     }
 
 }

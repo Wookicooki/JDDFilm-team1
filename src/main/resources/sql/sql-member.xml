@@ -17,7 +17,7 @@
 
     <select id="getMemberInfo" resultType="com.example.jangdocdaefilm.dto.MemberDto" parameterType="String">
         SELECT
-        id, user_name, grade
+        id, user_name, grade, stored_file_name
         FROM
         member
         WHERE
@@ -238,4 +238,14 @@
         ORDER BY
         score_avg DESC
     </select>
+
+    <update id="setMemberImg" parameterType="com.example.jangdocdaefilm.dto.MemberDto">
+        <foreach collection="list" item="item" separator=",">
+            UPDATE
+            member
+            SET
+            original_file_name = #{item.originalFileName}, stored_file_name = #{item.storedFileName}
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
 </mapper>

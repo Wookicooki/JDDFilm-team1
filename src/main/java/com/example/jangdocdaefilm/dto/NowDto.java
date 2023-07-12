@@ -10,9 +10,8 @@ public class NowDto {
   private String title;
   private String content;
   private Date createDt;
-  private String mId;
-  private String mTitle;
   private String id;
   private String userName;
   private int hitCnt;
+  private String movieNm;
 }
