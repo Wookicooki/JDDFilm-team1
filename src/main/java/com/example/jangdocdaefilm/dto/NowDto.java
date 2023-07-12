@@ -6,6 +6,8 @@ import java.sql.Date;
 
 @Data
 public class NowDto {
+  private int no;
+
   private int idx;
   private String title;
   private String content;
