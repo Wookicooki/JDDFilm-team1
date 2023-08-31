@@ -48,7 +48,7 @@ public class MainController {
         cal.add(cal.DATE, -1);
         String targetDt = simpleDateFormat.format(cal.getTime());
 
-        ModelAndView mv = new ModelAndView("/main");
+        ModelAndView mv = new ModelAndView("main");
         String url = serviceUrl + "?key=" + serviceKey + "&targetDt=" + targetDt;
         List<DailyBoxOfficeDto> dailyBoxOfficeList = movieService.getDailyBoxOfficeList(url);
         /**************************/
