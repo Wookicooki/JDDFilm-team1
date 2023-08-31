@@ -35,16 +35,11 @@ public class MainController {
     @Autowired
     private MovieService movieService;
 
-    @RequestMapping("/")
-    public String index() throws Exception {
-        return "index";
-    }
-
     @Autowired
     private MainService mainService;
 
     @ResponseBody
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView getDailyBoxOfficeProcess(HttpServletRequest req) throws Exception {
         /***** 일일 박스오피스 *****/
         // 어제 날짜 계산
