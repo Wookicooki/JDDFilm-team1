@@ -152,8 +152,9 @@
               <div class="modal-body">
               <textarea class="form-control" rows="10" name="content" th:text="${myReview.content}"
                         placeholder="영화 리뷰를 작성해주세요"></textarea>
-                <input type="range" class="form-range mt-2" step="1" min="1" max="10"
-                       th:value="${myReview.userScore}" name="userScore">
+                <label for="userScore" class="form-label mt-2 mb-0">평점</label>
+                <input type="range" class="form-range" step="1" min="1" max="10"
+                       th:value="${myReview.userScore}" name="userScore" id="userScore">
                 <input type="hidden" name="idx" th:value="${myReview.idx}">
                 <input type="hidden" name="movieId" th:value="${myReview.movieId}">
                 <input type="hidden" name="movieTitle" th:value="${myReview.movieTitle}">
@@ -161,7 +162,7 @@
                 <input type="hidden" name="memberId" th:value="${session.id}">
                 <input type="hidden" name="userName" th:value="${session.userName}">
                 <div class="text-end">
-                  <button type="button" class="btn btn-primary" id="btn-update">등록</button>
+                  <button type="button" class="btn btn-primary" id="btn-update">수정</button>
                 </div>
                 <input type="hidden" id="method_put" name="_method">
               </div>

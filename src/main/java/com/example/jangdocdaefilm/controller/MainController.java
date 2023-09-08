@@ -178,7 +178,7 @@ public class MainController {
             session.setAttribute("imgUrl", memberInfo.getStoredFileName());
 //            session.setMaxInactiveInterval(60); // 세션 삭제 시간 설정
 
-            return "redirect:/main";
+            return "redirect:/";
 
         } else { // 정보가 없으면 login페이지로 이동
 
