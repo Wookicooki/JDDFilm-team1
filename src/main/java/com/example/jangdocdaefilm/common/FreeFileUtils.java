@@ -26,7 +26,7 @@ public class FreeFileUtils {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
     String current_date = simpleDateFormat.format(new Date());
 
-    String path = "C:/upload/free/" + current_date;
+    String path = "/home/ec2-user/JangDocDae/upload/free/" + current_date;
 
     File file = new File(path);
 

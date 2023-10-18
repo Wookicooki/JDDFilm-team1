@@ -226,6 +226,7 @@
                 }
 
                 reader.readAsDataURL(file);
+                $("#img-btn").attr("disabled", false);
             });
 
             // 일괄 삭제
@@ -393,7 +394,7 @@
                                             </div>
                                             <input type="file" id="image-file" name="imageFile" accept="image/*"
                                                    class="invisible">
-                                            <button type="submit" class="btn btn-primary">사진 변경</button>
+                                            <button type="submit" id="img-btn" class="btn btn-primary" disabled="disabled">사진 변경</button>
                                             <div>
                                                 <h6 class=" px-2 text-center text-secondary fw-bold"
                                                     th:text="${session.userName}"></h6>

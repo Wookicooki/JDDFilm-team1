@@ -26,7 +26,7 @@ public class NowFileUtils {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
     String current_date = simpleDateFormat.format(new Date());
 
-    String path = "C:/upload/now/" + current_date;
+    String path = "/home/ec2-user/JangDocDae/upload/now/" + current_date;
 
     File file = new File(path);
 
